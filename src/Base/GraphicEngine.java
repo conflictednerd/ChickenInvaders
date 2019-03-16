@@ -34,8 +34,8 @@ public class GraphicEngine extends Thread {
             }
 
             try {
-                //around 170fps
-                GraphicEngine.sleep(5);
+                //around 90fps
+                GraphicEngine.sleep(10);
 //                GraphicEngine.sleep(15 - (System.currentTimeMillis()-beginTime));
             } catch (InterruptedException e) {
                 e.printStackTrace();
