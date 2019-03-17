@@ -1,26 +1,24 @@
 package Swing;
 
 import Base.Data;
+import Base.ShotThread;
 import Elements.Shot;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 public class GamePanel extends JPanel {
 
     public Data data;
+    ShotThread shotThread;
 //    public Image back;
 
     public GamePanel(Data data) {
         this.data  = data;
-
 //        try {
 //            back = ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/Optimized-Background.jpg"));
 //        } catch (IOException e) {
@@ -32,6 +30,8 @@ public class GamePanel extends JPanel {
         Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
         setCursor(blankCursor);
 
+        setFocusable(true);
+        requestFocus();
         setLayout(null);
         setVisible(true);
 
@@ -53,29 +53,47 @@ public class GamePanel extends JPanel {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                data.shots.add(new Shot(mouseEvent.getX(), mouseEvent.getY()));
+                data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
             }
 
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                //TODO add a shooting thread to shoot every 0.2 seconds. when mouse is pressed it's activated and when mouse is released it pauses.
                 //TODO It might be a good idea to make shooting thread part of Shot class so that every shot type has its own rate of fire. Or we can add rate_of_fire to Shot class.
-
+                shotThread = new ShotThread(data);
+                shotThread.start();
             }
 
             @Override
             public void mouseReleased(MouseEvent mouseEvent) {
-
+                //TODO probably can implement it without use of deprecated stop method but it works fine for now.
+                shotThread.stop();
             }
 
             @Override
-            public void mouseEntered(MouseEvent mouseEvent) {
+            public void mouseEntered(MouseEvent mouseEvent) {}
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {}
+        });
 
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+                if(keyEvent.getKeyCode() == KeyEvent.VK_SPACE) data.shots.add(new Shot(data.rocket.getX(),data.rocket.getY()));
             }
 
             @Override
-            public void mouseExited(MouseEvent mouseEvent) {
+            public void keyPressed(KeyEvent keyEvent) {
+                //TODO Use a Robot to change mouse location when using keyboard input.
+                synchronized (data.pressedKeys) {
+                    data.pressedKeys.add(keyEvent.getKeyCode());
+                }
+            }
 
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                synchronized (data.pressedKeys) {
+                    data.pressedKeys.remove(keyEvent.getKeyCode());
+                }
             }
         });
     }
@@ -89,7 +107,7 @@ public class GamePanel extends JPanel {
             e.printStackTrace();
         }
         data.rocket.draw((Graphics2D)g);
-        for(Shot shot: data.shots) shot.draw((Graphics2D)g);
+        for(Shot shot:data.shots) shot.draw((Graphics2D)g);
     }
 
 }

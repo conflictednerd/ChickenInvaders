@@ -2,12 +2,27 @@ package Elements;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 
 public class Shot implements Drawable, Movable {
 
-    int x, y;
+    private int x, y;
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
     int speedX = 0, speedY = -1;
     private static Image image;
 

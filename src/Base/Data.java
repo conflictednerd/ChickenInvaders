@@ -2,8 +2,12 @@ package Base;
 
 import Elements.*;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Each game must have one instance of this class.
@@ -11,6 +15,9 @@ import java.util.List;
  * the game. GE and LE access it and change its values.
  */
 public class Data {
-    public List<Shot> shots = new ArrayList<>();
+    //ConcurrentHashSet below(Yes its a set) is very helpful!!
+    public volatile Set<Shot> shots = ConcurrentHashMap.newKeySet();
     public Rocket rocket = new Rocket();
+    public volatile HashSet<Integer> pressedKeys = new HashSet<>();
+    public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 }
