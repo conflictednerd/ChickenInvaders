@@ -1,6 +1,7 @@
 package Base;
 
 import Elements.*;
+import Swing.GamePanel;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -20,4 +21,6 @@ public class Data {
     public Rocket rocket = new Rocket();
     public volatile HashSet<Integer> pressedKeys = new HashSet<>();
     public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public GamePanel gamePanel;
+    public volatile boolean isPaused = false;
 }

@@ -7,7 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class LogicEngine extends Thread{
 
-    Data data;
+    private Data data;
 
     public LogicEngine(Data data){
         super();
@@ -22,43 +22,49 @@ public class LogicEngine extends Thread{
         int shootCounter = 0;
 
         while(running) {
-            long beginTime = System.currentTimeMillis();
-            synchronized (data.shots) {
-                for (Shot shot : data.shots) {
-                    if (shot.getY() < 0) data.shots.remove(shot);
-                    else shot.move();
-                }
-            }
-
-
-            //Code for handling keyboard input comes here.
-            synchronized (data.pressedKeys) {
-                for (int i : data.pressedKeys) {
-                    if (i == KeyEvent.VK_DOWN && data.rocket.getY() < data.screenSize.height) {
-                        data.rocket.setY(data.rocket.getY() + 5);
-                    }
-                    if (i == KeyEvent.VK_UP && data.rocket.getY() > 0) {
-                        data.rocket.setY(data.rocket.getY() - 5);
-                    }
-                    if (i == KeyEvent.VK_LEFT && data.rocket.getX() > 0) {
-                        data.rocket.setX(data.rocket.getX() - 5);
-                    }
-                    if (i == KeyEvent.VK_RIGHT && data.rocket.getX() < data.screenSize.width) {
-                        data.rocket.setX(data.rocket.getX() + 5);
-                    }
-                    if (i == KeyEvent.VK_SPACE) {
-                        shootCounter++;
-                        shootCounter %= 10;
-                        if(shootCounter == 1)
-                            data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
+            if (!data.isPaused) {
+                long beginTime = System.currentTimeMillis();
+                synchronized (data.shots) {
+                    for (Shot shot : data.shots) {
+                        if (shot.getY() < 0) data.shots.remove(shot);
+                        else shot.move();
                     }
                 }
-            }
-            try {
+
+
+                //Code for handling keyboard input comes here.
+                synchronized (data.pressedKeys) {
+                    for (int i : data.pressedKeys) {
+                        if (i == KeyEvent.VK_DOWN && data.rocket.getY() < data.screenSize.height) {
+                            data.rocket.setY(data.rocket.getY() + 5);
+                            data.gamePanel.syncMouse();
+                        }
+                        if (i == KeyEvent.VK_UP && data.rocket.getY() > 0) {
+                            data.rocket.setY(data.rocket.getY() - 5);
+                            data.gamePanel.syncMouse();
+                        }
+                        if (i == KeyEvent.VK_LEFT && data.rocket.getX() > 0) {
+                            data.rocket.setX(data.rocket.getX() - 5);
+                            data.gamePanel.syncMouse();
+                        }
+                        if (i == KeyEvent.VK_RIGHT && data.rocket.getX() < data.screenSize.width) {
+                            data.rocket.setX(data.rocket.getX() + 5);
+                            data.gamePanel.syncMouse();
+                        }
+                        if (i == KeyEvent.VK_SPACE) {
+                            shootCounter++;
+                            shootCounter %= 10;
+                            if (shootCounter == 1)
+                                data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
+                        }
+                    }
+                }
+                try {
 //                LogicEngine.sleep(15 - System.currentTimeMillis() + beginTime);
-                LogicEngine.sleep(15);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                    LogicEngine.sleep(15);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

@@ -26,8 +26,8 @@ public class Game {
         //player selection and all the stuff should happen here so start panel must have a button or
         //some kind of mechanism to select the player. after that the graphic engine and logic engine
         //must start and change the contentpane to gamepanel. and then the rendering and all the stuff.
-
-        GE = new GraphicEngine(gamePanel);
+        data.gamePanel = gamePanel;
+        GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
         gameFrame.contentPane.add(gamePanel);
         GE.start();

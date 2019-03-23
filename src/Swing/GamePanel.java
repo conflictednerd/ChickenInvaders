@@ -11,6 +11,8 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+//TODO Can't shoot with space and move with mouse. Don't know why yet.
+
 public class GamePanel extends JPanel {
 
     public Data data;
@@ -38,15 +40,18 @@ public class GamePanel extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent mouseEvent) {
-                //TODO should also fire.
-                data.rocket.setX(mouseEvent.getX());
-                data.rocket.setY(mouseEvent.getY());
+                if(!data.isPaused) {
+                    data.rocket.setX(mouseEvent.getX());
+                    data.rocket.setY(mouseEvent.getY());
+                }
             }
 
             @Override
             public void mouseMoved(MouseEvent mouseEvent) {
-                data.rocket.setX(mouseEvent.getX());
-                data.rocket.setY(mouseEvent.getY());
+                if(!data.isPaused) {
+                    data.rocket.setX(mouseEvent.getX());
+                    data.rocket.setY(mouseEvent.getY());
+                }
             }
         });
 
@@ -58,15 +63,19 @@ public class GamePanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                //TODO It might be a good idea to make shooting thread part of Shot class so that every shot type has its own rate of fire. Or we can add rate_of_fire to Shot class.
-                shotThread = new ShotThread(data);
-                shotThread.start();
+                if(!data.isPaused) {
+                    //TODO It might be a good idea to make shooting thread part of Shot class so that every shot type has its own rate of fire. Or we can add rate_of_fire to Shot class.
+                    shotThread = new ShotThread(data);
+                    shotThread.start();
+                }
             }
 
             @Override
             public void mouseReleased(MouseEvent mouseEvent) {
-                //TODO probably can implement it without use of deprecated stop method but it works fine for now.
-                shotThread.stop();
+                if(!data.isPaused) {
+                    //TODO probably can implement it without use of deprecated stop method but it works fine for now.
+                    shotThread.stop();
+                }
             }
 
             @Override
@@ -77,22 +86,25 @@ public class GamePanel extends JPanel {
 
         addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.VK_SPACE) data.shots.add(new Shot(data.rocket.getX(),data.rocket.getY()));
-            }
+            public void keyTyped(KeyEvent keyEvent) {}
 
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-                //TODO Use a Robot to change mouse location when using keyboard input.
-                synchronized (data.pressedKeys) {
-                    data.pressedKeys.add(keyEvent.getKeyCode());
+                if(!data.isPaused) {
+                    synchronized (data.pressedKeys) {
+                        data.pressedKeys.add(keyEvent.getKeyCode());
+                    }
                 }
             }
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
-                synchronized (data.pressedKeys) {
-                    data.pressedKeys.remove(keyEvent.getKeyCode());
+                //Code for game pause.
+                if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) esc();
+                if(!data.isPaused) {
+                    synchronized (data.pressedKeys) {
+                        data.pressedKeys.remove(keyEvent.getKeyCode());
+                    }
                 }
             }
         });
@@ -108,6 +120,31 @@ public class GamePanel extends JPanel {
         }
         data.rocket.draw((Graphics2D)g);
         for(Shot shot:data.shots) shot.draw((Graphics2D)g);
+    }
+
+
+    public void syncMouse(){
+        try {
+            Robot robot = new Robot();
+            robot.mouseMove(data.rocket.getX() + (int)getLocationOnScreen().getX(), data.rocket.getY() + (int)getLocationOnScreen().getY());
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void esc(){
+        if(data.isPaused){
+            syncMouse();
+            System.out.println("yo");
+        }
+        else{
+            if(shotThread != null) {
+                if (shotThread.isAlive()) shotThread.stop();
+            }
+            PauseDialog pauseDialog = new PauseDialog();
+            System.err.println("yo");
+        }
+        data.isPaused = !data.isPaused;
     }
 
 }

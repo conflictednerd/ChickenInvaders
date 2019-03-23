@@ -24,7 +24,7 @@ public class ShotThread extends Thread {
 //            }
             data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
             try {
-                ShotThread.sleep(100);
+                ShotThread.sleep(150);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
