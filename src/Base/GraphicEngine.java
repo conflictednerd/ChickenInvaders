@@ -25,8 +25,7 @@ public class GraphicEngine extends Thread {
         super.run();
         long time = System.currentTimeMillis();
         int fps = 0;
-        boolean running = true;
-        while (running) {
+        while (true) {
             if (!data.isPaused) {
 //            long beginTime = System.currentTimeMillis();
                 //TODO for animation of elements I should add some code in here so that every .5 seconds the image for every element changes. It should use a counter for time and a method in animatable interface for animatable elements.

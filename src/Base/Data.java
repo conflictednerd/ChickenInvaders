@@ -1,6 +1,7 @@
 package Base;
 
 import Elements.*;
+import Swing.GameFrame;
 import Swing.GamePanel;
 
 import java.awt.*;
@@ -22,6 +23,7 @@ public class Data {
     public volatile HashSet<Integer> pressedKeys = new HashSet<>();
     public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public GamePanel gamePanel;
+    public GameFrame gameFrame;
     public volatile boolean isPaused = false;
 
     public static volatile int heat = 0, heatCountDown = 13;

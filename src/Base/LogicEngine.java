@@ -17,13 +17,12 @@ public class LogicEngine extends Thread{
 
     @Override
     public void run() {
-        //TODO running should be a shared volatile variable that's the same in Game, GE and LE.
-        boolean running = true;
+        //TODO isPaused should be a shared volatile variable that's the same in Game, GE and LE.
         boolean waitingForShotCooldown = false;
         int shotCoolDownCounter = 0;
         int shootCounter = 0;
 
-        while(running) {
+        while(true) {
             if (!data.isPaused) {
                 long beginTime = System.currentTimeMillis();
 

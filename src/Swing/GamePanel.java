@@ -1,7 +1,6 @@
 package Swing;
 
 import Base.Data;
-import Base.ShotThread;
 import Elements.Shot;
 
 import javax.imageio.ImageIO;
@@ -11,14 +10,19 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-//TODO Can't shoot with space and move with mouse. Don't know why yet.
+/*
+TODO Can't shoot with space and move with mouse. Don't know why yet.
+TODO Adding (to the top) a label?? indicating weapon heat.
+TODO Adding (to the bottom) a label?? containing info on stats.
+TODO Adding Bomb.
+TODO Adding Gson for save.
+*/
 
 public class GamePanel extends JPanel {
 
     final int mousePressed = -23;
     public Data data;
-    ShotThread shotThread;
-//    public Image back;
+    private PauseDialog pauseDialog = null;
 
     public GamePanel(Data data) {
         this.data  = data;
@@ -63,11 +67,6 @@ public class GamePanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 if(!data.isPaused) {
-                    //NOTE: REMOVED USE OF SHOTTHREAD COMPLETELY HERE BUT WILL LEAVE THE CODE FOR SOME TIME IN CASE I NEEDED IT BACK.
-//                    TODO It might be a good idea to make shooting thread part of Shot class so that every shot type has its own rate of fire. Or we can add rate_of_fire to Shot class.
-//                    shotThread = new ShotThread(data);
-//                    shotThread.start();
-
                     synchronized (data.pressedKeys) {
                         //-23 is used to indicate mouse pressed in KeyEvent.VK....
                         data.pressedKeys.add(mousePressed);
@@ -78,8 +77,6 @@ public class GamePanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent mouseEvent) {
                 if(!data.isPaused) {
-                    //TODO probably can implement it without use of deprecated stop method but it works fine for now.
-//                    shotThread.stop();
                     synchronized (data.pressedKeys) {
                         data.pressedKeys.remove(mousePressed);
                     }
@@ -142,15 +139,11 @@ public class GamePanel extends JPanel {
 
     public void esc(){
         if(data.isPaused){
+            pauseDialog.dispose();
             syncMouse();
-            System.out.println("yo");
         }
         else{
-            if(shotThread != null) {
-                if (shotThread.isAlive()) shotThread.stop();
-            }
-            PauseDialog pauseDialog = new PauseDialog();
-            System.err.println("yo");
+            pauseDialog = new PauseDialog(data);
         }
         data.isPaused = !data.isPaused;
     }
