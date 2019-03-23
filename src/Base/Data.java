@@ -23,4 +23,6 @@ public class Data {
     public Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public GamePanel gamePanel;
     public volatile boolean isPaused = false;
+
+    public static volatile int heat = 0, heatCountDown = 13;
 }

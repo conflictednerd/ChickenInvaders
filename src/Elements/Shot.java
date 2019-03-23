@@ -8,6 +8,9 @@ public class Shot implements Drawable, Movable {
 
     private int x, y;
 
+    public static final int HEAT_OFF_TIME = 50 *4;
+    public static volatile int shotHeat = 0, heatCountDown = HEAT_OFF_TIME, maxHeat = 100;
+
     public int getX() {
         return x;
     }
@@ -34,6 +37,7 @@ public class Shot implements Drawable, Movable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        shotHeat += 5;
     }
 
     @Override

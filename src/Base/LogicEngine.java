@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 
 public class LogicEngine extends Thread{
 
+    final int mousePressed = -23;
     private Data data;
 
     public LogicEngine(Data data){
@@ -18,12 +19,19 @@ public class LogicEngine extends Thread{
     public void run() {
         //TODO running should be a shared volatile variable that's the same in Game, GE and LE.
         boolean running = true;
-        //counter for space key pressed to handle shooting. can be used in future for animation and stuff.
+        boolean waitingForShotCooldown = false;
+        int shotCoolDownCounter = 0;
         int shootCounter = 0;
 
         while(running) {
             if (!data.isPaused) {
                 long beginTime = System.currentTimeMillis();
+
+                if(Shot.shotHeat >= Shot.maxHeat){
+                    waitingForShotCooldown = true;
+//                    System.err.println("COOLINGDOWN");
+                }
+
                 synchronized (data.shots) {
                     for (Shot shot : data.shots) {
                         if (shot.getY() < 0) data.shots.remove(shot);
@@ -34,34 +42,43 @@ public class LogicEngine extends Thread{
 
                 //Code for handling keyboard input comes here.
                 synchronized (data.pressedKeys) {
-                    for (int i : data.pressedKeys) {
-                        if (i == KeyEvent.VK_DOWN && data.rocket.getY() < data.screenSize.height) {
-                            data.rocket.setY(data.rocket.getY() + 5);
-                            data.gamePanel.syncMouse();
-                        }
-                        if (i == KeyEvent.VK_UP && data.rocket.getY() > 0) {
-                            data.rocket.setY(data.rocket.getY() - 5);
-                            data.gamePanel.syncMouse();
-                        }
-                        if (i == KeyEvent.VK_LEFT && data.rocket.getX() > 0) {
-                            data.rocket.setX(data.rocket.getX() - 5);
-                            data.gamePanel.syncMouse();
-                        }
-                        if (i == KeyEvent.VK_RIGHT && data.rocket.getX() < data.screenSize.width) {
-                            data.rocket.setX(data.rocket.getX() + 5);
-                            data.gamePanel.syncMouse();
-                        }
-                        if (i == KeyEvent.VK_SPACE) {
-                            shootCounter++;
-                            shootCounter %= 10;
-                            if (shootCounter == 1)
-                                data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
+                    if (data.pressedKeys.contains(KeyEvent.VK_DOWN) && data.rocket.getY() < data.screenSize.height) {
+                        data.rocket.setY(data.rocket.getY() + 5);
+                        data.gamePanel.syncMouse();
+                    }
+                    if (data.pressedKeys.contains(KeyEvent.VK_UP) && data.rocket.getY() > 0) {
+                        data.rocket.setY(data.rocket.getY() - 5);
+                        data.gamePanel.syncMouse();
+                    }
+                    if (data.pressedKeys.contains(KeyEvent.VK_LEFT) && data.rocket.getX() > 0) {
+                        data.rocket.setX(data.rocket.getX() - 5);
+                        data.gamePanel.syncMouse();
+                    }
+                    if (data.pressedKeys.contains(KeyEvent.VK_RIGHT) && data.rocket.getX() < data.screenSize.width) {
+                        data.rocket.setX(data.rocket.getX() + 5);
+                        data.gamePanel.syncMouse();
+                    }
+
+                    if(!waitingForShotCooldown && (data.pressedKeys.contains(KeyEvent.VK_SPACE) || data.pressedKeys.contains(mousePressed))){
+                        shootCounter++;
+                        shootCounter %= 10;
+                        if (shootCounter == 1)
+                            data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
+                    }
+                    else{
+                        if(Shot.shotHeat > 0) Shot.shotHeat--;
+                        shotCoolDownCounter++;
+                        shotCoolDownCounter %= Shot.HEAT_OFF_TIME;
+                        if(shotCoolDownCounter == 0) {
+                            waitingForShotCooldown = false;
+                            shotCoolDownCounter = Shot.HEAT_OFF_TIME;
+//                            System.err.println("FIRING!");
                         }
                     }
                 }
                 try {
 //                LogicEngine.sleep(15 - System.currentTimeMillis() + beginTime);
-                    LogicEngine.sleep(15);
+                    LogicEngine.sleep(20);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

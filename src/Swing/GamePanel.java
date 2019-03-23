@@ -15,6 +15,7 @@ import java.io.IOException;
 
 public class GamePanel extends JPanel {
 
+    final int mousePressed = -23;
     public Data data;
     ShotThread shotThread;
 //    public Image back;
@@ -57,16 +58,20 @@ public class GamePanel extends JPanel {
 
         addMouseListener(new MouseListener() {
             @Override
-            public void mouseClicked(MouseEvent mouseEvent) {
-                data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
-            }
+            public void mouseClicked(MouseEvent mouseEvent) {}
 
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 if(!data.isPaused) {
-                    //TODO It might be a good idea to make shooting thread part of Shot class so that every shot type has its own rate of fire. Or we can add rate_of_fire to Shot class.
-                    shotThread = new ShotThread(data);
-                    shotThread.start();
+                    //NOTE: REMOVED USE OF SHOTTHREAD COMPLETELY HERE BUT WILL LEAVE THE CODE FOR SOME TIME IN CASE I NEEDED IT BACK.
+//                    TODO It might be a good idea to make shooting thread part of Shot class so that every shot type has its own rate of fire. Or we can add rate_of_fire to Shot class.
+//                    shotThread = new ShotThread(data);
+//                    shotThread.start();
+
+                    synchronized (data.pressedKeys) {
+                        //-23 is used to indicate mouse pressed in KeyEvent.VK....
+                        data.pressedKeys.add(mousePressed);
+                    }
                 }
             }
 
@@ -74,7 +79,10 @@ public class GamePanel extends JPanel {
             public void mouseReleased(MouseEvent mouseEvent) {
                 if(!data.isPaused) {
                     //TODO probably can implement it without use of deprecated stop method but it works fine for now.
-                    shotThread.stop();
+//                    shotThread.stop();
+                    synchronized (data.pressedKeys) {
+                        data.pressedKeys.remove(mousePressed);
+                    }
                 }
             }
 
