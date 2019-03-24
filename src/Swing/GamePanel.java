@@ -1,6 +1,7 @@
 package Swing;
 
 import Base.Data;
+import Elements.Bomb;
 import Elements.Shot;
 
 import javax.imageio.ImageIO;
@@ -26,11 +27,6 @@ public class GamePanel extends JPanel {
 
     public GamePanel(Data data) {
         this.data  = data;
-//        try {
-//            back = ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/Optimized-Background.jpg"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
 
         //Disappearing the cursor
         BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -67,9 +63,11 @@ public class GamePanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
                 if(!data.isPaused) {
-                    synchronized (data.pressedKeys) {
-                        //-23 is used to indicate mouse pressed in KeyEvent.VK....
-                        data.pressedKeys.add(mousePressed);
+                    if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
+                        synchronized (data.pressedKeys) {
+                            //-23 is used to indicate mouse pressed in KeyEvent.VK....
+                            data.pressedKeys.add(mousePressed);
+                        }
                     }
                 }
             }
@@ -77,8 +75,14 @@ public class GamePanel extends JPanel {
             @Override
             public void mouseReleased(MouseEvent mouseEvent) {
                 if(!data.isPaused) {
-                    synchronized (data.pressedKeys) {
-                        data.pressedKeys.remove(mousePressed);
+                    if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
+                        synchronized (data.pressedKeys) {
+                            data.pressedKeys.remove(mousePressed);
+                        }
+                    }
+                    else if(SwingUtilities.isRightMouseButton(mouseEvent)){
+                        //TODO Fire Rocket:
+                        data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
                     }
                 }
             }
@@ -106,6 +110,7 @@ public class GamePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 //Code for game pause.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) esc();
+                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
                 if(!data.isPaused) {
                     synchronized (data.pressedKeys) {
                         data.pressedKeys.remove(keyEvent.getKeyCode());
@@ -125,6 +130,7 @@ public class GamePanel extends JPanel {
         }
         data.rocket.draw((Graphics2D)g);
         for(Shot shot:data.shots) shot.draw((Graphics2D)g);
+        for(Bomb bomb:data.bombs) bomb.draw((Graphics2D)g);
     }
 
 

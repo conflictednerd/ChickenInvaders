@@ -1,5 +1,6 @@
 package Base;
 
+import Elements.Bomb;
 import Elements.Shot;
 
 import java.awt.*;
@@ -28,6 +29,7 @@ public class LogicEngine extends Thread{
 
                 if(Shot.shotHeat >= Shot.maxHeat){
                     waitingForShotCooldown = true;
+                    data.rocket.coolDown = true;
 //                    System.err.println("COOLINGDOWN");
                 }
 
@@ -35,6 +37,12 @@ public class LogicEngine extends Thread{
                     for (Shot shot : data.shots) {
                         if (shot.getY() < 0) data.shots.remove(shot);
                         else shot.move();
+                    }
+                }
+
+                synchronized (data.bombs) {
+                    for(Bomb bomb: data.bombs){
+                        bomb.move();
                     }
                 }
 
@@ -70,6 +78,7 @@ public class LogicEngine extends Thread{
                         shotCoolDownCounter %= Shot.HEAT_OFF_TIME;
                         if(shotCoolDownCounter == 0) {
                             waitingForShotCooldown = false;
+                            data.rocket.coolDown = false;
                             shotCoolDownCounter = Shot.HEAT_OFF_TIME;
 //                            System.err.println("FIRING!");
                         }

@@ -33,7 +33,7 @@ public class Shot implements Drawable, Movable {
         this.x = x;
         this.y = y;
         try {
-            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/food.png"));
+            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/spaceMissiles_003.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
