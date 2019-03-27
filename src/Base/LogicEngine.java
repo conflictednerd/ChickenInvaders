@@ -50,19 +50,19 @@ public class LogicEngine extends Thread{
                 //Code for handling keyboard input comes here.
                 synchronized (data.pressedKeys) {
                     if (data.pressedKeys.contains(KeyEvent.VK_DOWN) && data.rocket.getY() < data.screenSize.height) {
-                        data.rocket.setY(data.rocket.getY() + 5);
+                        data.rocket.setY(data.rocket.getY() + 10);
                         data.gamePanel.syncMouse();
                     }
                     if (data.pressedKeys.contains(KeyEvent.VK_UP) && data.rocket.getY() > 0) {
-                        data.rocket.setY(data.rocket.getY() - 5);
+                        data.rocket.setY(data.rocket.getY() - 10);
                         data.gamePanel.syncMouse();
                     }
                     if (data.pressedKeys.contains(KeyEvent.VK_LEFT) && data.rocket.getX() > 0) {
-                        data.rocket.setX(data.rocket.getX() - 5);
+                        data.rocket.setX(data.rocket.getX() - 10);
                         data.gamePanel.syncMouse();
                     }
                     if (data.pressedKeys.contains(KeyEvent.VK_RIGHT) && data.rocket.getX() < data.screenSize.width) {
-                        data.rocket.setX(data.rocket.getX() + 5);
+                        data.rocket.setX(data.rocket.getX() + 10);
                         data.gamePanel.syncMouse();
                     }
 

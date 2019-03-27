@@ -69,14 +69,13 @@ public class PausePanel extends JPanel {
             pauseDialog.dispose();
         });
 
-        exit.addActionListener(actionEvent -> {
-            System.exit(0);
-        });
+        exit.addActionListener(actionEvent -> System.exit(0));
 
         add(resume);
         add(save);
         add(exit);
 
+        setBackground(Color.white);
         setVisible(true);
     }
 }

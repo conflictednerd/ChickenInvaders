@@ -25,7 +25,7 @@ public class PauseDialog extends JDialog {
         setSize(300, 500);
         setLocation((Toolkit.getDefaultToolkit().getScreenSize().width - getWidth())/2, (Toolkit.getDefaultToolkit().getScreenSize().height - getHeight())/2);
         setUndecorated(true);
-        setOpacity(0.4f);
+//        setOpacity(0.4f);
         requestFocus();
         setShape(new RoundRectangle2D.Double(0,0,getWidth(),getHeight(),50,50));
         contentPane.add(new PausePanel(this));

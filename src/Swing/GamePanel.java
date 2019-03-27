@@ -6,6 +6,7 @@ import Elements.Shot;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.tools.Tool;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -27,6 +28,8 @@ public class GamePanel extends JPanel {
 
     public GamePanel(Data data) {
         this.data  = data;
+
+        drawStatPanel();
 
         //Disappearing the cursor
         BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
@@ -120,11 +123,16 @@ public class GamePanel extends JPanel {
         });
     }
 
+    private void drawStatPanel() {
+        add(new StatPanel(this.data));
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         try {
-            g.drawImage(ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/Optimized-Background.jpg")), 0, 0, getWidth(), getHeight(), this);
+//            g.drawImage(ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/Optimized-Background.jpg")), 0, 0, getWidth(), getHeight(), this);
+            g.drawImage(ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/BackGrounds/0.png")), 0, 0, getWidth(), getHeight(), this);
         } catch (IOException e) {
             e.printStackTrace();
         }

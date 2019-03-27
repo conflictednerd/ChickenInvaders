@@ -26,14 +26,15 @@ public class Shot implements Drawable, Movable {
     public void setY(int y) {
         this.y = y;
     }
-    int speedX = 0, speedY = -1;
+    int speedX = 0, speedY = -5;
     private static Image image;
 
     public Shot(int x, int y){
         this.x = x;
         this.y = y;
         try {
-            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/spaceMissiles_003.png"));
+//            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/spaceMissiles_003.png"));
+            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/MegaLaser.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

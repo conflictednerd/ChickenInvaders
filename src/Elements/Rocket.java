@@ -25,6 +25,7 @@ public class Rocket implements Drawable{
             }
             image2 = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/spaceEffects_001.png"));
             image3 = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/spaceEffects_005.png"));
+            image = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/Ships/1.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,6 +57,7 @@ public class Rocket implements Drawable{
                 ,y-rocketImages.get(rocketAnimationCounter/rocketAnimationRefreshRate).getHeight(null)/2, null
         );
 
+//        g2.drawImage(image,x-image.getWidth(null)/2, y -image.getHeight(null)/2,null);
         if(animationCounter != 0) {
             if(coolDown)
                 g2.drawImage(image3, x - image3.getWidth(null) / 2, y + rocketImages.get(rocketAnimationCounter/rocketAnimationRefreshRate).getHeight(null) / 5, null);
