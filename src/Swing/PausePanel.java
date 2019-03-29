@@ -12,11 +12,11 @@ public class PausePanel extends JPanel {
         this.pauseDialog = pauseDialog;
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        Button resume = new Button("Resume"), save = new Button("Save"), exit = new Button("Exit");;
+        Button resume = new Button("Resume"), save = new Button("Save"), exit = new Button("Quit");
 
-        resume.setFont(new Font(Font.SERIF, Font.CENTER_BASELINE|Font.BOLD,30));
-        save.setFont(new Font(Font.SERIF, Font.CENTER_BASELINE|Font.BOLD,30));
-        exit.setFont(new Font(Font.SERIF, Font.CENTER_BASELINE|Font.BOLD,30));
+        resume.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE|Font.BOLD,30));
+        save.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE|Font.BOLD,30));
+        exit.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE|Font.BOLD,30));
 
         resume.addKeyListener(new KeyListener() {
             @Override

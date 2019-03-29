@@ -35,6 +35,7 @@ public class Shot implements Drawable, Movable {
         try {
 //            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/spaceMissiles_003.png"));
             image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/MegaLaser.png"));
+//            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/PlayProjectile.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -2,7 +2,10 @@ package Base;
 
 import Swing.GameFrame;
 import Swing.GamePanel;
+import Swing.IntroPanel;
 import Swing.StartPanel;
+
+import java.awt.*;
 
 public class Game {
     GraphicEngine GE;
@@ -14,12 +17,17 @@ public class Game {
      */
 
 //    GameFrame gameFrame = new GameFrame();
-    StartPanel startPanel = new StartPanel();
 //    GamePanel gamePanel = new GamePanel(data);
 
+    IntroPanel introPanel = new IntroPanel(this);
 
     public Game(){
-        data.gameFrame.contentPane.add(startPanel);
+        introPanel.setSize(Data.screenSize);
+        data.gameFrame.contentPane.add(introPanel);
+        introPanel.repaint();
+        introPanel.revalidate();
+
+
         //start menu stuff.
 
         //player selection and all the stuff should happen here so start panel must have a button or
@@ -29,10 +37,17 @@ public class Game {
 //        data.gamePanel = gamePanel;
 //        data.gameFrame = gameFrame;
 
+    }
+
+    public void play(){
+        data.gameFrame.contentPane.remove(introPanel);
         data.gameFrame.contentPane.add(data.gamePanel);
+        data.gamePanel.requestFocus();
+        data.gameFrame.pack();
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
         GE.start();
         LE.start();
+        data.gamePanel.syncMouse();
     }
 }

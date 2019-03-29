@@ -15,8 +15,6 @@ import java.io.IOException;
 /*
 TODO Can't shoot with space and move with mouse. Don't know why yet.
 TODO Adding (to the top) a label?? indicating weapon heat.
-TODO Adding (to the bottom) a label?? containing info on stats.
-TODO Adding Bomb.
 TODO Adding Gson for save.
 */
 
@@ -25,6 +23,8 @@ public class GamePanel extends JPanel {
     final int mousePressed = -23;
     public Data data;
     private PauseDialog pauseDialog = null;
+    private StatPanel statPanel;
+    private JLabel scoreLabel = new JLabel("Score: 0");
 
     public GamePanel(Data data) {
         this.data  = data;
@@ -84,8 +84,7 @@ public class GamePanel extends JPanel {
                         }
                     }
                     else if(SwingUtilities.isRightMouseButton(mouseEvent)){
-                        //TODO Fire Rocket:
-                        data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
+                        shootBomb();
                     }
                 }
             }
@@ -113,7 +112,7 @@ public class GamePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 //Code for game pause.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) esc();
-                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
+                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) shootBomb();
                 if(!data.isPaused) {
                     synchronized (data.pressedKeys) {
                         data.pressedKeys.remove(keyEvent.getKeyCode());
@@ -123,8 +122,23 @@ public class GamePanel extends JPanel {
         });
     }
 
+    private void shootBomb() {
+        if(data.player.bombs>0) {
+            data.player.bombs--;
+            data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
+            statPanel.bombCount.setText(data.player.bombs.toString());
+        }
+    }
+
     private void drawStatPanel() {
-        add(new StatPanel(this.data));
+        statPanel = new StatPanel(this.data);
+        add(statPanel);
+
+        scoreLabel.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE|Font.BOLD, 50));
+        scoreLabel.setSize(400, 50);
+        scoreLabel.setForeground(Color.white);
+        scoreLabel.setLocation((int)data.screenSize.getWidth()-scoreLabel.getWidth()-200, 10);
+        add(scoreLabel);
     }
 
     @Override

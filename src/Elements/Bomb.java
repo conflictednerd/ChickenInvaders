@@ -21,7 +21,7 @@ public class Bomb implements Drawable, Movable {
     public Bomb(int x, int y){
         this.x = x; this.y = y;
         try {
-            image = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/bomb001.png"));
+            image = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/icons/bomb.png"));
             for(int i = 1; i < 14; i++){
                 explosions.add(ImageIO.read(Rocket.class.getResourceAsStream(("../Assets/explosion/"+i+".png"))));
             }
@@ -51,11 +51,11 @@ public class Bomb implements Drawable, Movable {
 
     @Override
     public void move() {
-        if(x < Data.screenSize.width/2) x++;
-        else if(x > Data.screenSize.width/2) x--;
-        if(y < Data.screenSize.height/2) y++;
-        else if(y > Data.screenSize.height/2) y--;
-        if(x == Data.screenSize.width/2 && y == Data.screenSize.height/2) explode();
+        if(x < Data.screenSize.width/2) x+=10;
+        else if(x > Data.screenSize.width/2) x-=10;
+        if(y < Data.screenSize.height/2) y+=10;
+        else if(y > Data.screenSize.height/2) y-=10;
+        if(Math.abs(x-Data.screenSize.width/2) < 10 && Math.abs(y-Data.screenSize.height/2) < 10) explode();
     }
 
     private void explode() {

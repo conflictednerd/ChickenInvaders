@@ -21,13 +21,16 @@ public class StatPanel extends RoundedPanel {
         readData();
 
         lifeCount = new JLabel(data.player.life.toString());
-        lifeCount.setFont(new Font(Font.SERIF, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        lifeCount.setForeground(Color.white);
 
         foodCount = new JLabel(data.player.food.toString());
-        foodCount.setFont(new Font(Font.SERIF, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        foodCount.setForeground(Color.white);
 
         bombCount = new JLabel(data.player.bombs.toString());
-        bombCount.setFont(new Font(Font.SERIF, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        bombCount.setForeground(Color.white);
 
         addLabels();
     }
@@ -47,6 +50,7 @@ public class StatPanel extends RoundedPanel {
             foodIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/food.png"));
             bombIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/bomb.png"));
             life = new JLabel(new ImageIcon(heartIcon));
+            life.setForeground(Color.white);
             food = new JLabel(new ImageIcon(foodIcon));
             bomb = new JLabel(new ImageIcon(bombIcon));
         } catch (IOException e) {
@@ -58,7 +62,7 @@ public class StatPanel extends RoundedPanel {
     private void initialize() {
         setSize(500, 70);
         setLocation(10, data.screenSize.height-getHeight()-40);
-        setBackground(new Color(0,191,255,100));
+        setBackground(new Color(0,191,255,70));
         setLayout(new FlowLayout(FlowLayout.LEADING, 10, 10));
     }
 

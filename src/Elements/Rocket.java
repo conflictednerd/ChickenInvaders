@@ -10,7 +10,7 @@ import java.util.List;
 public class Rocket implements Drawable{
     private final int rocketAnimationRefreshRate = 5;
 
-    private int x, y;
+    private int x = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2;
     private Image image, image2, image3;
     private List<Image> rocketImages = new ArrayList<>();
     private int animationCounter = 0, rocketAnimationCounter = 0;
