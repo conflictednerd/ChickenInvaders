@@ -1,6 +1,7 @@
 package Swing;
 
 import Base.Game;
+import Swing.Template.RoundedBorder;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

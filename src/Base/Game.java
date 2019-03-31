@@ -19,35 +19,51 @@ public class Game {
 //    GameFrame gameFrame = new GameFrame();
 //    GamePanel gamePanel = new GamePanel(data);
 
-    IntroPanel introPanel = new IntroPanel(this);
+
+
+    public Game(Data data){
+        this.data = data;
+        //TODO level loader goes here for selected player.
+        switch (data.player.level){
+            case 1:
+                System.err.println("blah");
+                System.out.println("blah");
+                break;
+            case 2:
+                break;
+        }
+    }
 
     public Game(){
-        introPanel.setSize(Data.screenSize);
-        data.gameFrame.contentPane.add(introPanel);
-        introPanel.repaint();
-        introPanel.revalidate();
-
-
-        //start menu stuff.
-
-        //player selection and all the stuff should happen here so start panel must have a button or
-        //some kind of mechanism to select the player. after that the graphic engine and logic engine
-        //must start and change the contentpane to gamepanel. and then the rendering and all the stuff.
-//        data.panelLocationOnScreen = gamePanel.getLocationOnScreen();
-//        data.gamePanel = gamePanel;
-//        data.gameFrame = gameFrame;
-
+        load_intro();
     }
 
     public void play(){
-        data.gameFrame.contentPane.remove(introPanel);
-        data.gameFrame.contentPane.add(data.gamePanel);
-        data.gamePanel.requestFocus();
-        data.gameFrame.pack();
+//        data.gameFrame.contentPane.remove(introPanel);
+        clearContentPane();load_game(1);
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
         GE.start();
         LE.start();
         data.gamePanel.syncMouse();
+    }
+
+    public void load_intro(){
+        IntroPanel introPanel = new IntroPanel(this);
+        introPanel.setSize(Data.screenSize);
+        data.gameFrame.contentPane.add(introPanel);
+        introPanel.repaint();
+        introPanel.revalidate();
+    }
+    public void load_player_selection(){
+
+    }
+    public void load_game(int level){
+        data.gameFrame.contentPane.add(data.gamePanel);
+        data.gamePanel.requestFocus();
+        data.gameFrame.pack();
+    }
+    private void clearContentPane(){
+        data.gameFrame.contentPane.removeAll();
     }
 }

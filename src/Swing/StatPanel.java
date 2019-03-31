@@ -1,11 +1,12 @@
 package Swing;
 
 import Base.Data;
+import Base.Player;
+import Swing.Template.RoundedPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class StatPanel extends RoundedPanel {
@@ -20,19 +21,25 @@ public class StatPanel extends RoundedPanel {
         initialize();
         readData();
 
-        lifeCount = new JLabel(data.player.life.toString());
-        lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-        lifeCount.setForeground(Color.white);
+        if(data.player == null){
+            System.err.println("data is null!");
+            data.player = new Player(data.saveData);
+        }
+        else {
+            lifeCount = new JLabel(data.player.life.toString());
+            lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+            lifeCount.setForeground(Color.white);
 
-        foodCount = new JLabel(data.player.food.toString());
-        foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-        foodCount.setForeground(Color.white);
+            foodCount = new JLabel(data.player.food.toString());
+            foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+            foodCount.setForeground(Color.white);
 
-        bombCount = new JLabel(data.player.bombs.toString());
-        bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-        bombCount.setForeground(Color.white);
+            bombCount = new JLabel(data.player.bombs.toString());
+            bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+            bombCount.setForeground(Color.white);
 
-        addLabels();
+            addLabels();
+        }
     }
 
     private void addLabels() {

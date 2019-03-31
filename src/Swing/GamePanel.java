@@ -29,8 +29,6 @@ public class GamePanel extends JPanel {
     public GamePanel(Data data) {
         this.data  = data;
 
-        drawStatPanel();
-
         //Disappearing the cursor
         BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         Cursor blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
@@ -130,7 +128,7 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void drawStatPanel() {
+    public void drawStatPanel() {
         statPanel = new StatPanel(this.data);
         add(statPanel);
 

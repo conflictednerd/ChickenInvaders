@@ -17,15 +17,23 @@ import java.util.concurrent.ConcurrentHashMap;
  * the game. GE and LE access it and change its values.
  */
 public class Data {
-    public volatile Player player = new Player();
     //ConcurrentHashSet below(Yes its a set) is very helpful!!
     public volatile Set<Shot> shots = ConcurrentHashMap.newKeySet();
     public volatile Set<Bomb> bombs = ConcurrentHashMap.newKeySet();
     public Rocket rocket = new Rocket();
     public volatile HashSet<Integer> pressedKeys = new HashSet<>();
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//    public Point panelLocationOnScreen;
     public GamePanel gamePanel = new GamePanel(this);
     public GameFrame gameFrame = new GameFrame();
     public volatile boolean isPaused = false;
+    //TODO change the path
+    public String savePath = "/home/saeed/Desktop/game.data";
+    public SaveData saveData = new SaveData();
+    public volatile Player player = new Player(saveData);
+
+    public Data(Player player){
+        this.player = player;
+    }
+
+    public Data(){}
 }

@@ -1,12 +1,18 @@
 package Swing;
 
+import Base.Player;
+import Base.SaveData;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class PausePanel extends JPanel {
-    PauseDialog pauseDialog;
+    private PauseDialog pauseDialog;
 
     public PausePanel(PauseDialog pauseDialog){
         this.pauseDialog = pauseDialog;
@@ -46,6 +52,21 @@ public class PausePanel extends JPanel {
                     pauseDialog.dispose();
                 }
             }
+        });
+        save.addActionListener(actionEvent -> {
+            //TODO When selecting a player, use bufferedReader to read players data.
+            BufferedWriter bufferedWriter;
+            try {
+                bufferedWriter = new BufferedWriter(new FileWriter(pauseDialog.data.savePath, true));
+                bufferedWriter.write(Player.toJson(pauseDialog.data.player));
+                bufferedWriter.write(SaveData.toJson(pauseDialog.data.saveData));
+                bufferedWriter.close();
+                System.out.println("Game Saved");
+                save.setEnabled(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         });
 
         exit.addKeyListener(new KeyListener() {

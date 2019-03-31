@@ -41,7 +41,9 @@ public class Bomb implements Drawable, Movable {
                     isExploding = false;
                     isActive = false;
                 }
-                g2.drawImage(explosions.get(explosionAnimationCounter / 5), x - explosions.get(explosionAnimationCounter / 10).getWidth(null) / 2, y - explosions.get(explosionAnimationCounter / 10).getHeight(null) / 2, null);
+//                g2.drawImage(explosions.get(explosionAnimationCounter / 5), x - explosions.get(explosionAnimationCounter / 10).getWidth(null) / 2, y - explosions.get(explosionAnimationCounter / 10).getHeight(null) / 2, null);
+//                g2.drawImage(explosions.get(explosionAnimationCounter / 5), x - explosions.get(explosionAnimationCounter / 10).getWidth(null), y - explosions.get(explosionAnimationCounter / 10).getHeight(null), 800, 800,null);
+                g2.drawImage(explosions.get(explosionAnimationCounter / 5), 100, 100, 1200, 1200,null);
             }
             else{
                 g2.drawImage(image, x - image.getWidth(null) / 2, y - image.getHeight(null) / 2, null);

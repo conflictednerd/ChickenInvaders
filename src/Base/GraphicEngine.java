@@ -25,6 +25,7 @@ public class GraphicEngine extends Thread {
         super.run();
         long time = System.currentTimeMillis();
         int fps = 0;
+        gamePanel.drawStatPanel();
         while (true) {
             if (!data.isPaused) {
 //            long beginTime = System.currentTimeMillis();
