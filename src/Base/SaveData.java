@@ -12,4 +12,9 @@ public class SaveData {
         Gson gson = new Gson();
         return gson.toJson(saveData);
     }
+
+    public static SaveData fromJson(String data){
+        Gson gson = new Gson();
+        return gson.fromJson(data, SaveData.class);
+    }
 }

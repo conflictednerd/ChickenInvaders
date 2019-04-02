@@ -28,8 +28,8 @@ public class Data {
     public volatile boolean isPaused = false;
     //TODO change the path
     public String savePath = "/home/saeed/Desktop/game.data";
+    public volatile Player player = new Player("guest");
     public SaveData saveData = new SaveData();
-    public volatile Player player = new Player(saveData);
 
     public Data(Player player){
         this.player = player;

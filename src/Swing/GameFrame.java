@@ -15,6 +15,8 @@ public class GameFrame extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
         setUndecorated(true);
+        //TODO
+//        setResizable(false);
         setVisible(true);
     }
 

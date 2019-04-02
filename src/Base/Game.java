@@ -1,26 +1,16 @@
 package Base;
 
-import Swing.GameFrame;
-import Swing.GamePanel;
-import Swing.IntroPanel;
-import Swing.StartPanel;
+import Swing.*;
 
 import java.awt.*;
 
 public class Game {
     GraphicEngine GE;
     LogicEngine LE;
-    Data data = new Data();
-    /*
-    Start menu and setting and player and ... should be handled here after all that graphic engine should
-    start its work to go to game panel. so it might be a good idea to have the main frame in here.
-     */
-
-//    GameFrame gameFrame = new GameFrame();
-//    GamePanel gamePanel = new GamePanel(data);
+    public Data data = new Data();
 
 
-
+//TODO NOPE DELETE IT
     public Game(Data data){
         this.data = data;
         //TODO level loader goes here for selected player.
@@ -35,7 +25,8 @@ public class Game {
     }
 
     public Game(){
-        load_intro();
+        load_player_selection();
+//        load_intro();
     }
 
     public void play(){
@@ -49,14 +40,21 @@ public class Game {
     }
 
     public void load_intro(){
+        clearContentPane();
         IntroPanel introPanel = new IntroPanel(this);
         introPanel.setSize(Data.screenSize);
         data.gameFrame.contentPane.add(introPanel);
         introPanel.repaint();
         introPanel.revalidate();
+        data.gameFrame.pack();
     }
     public void load_player_selection(){
-
+        PlayerSelectionPanel playerSelectionPanel = new PlayerSelectionPanel(this);
+        playerSelectionPanel.setSize(Data.screenSize);
+        data.gameFrame.contentPane.add(playerSelectionPanel);
+        playerSelectionPanel.repaint();
+        playerSelectionPanel.revalidate();
+        data.gameFrame.pack();
     }
     public void load_game(int level){
         data.gameFrame.contentPane.add(data.gamePanel);

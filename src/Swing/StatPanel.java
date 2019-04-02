@@ -20,26 +20,19 @@ public class StatPanel extends RoundedPanel {
         this.data = data;
         initialize();
         readData();
+        lifeCount = new JLabel(data.player.life.toString());
+        lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        lifeCount.setForeground(Color.white);
 
-        if(data.player == null){
-            System.err.println("data is null!");
-            data.player = new Player(data.saveData);
-        }
-        else {
-            lifeCount = new JLabel(data.player.life.toString());
-            lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-            lifeCount.setForeground(Color.white);
+        foodCount = new JLabel(data.player.food.toString());
+        foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        foodCount.setForeground(Color.white);
 
-            foodCount = new JLabel(data.player.food.toString());
-            foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-            foodCount.setForeground(Color.white);
+        bombCount = new JLabel(data.player.bombs.toString());
+        bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        bombCount.setForeground(Color.white);
 
-            bombCount = new JLabel(data.player.bombs.toString());
-            bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-            bombCount.setForeground(Color.white);
-
-            addLabels();
-        }
+        addLabels();
     }
 
     private void addLabels() {

@@ -9,7 +9,7 @@ import java.util.List;
 public class Player {
 
     public String name = "Saeed";
-    public Integer life = 1,
+    public volatile Integer life = 1,
             rocketLevel = 1,
             shotLevel = 1  ,
             level = 1      ,
@@ -18,13 +18,10 @@ public class Player {
             food = 0,
             bombs = 3;
 
-    public Player(SaveData saveData){
-        if(saveData == null) {
-            System.err.println("saveData is null!");
-            saveData = new SaveData();
-        }
-        saveData.players.add(this);
+    public Player(String name){
+        this.name = name;
     }
+
 
     /**
      * @param player
