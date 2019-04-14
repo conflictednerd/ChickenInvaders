@@ -1,15 +1,30 @@
 package Elements;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 
 public class Shot implements Drawable, Movable {
 
     private int x, y;
 
-    public static final int HEAT_OFF_TIME = 50 *4;
-    public static volatile int shotHeat = 0, heatCountDown = HEAT_OFF_TIME, maxHeat = 100;
+    /**
+     * If shotHeat reaches maxHeat, no shots will be fired until shotHeat reaches 0 and we're in 'CoolDown mode'.
+     * While in cool down mode (or not shooting in general), shotHeat will be reduced by heatReductionRate every coolDownTimeMillis.
+     */
+    public static long coolDownTimeMillis = 200, timeBetweenConsecutiveShots = 200;
+    public static volatile int shotHeat = 0, maxHeat = 100, heatReductionRate = 5, heatIncreaseRate = 3;
+
+    public static void reduceHeat() {
+        shotHeat -= heatReductionRate;
+        if(shotHeat < 0) shotHeat = 0;
+    }
+
+    private void increaseHeat() {
+        shotHeat += heatIncreaseRate;
+    }
 
     public int getX() {
         return x;
@@ -26,7 +41,7 @@ public class Shot implements Drawable, Movable {
     public void setY(int y) {
         this.y = y;
     }
-    int speedX = 0, speedY = -5;
+    int speedX = 0, speedY = -10;
     private static Image image;
 
     public Shot(int x, int y){
@@ -39,7 +54,7 @@ public class Shot implements Drawable, Movable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        shotHeat += 5;
+        increaseHeat();
     }
 
     @Override
@@ -49,7 +64,6 @@ public class Shot implements Drawable, Movable {
 
     @Override
     public void move() {
-//        System.err.println("In shot move");
         x += speedX;
         y += speedY;
     }

@@ -75,7 +75,14 @@ public class PlayerSelectionPanel extends JPanel {
                 game.data.saveData = new SaveData();
                 game.data.player = new Player(name);
                 game.data.saveData.players.add(game.data.player);
+                File file = new File(game.data.savePath);
                 done = true;
+                try {
+                    file.createNewFile();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    System.err.println("Error Creating save file");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

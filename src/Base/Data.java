@@ -5,9 +5,8 @@ import Swing.GameFrame;
 import Swing.GamePanel;
 
 import java.awt.*;
-import java.util.ArrayList;
+import java.io.File;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +26,8 @@ public class Data {
     public GameFrame gameFrame = new GameFrame();
     public volatile boolean isPaused = false;
     //TODO change the path
-    public String savePath = "/home/saeed/Desktop/game.data";
+    File file = new File("game.data");
+    public String savePath = file.getAbsolutePath();
     public volatile Player player = new Player("guest");
     public SaveData saveData = new SaveData();
 
@@ -35,5 +35,7 @@ public class Data {
         this.player = player;
     }
 
-    public Data(){}
+    public Data(){
+        System.err.println(savePath);
+    }
 }

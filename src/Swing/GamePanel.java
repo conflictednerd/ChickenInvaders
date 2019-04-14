@@ -6,7 +6,6 @@ import Elements.Shot;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.tools.Tool;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -15,7 +14,6 @@ import java.io.IOException;
 /*
 TODO Can't shoot with space and move with mouse. Don't know why yet.
 TODO Adding (to the top) a label?? indicating weapon heat.
-TODO Adding Gson for save.
 */
 
 public class GamePanel extends JPanel {

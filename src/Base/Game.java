@@ -2,36 +2,18 @@ package Base;
 
 import Swing.*;
 
-import java.awt.*;
-
 public class Game {
     GraphicEngine GE;
     LogicEngine LE;
     public Data data = new Data();
 
-
-//TODO NOPE DELETE IT
-    public Game(Data data){
-        this.data = data;
-        //TODO level loader goes here for selected player.
-        switch (data.player.level){
-            case 1:
-                System.err.println("blah");
-                System.out.println("blah");
-                break;
-            case 2:
-                break;
-        }
-    }
-
     public Game(){
         load_player_selection();
-//        load_intro();
     }
 
     public void play(){
-//        data.gameFrame.contentPane.remove(introPanel);
-        clearContentPane();load_game(1);
+        //TODO level selection happens here.
+        clearContentPane();load_game(data.player.level);
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
         GE.start();
