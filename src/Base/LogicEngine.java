@@ -1,6 +1,8 @@
 package Base;
 
 import Elements.Bomb;
+import Elements.Enemies.Enemy1;
+import Elements.Enemy;
 import Elements.Shot;
 
 import java.awt.event.KeyEvent;
@@ -32,6 +34,11 @@ public class LogicEngine extends Thread{
                     coolDownTimer = System.currentTimeMillis();
                 }
 
+                synchronized (data.enemies){
+                    for(Enemy enemy: data.enemies){
+                        enemy.move();
+                    }
+                }
 
                 synchronized (data.shots) {
                     for (Shot shot : data.shots) {
@@ -46,6 +53,8 @@ public class LogicEngine extends Thread{
                     }
                 }
 
+
+                collisionHandler();
 
                 //Code for handling keyboard input comes here.
                 synchronized (data.pressedKeys) {
@@ -111,5 +120,31 @@ public class LogicEngine extends Thread{
                 }
             }
         }
+    }
+
+    private void collisionHandler() {
+        synchronized (data.enemies){
+            synchronized (data.shots){
+                for(Enemy enemy:data.enemies){
+                    for(Shot shot: data.shots){
+                        if(intersect((Enemy1)enemy, shot)){
+                            data.shots.remove(shot);
+                            data.enemies.remove(enemy);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean intersect(Enemy1 enemy, Shot shot) {
+
+        if(shot.getX()<enemy.getCenterX() + enemy.getWidth()/2
+                && shot.getX()>enemy.getCenterX()-enemy.getWidth()/2
+                && shot.getY()<enemy.getCenterY() + enemy.getHeight()/2
+                && shot.getY()>enemy.getCenterY() - enemy.getHeight()/2){
+            return true;
+        }
+        return false;
     }
 }

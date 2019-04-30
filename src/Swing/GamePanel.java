@@ -2,6 +2,7 @@ package Swing;
 
 import Base.Data;
 import Elements.Bomb;
+import Elements.Enemy;
 import Elements.Shot;
 
 import javax.imageio.ImageIO;
@@ -149,6 +150,7 @@ public class GamePanel extends JPanel {
         data.rocket.draw((Graphics2D)g);
         for(Shot shot:data.shots) shot.draw((Graphics2D)g);
         for(Bomb bomb:data.bombs) bomb.draw((Graphics2D)g);
+        for(Enemy enemy:data.enemies) enemy.draw((Graphics2D)g);
     }
 
 

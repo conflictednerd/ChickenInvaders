@@ -1,15 +1,14 @@
 package Elements;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 
 public class Shot implements Drawable, Movable {
 
     private int x, y;
 
+    //TODO It might be better for design of different shots, so that shotHeat is declared for user or rocket instead of Shot.
     /**
      * If shotHeat reaches maxHeat, no shots will be fired until shotHeat reaches 0 and we're in 'CoolDown mode'.
      * While in cool down mode (or not shooting in general), shotHeat will be reduced by heatReductionRate every coolDownTimeMillis.

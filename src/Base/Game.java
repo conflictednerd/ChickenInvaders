@@ -13,7 +13,9 @@ public class Game {
 
     public void play(){
         //TODO level selection happens here.
-        clearContentPane();load_game(data.player.level);
+        clearContentPane();
+        load_game(data.player.level);
+
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
         GE.start();
@@ -39,6 +41,13 @@ public class Game {
         data.gameFrame.pack();
     }
     public void load_game(int level){
+        //TODO
+
+        if(level == 1){
+            //TODO proper gamePanel set to gameFrame and handling focus and packing the frame.
+            //TODO Level loader Perhaps?? something should take charge here and send waves of enemies when needed.
+        }
+
         data.gameFrame.contentPane.add(data.gamePanel);
         data.gamePanel.requestFocus();
         data.gameFrame.pack();
