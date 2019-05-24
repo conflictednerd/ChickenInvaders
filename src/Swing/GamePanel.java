@@ -3,6 +3,7 @@ package Swing;
 import Base.Data;
 import Elements.Bomb;
 import Elements.Enemy;
+import Elements.EnemyShot;
 import Elements.Shot;
 
 import javax.imageio.ImageIO;
@@ -109,6 +110,7 @@ public class GamePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 //Code for game pause.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) esc();
+                //TODO Better to move this to logic engine.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) shootBomb();
                 if(!data.isPaused) {
                     synchronized (data.pressedKeys) {
@@ -123,7 +125,7 @@ public class GamePanel extends JPanel {
         if(data.player.bombs>0) {
             data.player.bombs--;
             data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
-            statPanel.bombCount.setText(data.player.bombs.toString());
+            repaintStatPanel();
         }
     }
 
@@ -136,6 +138,16 @@ public class GamePanel extends JPanel {
         scoreLabel.setForeground(Color.white);
         scoreLabel.setLocation((int)data.screenSize.getWidth()-scoreLabel.getWidth()-200, 10);
         add(scoreLabel);
+    }
+
+    public void repaintStatPanel(){
+        for(Component c: getComponents()){
+            if(c instanceof StatPanel){
+                StatPanel statPanel = (StatPanel)c;
+                statPanel.refresh();
+                break;
+            }
+        }
     }
 
     @Override
@@ -151,6 +163,7 @@ public class GamePanel extends JPanel {
         for(Shot shot:data.shots) shot.draw((Graphics2D)g);
         for(Bomb bomb:data.bombs) bomb.draw((Graphics2D)g);
         for(Enemy enemy:data.enemies) enemy.draw((Graphics2D)g);
+        for(EnemyShot enemyShot:data.enemyShots) enemyShot.draw((Graphics2D)g);
     }
 
 

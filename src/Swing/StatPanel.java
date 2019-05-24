@@ -12,27 +12,40 @@ import java.io.IOException;
 public class StatPanel extends RoundedPanel {
     Data data;
     Image heartIcon, foodIcon, bombIcon, shotIcon;
-    JLabel life = null, lifeCount, food = null, foodCount, bomb = null, bombCount, shot = null, shotLevelCount;
+    public JLabel life = null, lifeCount, food = null, foodCount, bomb = null, bombCount, shot = null, shotLevelCount;
+    public Integer lifeINT, foodINT, bombINT, shotINT;
 
 
     public StatPanel(Data data) {
         super();
         this.data = data;
         initialize();
+        readImages();
         readData();
-        lifeCount = new JLabel(data.player.life.toString());
+        setLabels();
+
+        addLabels();
+    }
+
+    private void setLabels() {
+        lifeCount = new JLabel(lifeINT.toString());
         lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
         lifeCount.setForeground(Color.white);
 
-        foodCount = new JLabel(data.player.food.toString());
+        foodCount = new JLabel(foodINT.toString());
         foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
         foodCount.setForeground(Color.white);
 
-        bombCount = new JLabel(data.player.bombs.toString());
+        bombCount = new JLabel(bombINT.toString());
         bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
         bombCount.setForeground(Color.white);
+    }
 
-        addLabels();
+    private void readData() {
+        lifeINT = data.player.life;
+        foodINT = data.player.food;
+        bombINT = data.player.bombs;
+        shotINT = data.player.shotLevel;
     }
 
     private void addLabels() {
@@ -44,7 +57,7 @@ public class StatPanel extends RoundedPanel {
         add(bombCount);
     }
 
-    private void readData() {
+    private void readImages() {
         try {
             heartIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/heart.png"));
             foodIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/food.png"));
@@ -66,4 +79,15 @@ public class StatPanel extends RoundedPanel {
         setLayout(new FlowLayout(FlowLayout.LEADING, 10, 10));
     }
 
+    public void refresh() {
+        readData();
+        lifeCount.setText(lifeINT.toString());
+        foodCount.setText(foodINT.toString());
+        bombCount.setText(bombINT.toString());
+//        shotLevelCount.setText(shotINT.toString());
+        lifeCount.repaint();
+        foodCount.repaint();
+        bombCount.repaint();
+//        shotLevelCount.repaint();
+    }
 }

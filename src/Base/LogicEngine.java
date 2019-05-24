@@ -1,15 +1,15 @@
 package Base;
 
-import Elements.Bomb;
+import Elements.*;
 import Elements.Enemies.Enemy1;
-import Elements.Enemy;
-import Elements.Shot;
 
 import java.awt.event.KeyEvent;
 
 public class LogicEngine extends Thread{
 
     final int mousePressed = -23;
+    private LevelManager levelManager;
+    private boolean inTransition = false;
     private Data data;
     private SoundThread soundThread = new SoundThread();
 
@@ -19,9 +19,12 @@ public class LogicEngine extends Thread{
         soundThread.start();
     }
 
+    public void setLevelManager(LevelManager levelManager) {
+        this.levelManager = levelManager;
+    }
+
     @Override
     public void run() {
-        //TODO isPaused should be a shared volatile variable that's the same in Game, GE and LE.
         boolean waitingForShotCooldown = false;
         Long coolDownTimer = 0l, shootingTimer = null, timeOfLastShot = 0l;
 
@@ -34,15 +37,38 @@ public class LogicEngine extends Thread{
                     coolDownTimer = System.currentTimeMillis();
                 }
 
-                synchronized (data.enemies){
-                    for(Enemy enemy: data.enemies){
-                        enemy.move();
+
+                if(data.enemies.size() == 0){
+                    inTransition = true;
+                    levelManager.nextWave(data.enemies);
+                    System.err.println(data.enemies.size());
+                }
+
+                if(inTransition){
+                    synchronized (data.enemies) {
+                        inTransition = levelManager.transition(data.enemies);
+                    }
+                }
+                else {
+                    synchronized (data.enemies) {
+                        for (Enemy enemy : data.enemies) {
+                            enemy.move();
+                            EnemyShot tmp = enemy.shoot();
+                            if (tmp != null) data.enemyShots.add(tmp);
+                        }
                     }
                 }
 
                 synchronized (data.shots) {
                     for (Shot shot : data.shots) {
                         if (shot.getY() < 0) data.shots.remove(shot);
+                        else shot.move();
+                    }
+                }
+
+                synchronized (data.enemyShots){
+                    for(EnemyShot shot: data.enemyShots){
+                        if(shot.getCenterY() > Data.screenSize.getHeight()) data.enemyShots.remove(shot);
                         else shot.move();
                     }
                 }
@@ -75,10 +101,10 @@ public class LogicEngine extends Thread{
                         data.gamePanel.syncMouse();
                     }
 
-//Case1: not in cooldown mode and is shooting
+//Case1: not in cooldown mode and is shooting then shoot
                     if(!waitingForShotCooldown && (data.pressedKeys.contains(KeyEvent.VK_SPACE) || data.pressedKeys.contains(mousePressed))){
                         shootingTimer = null;
-                        if(System.currentTimeMillis() - timeOfLastShot >= Shot.timeBetweenConsecutiveShots){
+                        if(System.currentTimeMillis() - timeOfLastShot >= Shot.timeBetweenConsecutiveShots && data.rocket.isAlive()){
                             data.shots.add(new Shot(data.rocket.getX(), data.rocket.getY()));
                             soundThread.addShotSound();
                             timeOfLastShot = System.currentTimeMillis();
@@ -135,6 +161,30 @@ public class LogicEngine extends Thread{
                 }
             }
         }
+
+        synchronized (data.enemyShots) {
+            if (data.rocket.isAlive()) {
+                for (EnemyShot enemyShot : data.enemyShots) {
+                    if (intersect(data.rocket, enemyShot)) {
+                        data.rocket.explode();
+                        data.player.life--;
+                        data.gamePanel.repaintStatPanel();
+                        data.enemyShots.remove(enemyShot);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+    private boolean intersect(Rocket rocket, EnemyShot shot){
+        if(shot.getCenterX()<rocket.getX() + rocket.getWidth()/2
+                && shot.getCenterX()>rocket.getX()-rocket.getWidth()/2
+                && shot.getCenterY()<rocket.getY() + rocket.getHeight()/2
+                && shot.getCenterY()>rocket.getY() - rocket.getHeight()/2)
+            return true;
+        return false;
     }
 
     private boolean intersect(Enemy1 enemy, Shot shot) {

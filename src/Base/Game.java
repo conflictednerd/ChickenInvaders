@@ -18,6 +18,7 @@ public class Game {
 
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
+        LE.setLevelManager(new LevelManager(data.player.level, data.enemies));
         GE.start();
         LE.start();
         data.gamePanel.syncMouse();
@@ -43,7 +44,7 @@ public class Game {
     public void load_game(int level){
         //TODO
 
-        if(level == 1){
+        if(level == 0){
             //TODO proper gamePanel set to gameFrame and handling focus and packing the frame.
             //TODO Level loader Perhaps?? something should take charge here and send waves of enemies when needed.
         }
