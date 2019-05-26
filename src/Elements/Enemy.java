@@ -1,24 +1,31 @@
 package Elements;
 
+import Elements.EnemyShots.EnemyShot1;
+
 import java.awt.*;
+import java.util.Random;
 
 public abstract class Enemy implements Drawable, Movable {
-    private int centerX, centerY;
-    private int defaultX, defaultY, defaultSpeedX, defaultSpeedY;
-    protected static Image image;
+    protected int centerX, centerY;
+    protected int defaultX = 500, defaultY = 0, defaultSpeedX, defaultSpeedY;
+    protected int speedX = 0, speedY = 0;
+    //todo DELETE
     protected EnemyShot shot;
+    private Random random = new Random();
 
+    /**
+     *Random stuff for any enemy comes here. E.g handling the probability of shooting.
+     *
+     *Note that shooting must be handled and called from LE.
+     *
+     * This is the default behaviour(i.e. 5% chance of shooting). For higher level enemies, the probability increases and this method should be overridden.
+     * @return null if it doesn't shoot or an EnemyShot object.
+     */
     public EnemyShot shoot(){
-        //TODO Random stuff for any enemy goes here.
-
-
-        //TODO Either return an EnemyShot or null and handle this on the other side.
+        // 5 percent chance of shooting each second -> 1/1000 chance of shooting every 20mS(LEs refresh rate).
+        if (random.nextInt(1000)==0)
+            return new EnemyShot1(getCenterX(),getCenterY());
         return null;
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.drawImage(image, centerX-image.getWidth(null)/2, centerY- image.getHeight(null)/2, null);
     }
 
     public int getCenterX() {
@@ -53,9 +60,31 @@ public abstract class Enemy implements Drawable, Movable {
         this.defaultX = defaultX;
     }
 
+    public int getWidth(){
+        return 0;
+    }
+
+    public int getHeight(){
+        return 0;
+    }
+
+    /**
+     * This function changes location of an enemy instance(centerX, centerY) one step at a time
+     * so that they reach defaultX, defaultY. It's used to enter waves of enemies at the beginning of each
+     * wave.
+     * Currently it simply increase or decrease centerX, centerY by 5 in each step until they reach Default location.
+     *
+     * TODO This current algorithm must change so that default speeds are calculated and then each enemy moves alongside a straight line
+     */
     public void transition(){
-        centerX += defaultSpeedX;
-        centerY += defaultSpeedY;
+//        centerX += defaultSpeedX;
+//        centerY += defaultSpeedY;
+
+        if(centerX>defaultX) centerX-=5;
+        else if(centerX<defaultX) centerX+=5;
+
+        if(centerY<defaultY) centerY+=5;
+        else if(centerY>defaultY) centerY-=5;
     }
 
     /**

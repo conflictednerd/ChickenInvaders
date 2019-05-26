@@ -91,18 +91,21 @@ public class PlayerSelectionPanel extends JPanel {
                     try {
                         SaveData s = SaveData.fromJson(rawData);
                         boolean playerExists = false;
-                        for (Player p : s.players) {
-                            if (name.equals(p.name)) {
-                                game.data.player = p;
-                                game.data.saveData = s;
-                                playerExists = true;
-                                break;
+                        if(!(s == null) && !(s.players == null)) {
+                            for (Player p : s.players) {
+                                if (name.equals(p.name)) {
+                                    game.data.player = p;
+                                    game.data.saveData = s;
+                                    playerExists = true;
+                                    break;
+                                }
                             }
                         }
                         if (!playerExists) {
                             //new player
                             game.data.player = new Player(name);
-                            game.data.saveData = s;
+                            if(s == null) game.data.saveData = new SaveData();
+                            else game.data.saveData = s;
                             game.data.saveData.players.add(game.data.player);
                         }
                     } catch (Exception e) {

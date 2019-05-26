@@ -4,24 +4,28 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 
-public class Shot implements Drawable, Movable {
+public abstract class Shot implements Drawable, Movable {
 
-    private int x, y;
-
-    //TODO It might be better for design of different shots, so that shotHeat is declared for user or rocket instead of Shot.
+    protected int x, y;
+    protected int speedX = 0, speedY = -10;
+    protected int shotLevel = 0;
     /**
      * If shotHeat reaches maxHeat, no shots will be fired until shotHeat reaches 0 and we're in 'CoolDown mode'.
      * While in cool down mode (or not shooting in general), shotHeat will be reduced by heatReductionRate every coolDownTimeMillis.
      */
-    public static long coolDownTimeMillis = 200, timeBetweenConsecutiveShots = 200;
-    public static volatile int shotHeat = 0, maxHeat = 100, heatReductionRate = 5, heatIncreaseRate = 3;
+//    public long timeBetweenConsecutiveShots = 200;
+    protected volatile int heatIncreaseRate = 3;
+    //heatIncreaseRate can be implemented separately in each Shot class.
+    public static volatile int shotHeat = 0, maxHeat = 100, heatReductionRate = 5;
+    public static long coolDownTimeMillis = 200;
 
     public static void reduceHeat() {
         shotHeat -= heatReductionRate;
         if(shotHeat < 0) shotHeat = 0;
     }
 
-    private void increaseHeat() {
+    //todo test it, probably it must be implemented in each shot class separately.
+    protected void increaseHeat() {
         shotHeat += heatIncreaseRate;
     }
 
@@ -40,25 +44,11 @@ public class Shot implements Drawable, Movable {
     public void setY(int y) {
         this.y = y;
     }
-    int speedX = 0, speedY = -10;
-    private static Image image;
 
     public Shot(int x, int y){
         this.x = x;
         this.y = y;
-        try {
-//            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/spaceMissiles_003.png"));
-            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/MegaLaser.png"));
-//            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/PlayProjectile.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         increaseHeat();
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.drawImage(image, x-image.getWidth(null)/2, y-image.getHeight(null)/2, null);
     }
 
     @Override

@@ -9,18 +9,24 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.Random;
 
+/**
+ * These enemies have a simple lateral left-to-right movement from minX to maxX with constant speedX.
+ */
 public class Enemy1 extends Enemy {
 
+    private static Image image = null;
     private int minX = 0, minY, maxX = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()-20);
-    private int speedX = 6, speedY = 0;
+//    private int speedX = 6, speedY = 0;
     private static int width, height;
     private static Random random = new Random();
 
-    public static int getWidth() {
+    @Override
+    public int getWidth() {
         return width;
     }
 
-    public static int getHeight() {
+    @Override
+    public int getHeight() {
         return height;
     }
 
@@ -28,11 +34,14 @@ public class Enemy1 extends Enemy {
         super();
 
         minX = 0; minY = 0;
+        speedX = 6;
 
         try {
-            image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/A/image1.png"));
+            if(image == null){
+            image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/0.png"));
             width = image.getWidth(null);
             height = image.getHeight(null);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,6 +53,11 @@ public class Enemy1 extends Enemy {
         this.minX = minX;
         setCenterX(centerX);
         setCenterY(centerY);
+    }
+
+    @Override
+    public void draw(Graphics2D g2) {
+        g2.drawImage(image, getCenterX()-image.getWidth(null)/2, getCenterY()- image.getHeight(null)/2, null);
     }
 
     @Override
@@ -62,17 +76,5 @@ public class Enemy1 extends Enemy {
 
     public void setMaxX(int maxX) {
         this.maxX = maxX;
-    }
-
-    /** Note that shooting must be handled and called from LE.
-     *
-     * @return null if it doesn't shoot or an EnemyShot object.
-     */
-    @Override
-    public EnemyShot shoot() {
-        // 5 percent chance of shooting each second -> 1/1000 chance of shooting every 20mS(LEs refresh rate).
-        if (random.nextInt(1000)==0)
-            return new EnemyShot1(getCenterX(),getCenterY());
-        return null;
     }
 }
