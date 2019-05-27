@@ -9,7 +9,6 @@ import java.io.IOException;
 public class Shot3 extends Shot {
     public static final int ID = 3;
     public static final int timeBetweenConsecutiveShots = 100;
-    public static int damage = 1;
 
     private static Image s, l20, l10, r10, r20 = null;
     private Image image = null;

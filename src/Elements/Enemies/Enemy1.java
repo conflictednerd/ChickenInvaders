@@ -1,13 +1,10 @@
 package Elements.Enemies;
 
 import Elements.Enemy;
-import Elements.EnemyShot;
-import Elements.EnemyShots.EnemyShot1;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
-import java.util.Random;
 
 /**
  * These enemies have a simple lateral left-to-right movement from minX to maxX with constant speedX.
@@ -15,10 +12,8 @@ import java.util.Random;
 public class Enemy1 extends Enemy {
 
     private static Image image = null;
-    private int minX = 0, minY, maxX = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()-20);
-//    private int speedX = 6, speedY = 0;
     private static int width, height;
-    private static Random random = new Random();
+    private int minX = 0, maxX = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()-20);
 
     @Override
     public int getWidth() {
@@ -33,7 +28,7 @@ public class Enemy1 extends Enemy {
     public Enemy1(){
         super();
 
-        minX = 0; minY = 0;
+        minX = 0;
         speedX = 6;
 
         try {
@@ -65,16 +60,7 @@ public class Enemy1 extends Enemy {
         if(getCenterX() + width/2 >= maxX || getCenterX() - width/2 <= minX){
             speedX *= -1;
         }
-        setCenterX(getCenterX()+speedX);
-        setCenterY(getCenterY()+speedY);
-    }
-
-
-    public void setMinX(int minX) {
-        this.minX = minX;
-    }
-
-    public void setMaxX(int maxX) {
-        this.maxX = maxX;
+        setCenterX((int) (getCenterX()+speedX));
+        setCenterY((int) (getCenterY()+speedY));
     }
 }

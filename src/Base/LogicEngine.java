@@ -45,7 +45,7 @@ public class LogicEngine extends Thread{
                 if(data.enemies.size() == 0){
                     inTransition = true;
                     levelManager.nextWave(data.enemies);
-                    System.err.println(data.enemies.size());
+//                    System.err.println(data.enemies.size());
                 }
 
                 if(inTransition){
@@ -259,8 +259,10 @@ public class LogicEngine extends Thread{
                 for(Enemy enemy:data.enemies){
                     for(Shot shot: data.shots){
                         if(intersect(enemy, shot)){
+                            enemy.health -= shot.damage;
+                            if(enemy.health <= 0)
+                                data.enemies.remove(enemy);
                             data.shots.remove(shot);
-                            data.enemies.remove(enemy);
                         }
                     }
                 }

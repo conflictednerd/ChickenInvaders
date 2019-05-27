@@ -18,6 +18,7 @@ public abstract class Shot implements Drawable, Movable {
     //heatIncreaseRate can be implemented separately in each Shot class.
     public static volatile int shotHeat = 0, maxHeat = 100, heatReductionRate = 5;
     public static long coolDownTimeMillis = 200;
+    public int damage = 1;
 
     public static void reduceHeat() {
         shotHeat -= heatReductionRate;

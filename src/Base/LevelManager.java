@@ -1,7 +1,5 @@
 package Base;
 
-import Elements.Enemies.Enemy1;
-import Elements.Enemies.Enemy2;
 import Elements.Enemy;
 
 import java.awt.*;
@@ -14,7 +12,7 @@ public class LevelManager {
     private Set<Enemy> originalEnemySet;
     private List<Wave> waveList = new ArrayList<>();
     private static int currentLevel = -1;
-
+//todo it might be a good idea to also pass the dimension of panel to it but it might also cause complications.
     public LevelManager(Integer startLevel, Set<Enemy> originalEnemySet) {
 //        currentLevel = startLevel;
         this.originalEnemySet = originalEnemySet;
@@ -26,39 +24,28 @@ public class LevelManager {
          * Wave 0 Level 0 index 0 Type Enemy1
          * 5 rows each row with 9 enemy.
          */
-        Wave wave0 = new Wave();
-        for(int i = 1; i<=5; i++){
-            for(int j = 1; j<5; j++){
-                Enemy enemy = new Enemy1();
-                enemy.setCenterY(0);
-                enemy.setCenterX((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2));
-                enemy.setDefaultX(10 + j*enemy.getWidth());
-                enemy.setDefaultY(10 + i*enemy.getHeight());
-                enemy.calculateDefaultSpeeds();
-                wave0.enemies.add(enemy);
-            }
-        }
-        waveList.add(wave0);
+        waveList.add(WaveFactory.Type1(5,10, 1));
 
         /**
          * Wave 1 Level 1 index 1 Type Enemy2
          * 2 rows of 10 enemies;
          */
-        Wave wave1 = new Wave();
-        for(int i = 1; i<=2; i++){
-            for(int j = 1; j<11;j++){
-                Enemy enemy = new Enemy2();
-                enemy.setCenterY(0);
-                enemy.setCenterX((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2));
-//                System.out.println(enemy.getCenterX() + ", " + enemy.getCenterY());
-//                System.out.println("("+(10 + j*enemy.getWidth()) +" , "+(10 + i*enemy.getHeight()) + ")");
-                enemy.setDefaultX(10 + j*enemy.getWidth());
-                enemy.setDefaultY(10 + i*enemy.getHeight());
-                enemy.calculateDefaultSpeeds();
-                wave1.enemies.add(enemy);
-            }
-        }
-        waveList.add(wave1);
+        waveList.add(WaveFactory.Type2(2, 10, 1));
+
+        /**
+         * Wave 2 level 1 index 2 Type Enemy3
+         * 2 circles of 15 enemies
+         */
+        waveList.add(WaveFactory.Type3((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2),
+                300, 2, 15, 100, 20, 1));
+
+        /**
+         * Wave 3 level 1 index 2 Type Enemy4
+         * 2 circles of 15 enemies
+         */
+        waveList.add(WaveFactory.Type4((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2),
+                (int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2), 350, 2,
+                15, 100, 40,1));
     }
 
 
@@ -67,7 +54,7 @@ public class LevelManager {
         for(Enemy enemy: enemies){
             //TODO margin of error is hardcoded!!
             //TODO TODO !!!!!! They don't go where they are supposed to. It's probably Enemy.transition calculations that don't work   !!!!!!!!!!!!!!!!
-            if(Math.abs(enemy.getCenterX()-enemy.getDefaultX())>5 || Math.abs(enemy.getCenterY()-enemy.getDefaultY())>5){
+            if(Math.abs(enemy.getCenterX()-enemy.getDefaultX())>10 || Math.abs(enemy.getCenterY()-enemy.getDefaultY())>10){
                 done = false;
                 enemy.transition();
             }
@@ -77,9 +64,8 @@ public class LevelManager {
 
     public void nextWave(Set<Enemy> enemies) {
         currentLevel++;
-        //TODO error prone!!!
-        //todo All waves are done.
-        System.out.println(currentLevel);
+        //TODO update level, sublevel for data.player.
+        //todo when All waves are done,
         if(currentLevel >= waveList.size()) return;
         for(Enemy enemy: waveList.get(currentLevel).enemies){
             enemies.add(enemy);

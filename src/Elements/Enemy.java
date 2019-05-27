@@ -7,8 +7,10 @@ import java.util.Random;
 
 public abstract class Enemy implements Drawable, Movable {
     protected int centerX, centerY;
-    protected int defaultX = 500, defaultY = 0, defaultSpeedX, defaultSpeedY;
-    protected int speedX = 0, speedY = 0;
+    protected double centerXd, centerYd;
+    protected double defaultX = 500, defaultY = 0, defaultSpeedX, defaultSpeedY;
+    protected double speedX = 0, speedY = 0;
+    public double health = 0;
     //todo DELETE
     protected EnemyShot shot;
     private Random random = new Random();
@@ -34,6 +36,7 @@ public abstract class Enemy implements Drawable, Movable {
 
     public void setCenterX(int centerX) {
         this.centerX = centerX;
+        this.centerXd = centerX;
     }
 
     public int getCenterY() {
@@ -42,9 +45,10 @@ public abstract class Enemy implements Drawable, Movable {
 
     public void setCenterY(int centerY) {
         this.centerY = centerY;
+        this.centerYd = centerY;
     }
 
-    public int getDefaultY() {
+    public double getDefaultY() {
         return defaultY;
     }
 
@@ -52,7 +56,7 @@ public abstract class Enemy implements Drawable, Movable {
         this.defaultY = defaultY;
     }
 
-    public int getDefaultX() {
+    public double getDefaultX() {
         return defaultX;
     }
 
@@ -77,14 +81,17 @@ public abstract class Enemy implements Drawable, Movable {
      * TODO This current algorithm must change so that default speeds are calculated and then each enemy moves alongside a straight line
      */
     public void transition(){
-//        centerX += defaultSpeedX;
-//        centerY += defaultSpeedY;
+        centerXd += defaultSpeedX;
+        centerYd += defaultSpeedY;
 
-        if(centerX>defaultX) centerX-=5;
-        else if(centerX<defaultX) centerX+=5;
+        centerX = (int) centerXd;
+        centerY = (int) centerYd;
 
-        if(centerY<defaultY) centerY+=5;
-        else if(centerY>defaultY) centerY-=5;
+//        if(centerX>defaultX) centerX-=5;
+//        else if(centerX<defaultX) centerX+=5;
+//
+//        if(centerY<defaultY) centerY+=5;
+//        else if(centerY>defaultY) centerY-=5;
     }
 
     /**
@@ -93,8 +100,26 @@ public abstract class Enemy implements Drawable, Movable {
     public void calculateDefaultSpeeds(){
         //TODO magnitude of velocity(V) probably shouldnt be hardcoded.
         final int V = 6;
-        int dy = defaultY - centerY, dx = defaultX - centerX;
-        this.defaultSpeedY = (int)(V*dy/(Math.sqrt(dy*dy+dx*dx)));
-        this.defaultSpeedX = (int)(V*dx/(Math.sqrt(dy*dy+dx*dx)));
+        int dy = (int) (defaultY - centerY), dx = (int) (defaultX - centerX);
+        //To handle tan(theta = NaN)
+        if(dx == 0) {
+            defaultSpeedY = V;
+            defaultSpeedX = 0;
+            if(dy<0) defaultSpeedY *= -1;
+//            System.out.println("DspeedX = 0, DspeedY = 6");
+            return;
+        }
+
+        double theta = Math.atan((double)(dy)/dx);
+
+        if(dx>0){
+            defaultSpeedX = V*Math.cos(theta);
+            defaultSpeedY = V*Math.sin(theta);
+        }
+        else{
+            defaultSpeedX = -V*Math.cos(theta);
+            defaultSpeedY = -V*Math.sin(theta);
+        }
+
     }
 }
