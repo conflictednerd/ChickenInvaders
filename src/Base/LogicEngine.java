@@ -8,6 +8,7 @@ import Elements.Shots.Shot2;
 import Elements.Shots.Shot3;
 
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 public class LogicEngine extends Thread{
 
@@ -59,8 +60,8 @@ public class LogicEngine extends Thread{
                     synchronized (data.enemies) {
                         for (Enemy enemy : data.enemies) {
                             enemy.move();
-                            EnemyShot tmp = enemy.shoot();
-                            if (tmp != null) data.enemyShots.add(tmp);
+                            List<EnemyShot> tmp = enemy.shoot();
+                            if (tmp != null && tmp.size() != 0) for(EnemyShot e:tmp)data.enemyShots.add(e);
                         }
                     }
                 }
@@ -260,9 +261,9 @@ public class LogicEngine extends Thread{
                     for(Shot shot: data.shots){
                         if(intersect(enemy, shot)){
                             enemy.health -= shot.damage;
-                            if(enemy.health <= 0)
-                                data.enemies.remove(enemy);
                             data.shots.remove(shot);
+                            if(enemy.health <= 0.1)
+                                data.enemies.remove(enemy);
                         }
                     }
                 }
@@ -270,7 +271,7 @@ public class LogicEngine extends Thread{
         }
 
         synchronized (data.enemyShots) {
-            if (data.rocket.isAlive()) {
+            if (data.rocket.isAlive() && !data.rocket.isReviving()) {
                 for (EnemyShot enemyShot : data.enemyShots) {
                     if (intersect(data.rocket, enemyShot)) {
                         data.rocket.explode();

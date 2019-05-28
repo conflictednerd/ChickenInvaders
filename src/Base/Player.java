@@ -25,7 +25,7 @@ public class Player {
         life = 1;
         rocketLevel = 1;
         shotLevel = 3;
-        shotType = 1;
+        shotType = 2;
         level = -1;
         subLevel = 0;
         score = 0;

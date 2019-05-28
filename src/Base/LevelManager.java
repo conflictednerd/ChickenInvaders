@@ -1,5 +1,6 @@
 package Base;
 
+import Elements.Enemies.Enemy4;
 import Elements.Enemy;
 
 import java.awt.*;
@@ -46,6 +47,44 @@ public class LevelManager {
         waveList.add(WaveFactory.Type4((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2),
                 (int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2), 350, 2,
                 15, 100, 40,1));
+
+        waveList.add(WaveFactory.TypeBoss(1));
+
+        /**
+         * Level 2
+         */
+        waveList.add(WaveFactory.Type1(5,10, 2));
+        waveList.add(WaveFactory.Type2(2, 10, 2));
+        waveList.add(WaveFactory.Type3((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2),
+                300, 2, 15, 100, 20, 2));
+        waveList.add(WaveFactory.Type4((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2),
+                (int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2), 350, 2,
+                15, 100, 40,2));
+        waveList.add(WaveFactory.TypeBoss(2));
+
+        /**
+         * Level 3
+         */
+        waveList.add(WaveFactory.Type1(5,12, 3));
+        waveList.add(WaveFactory.Type2(2, 10, 3));
+        waveList.add(WaveFactory.Type3((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2),
+                300, 2, 20, 100, 20, 3));
+        waveList.add(WaveFactory.Type4((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2),
+                (int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2), 350, 2,
+                15, 100, 40,3));
+        waveList.add(WaveFactory.TypeBoss(3));
+
+        /**
+         * Level 4
+         */
+        waveList.add(WaveFactory.Type1(5,12, 4));
+        waveList.add(WaveFactory.Type2(2, 10, 4));
+        waveList.add(WaveFactory.Type3((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2), (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2),
+                300, 2, 20, 100, 20, 4));
+        waveList.add(WaveFactory.Type4((int)(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2),
+                (int)(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2), 350, 2,
+                15, 100, 40,4));
+        waveList.add(WaveFactory.TypeBoss(4));
     }
 
 
@@ -67,6 +106,13 @@ public class LevelManager {
         //TODO update level, sublevel for data.player.
         //todo when All waves are done,
         if(currentLevel >= waveList.size()) return;
+        //Todo havent checked it. maybe has a bug.
+        if (waveList.get(currentLevel).hasType4) {
+            Enemy4.pivotX = Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2;
+            Enemy4.pivotY = Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2;
+            Enemy4.targetX = -1;
+            Enemy4.targetY = -1;
+        }
         for(Enemy enemy: waveList.get(currentLevel).enemies){
             enemies.add(enemy);
         }

@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Rocket implements Drawable{
     private final int rocketAnimationRefreshRate = 5;
+    private int reviveAnimationCounter = 0;
 
     private int x = (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, y = (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight();
     private Image image, image2, image3;
@@ -17,8 +18,8 @@ public class Rocket implements Drawable{
     private List<Image> rocketImages = new ArrayList<>();
     private int animationCounter = 0, rocketAnimationCounter = 0;
 
-    private long killTime;
-    private volatile boolean alive = true;
+    private long killTime, reviveTime;
+    private volatile boolean alive = true, reviving = false;
     public boolean isAlive(){return alive;}
 
     public volatile boolean coolDown = false;
@@ -74,7 +75,18 @@ public class Rocket implements Drawable{
 
     @Override
     public void draw(Graphics2D g2) {
-        if (alive) {
+        if (reviving) {
+            //3 seconds reviving time.
+            if (System.currentTimeMillis() > reviveTime + 3000) {
+                reviving = false;
+            }
+            reviveAnimationCounter++;
+            reviveAnimationCounter %= 20;
+            if (reviveAnimationCounter < 10) {
+                g2.drawImage(image, x - image.getWidth(null) / 2, y - image.getHeight(null) / 2, null);
+            }
+        }
+        else if (alive) {
             animationCounter++;
             animationCounter %= 8;
             rocketAnimationCounter++;
@@ -100,6 +112,8 @@ public class Rocket implements Drawable{
             if(System.currentTimeMillis()>killTime+7000) {
                 setMouse();
                 alive = true;
+                reviving = true;
+                reviveTime = System.currentTimeMillis();
             }
         }
     }
@@ -111,5 +125,9 @@ public class Rocket implements Drawable{
         } catch (AWTException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isReviving() {
+        return reviving;
     }
 }

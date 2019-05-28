@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.Random;
 
 
+/**
+ * This type moves randomly with a chance of suddenly attacking the player.
+ */
 public class Enemy2 extends Enemy {
 
     private static Image image = null;

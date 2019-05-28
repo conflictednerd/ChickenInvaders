@@ -3,18 +3,13 @@ package Elements;
 import java.awt.*;
 
 public abstract class EnemyShot implements Movable, Drawable{
-    private int centerX, centerY;
-    private int speedX, speedY;
-    protected static Image image;
+    protected int centerX, centerY;
+    protected int speedX, speedY;
+//    protected static Image image;
 
     public EnemyShot(int centerX, int centerY){
         this.centerX = centerX;
         this.centerY = centerY;
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.drawImage(image, centerX - image.getWidth(null)/2, centerY-image.getHeight(null)/2, null);
     }
 
     @Override

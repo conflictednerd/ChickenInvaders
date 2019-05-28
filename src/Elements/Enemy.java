@@ -3,14 +3,17 @@ package Elements;
 import Elements.EnemyShots.EnemyShot1;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Enemy implements Drawable, Movable {
     protected int centerX, centerY;
+    protected int lvl = 1;
     protected double centerXd, centerYd;
     protected double defaultX = 500, defaultY = 0, defaultSpeedX, defaultSpeedY;
     protected double speedX = 0, speedY = 0;
-    public double health = 0;
+    public double health = 1;
     //todo DELETE
     protected EnemyShot shot;
     private Random random = new Random();
@@ -23,11 +26,17 @@ public abstract class Enemy implements Drawable, Movable {
      * This is the default behaviour(i.e. 5% chance of shooting). For higher level enemies, the probability increases and this method should be overridden.
      * @return null if it doesn't shoot or an EnemyShot object.
      */
-    public EnemyShot shoot(){
+    public java.util.List<EnemyShot> shoot(){
         // 5 percent chance of shooting each second -> 1/1000 chance of shooting every 20mS(LEs refresh rate).
+        java.util.List<EnemyShot> list = new ArrayList();
         if (random.nextInt(1000)==0)
-            return new EnemyShot1(getCenterX(),getCenterY());
-        return null;
+            list.add(new EnemyShot1(centerX, centerY));
+        if(lvl>2)
+            for(int i = 0; i< list.size(); i++){
+                list.get(i).speedX*=1.5;
+                list.get(i).speedY*=1.5;
+            }
+        return list;
     }
 
     public int getCenterX() {
@@ -72,13 +81,13 @@ public abstract class Enemy implements Drawable, Movable {
         return 0;
     }
 
+    public void setLvl(int lvl){this.lvl = lvl;}
+
     /**
      * This function changes location of an enemy instance(centerX, centerY) one step at a time
      * so that they reach defaultX, defaultY. It's used to enter waves of enemies at the beginning of each
      * wave.
      * Currently it simply increase or decrease centerX, centerY by 5 in each step until they reach Default location.
-     *
-     * TODO This current algorithm must change so that default speeds are calculated and then each enemy moves alongside a straight line
      */
     public void transition(){
         centerXd += defaultSpeedX;

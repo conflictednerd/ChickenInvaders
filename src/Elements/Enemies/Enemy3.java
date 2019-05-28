@@ -6,6 +6,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 
+/**
+ * This type moves around a pivot point in a circle.
+ */
 public class Enemy3 extends Enemy {
 
     private static Image image = null;

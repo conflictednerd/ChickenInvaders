@@ -26,8 +26,6 @@ public class Enemy1 extends Enemy {
     }
 
     public Enemy1(){
-        super();
-
         minX = 0;
         speedX = 6;
 
