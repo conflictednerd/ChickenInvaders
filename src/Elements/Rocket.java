@@ -2,7 +2,6 @@ package Elements;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +19,7 @@ public class Rocket implements Drawable{
 
     private long killTime, reviveTime;
     private volatile boolean alive = true, reviving = false;
+    public volatile boolean noLifeLeft = false;
     public boolean isAlive(){return alive;}
 
     public volatile boolean coolDown = false;
@@ -75,46 +75,50 @@ public class Rocket implements Drawable{
 
     @Override
     public void draw(Graphics2D g2) {
-        if (reviving) {
-            //3 seconds reviving time.
-            if (System.currentTimeMillis() > reviveTime + 3000) {
-                reviving = false;
-            }
-            reviveAnimationCounter++;
-            reviveAnimationCounter %= 20;
-            if (reviveAnimationCounter < 10) {
-                g2.drawImage(image, x - image.getWidth(null) / 2, y - image.getHeight(null) / 2, null);
-            }
-        }
-        else if (alive) {
-            animationCounter++;
-            animationCounter %= 8;
-            rocketAnimationCounter++;
-            rocketAnimationCounter %= rocketImages.size() * rocketAnimationRefreshRate;
+        if (!noLifeLeft) {
+            if (reviving) {
+                //3 seconds reviving time.
+                if (System.currentTimeMillis() > reviveTime + 3000) {
+                    reviving = false;
+                }
+                reviveAnimationCounter++;
+                reviveAnimationCounter %= 20;
+                if (reviveAnimationCounter < 10) {
+                    g2.drawImage(image, x - image.getWidth(null) / 2, y - image.getHeight(null) / 2, null);
+                }
+            } else if (alive) {
+                animationCounter++;
+                animationCounter %= 8;
+                rocketAnimationCounter++;
+                rocketAnimationCounter %= rocketImages.size() * rocketAnimationRefreshRate;
 
 //            g2.drawImage(rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate)
 //                    , x - rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate).getWidth(null) / 2
 //                    , y - rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate).getHeight(null) / 2, null
 //            );
 
-            g2.drawImage(image, x - image.getWidth(null)/2, y - image.getHeight(null)/2,null);
+                g2.drawImage(image, x - image.getWidth(null) / 2, y - image.getHeight(null) / 2, null);
 
 //        g2.drawImage(image,x-image.getWidth(null)/2, y -image.getHeight(null)/2,null);
-            if (animationCounter != 0) {
-                if (coolDown)
-                    g2.drawImage(image3, x - image3.getWidth(null) / 2, y + rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate).getHeight(null) / 5, null);
-                else
-                    g2.drawImage(image2, x - image2.getWidth(null) / 2, y + rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate).getHeight(null) / 5, null);
+                if (animationCounter != 0) {
+                    if (coolDown)
+                        g2.drawImage(image3, x - image3.getWidth(null) / 2, y + rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate).getHeight(null) / 5, null);
+                    else
+                        g2.drawImage(image2, x - image2.getWidth(null) / 2, y + rocketImages.get(rocketAnimationCounter / rocketAnimationRefreshRate).getHeight(null) / 5, null);
+                }
+            } else {
+                // 7seconds disappear time.
+                if (System.currentTimeMillis() > killTime + 7000) {
+                    setMouse();
+                    alive = true;
+                    reviving = true;
+                    reviveTime = System.currentTimeMillis();
+                }
             }
         }
         else{
-            // 7seconds disappear time.
-            if(System.currentTimeMillis()>killTime+7000) {
-                setMouse();
-                alive = true;
-                reviving = true;
-                reviveTime = System.currentTimeMillis();
-            }
+            alive = false;
+            reviving = false;
         }
     }
 

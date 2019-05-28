@@ -124,7 +124,9 @@ public class GamePanel extends JPanel {
     private void shootBomb() {
         if(data.player.bombs>0) {
             data.player.bombs--;
-            data.bombs.add(new Bomb(data.rocket.getX(), data.rocket.getY()));
+            Bomb b = new Bomb(data.rocket.getX(), data.rocket.getY());
+            b.calculateDefaultSpeeds();
+            data.bombs.add(b);
             repaintStatPanel();
         }
     }

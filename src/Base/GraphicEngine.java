@@ -21,7 +21,7 @@ public class GraphicEngine extends Thread {
         long time = System.currentTimeMillis();
         int fps = 0;
         gamePanel.drawStatPanel();
-        while (true) {
+        while (data.GERunning) {
             if (!data.isPaused) {
 //            long beginTime = System.currentTimeMillis();
                 gamePanel.repaint();
@@ -43,5 +43,6 @@ public class GraphicEngine extends Thread {
                 }
             }
         }
+        System.err.println("GE out!");
     }
 }

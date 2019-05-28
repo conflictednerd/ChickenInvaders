@@ -1,13 +1,15 @@
 package Base;
 
 import Elements.*;
-import Elements.Enemies.Enemy1;
+import Elements.Enemies.Boss;
 import Elements.Enemies.Enemy2;
 import Elements.Shots.Shot1;
 import Elements.Shots.Shot2;
 import Elements.Shots.Shot3;
+import Swing.GameOverDialog;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 public class LogicEngine extends Thread{
@@ -31,10 +33,18 @@ public class LogicEngine extends Thread{
     @Override
     public void run() {
         boolean waitingForShotCooldown = false;
-        Long coolDownTimer = 0l, shootingTimer = null, timeOfLastShot = 0l;
+        Long coolDownTimer = 0l, shootingTimer = null, timeOfLastShot = 0l, waitForNextWave = -1l;
 
-        while(true) {
+        while(data.LERunning) {
             if (!data.isPaused) {
+
+                if(data.player.life <= 0){
+                    data.rocket.noLifeLeft = true;
+//                    data.isPaused = true;
+//                    GameOverDialog god = new GameOverDialog(data);
+//                    data.LERunning = false;
+//                    data.GERunning =false;
+                }
 
                 if(Shot.shotHeat >= Shot.maxHeat && !waitingForShotCooldown){
                     waitingForShotCooldown = true;
@@ -42,10 +52,15 @@ public class LogicEngine extends Thread{
                     coolDownTimer = System.currentTimeMillis();
                 }
 
-//If one wave is over, call level manager for next wave.
+//If one wave is over, wait for 3 second, then call level manager for next wave.
                 if(data.enemies.size() == 0){
-                    inTransition = true;
-                    levelManager.nextWave(data.enemies);
+                    if(waitForNextWave <= 0)
+                        waitForNextWave = System.currentTimeMillis();
+                    else if(System.currentTimeMillis() - waitForNextWave >= 3000) {
+                        waitForNextWave = -1l;
+                        inTransition = true;
+                        levelManager.nextWave(data.enemies);
+                    }
 //                    System.err.println(data.enemies.size());
                 }
 
@@ -82,7 +97,19 @@ public class LogicEngine extends Thread{
 
                 synchronized (data.bombs) {
                     for(Bomb bomb: data.bombs){
-                        bomb.move();
+                        if(!bomb.isActive){
+                            data.bombs.remove(bomb);
+//                            System.err.println("bomb exploded");
+                            synchronized (data.enemies){
+                                for(Enemy e: data.enemies){
+                                    e.health -= 50;
+                                    if(e.health<=0.1){
+                                        data.enemies.remove(e);
+                                    }
+                                }
+                            }
+                        }
+                        else bomb.move();
                     }
                 }
 
@@ -169,6 +196,12 @@ public class LogicEngine extends Thread{
                 }
             }
         }
+//        data.gameFrame.dispatchEvent(new WindowEvent(data.gameFrame, WindowEvent.WINDOW_CLOSING));
+        System.err.println("LE out!");
+        //THese lines seem to work alongside setting GERunning = false;
+//        Game game = new Game();
+//        data.gameFrame.setVisible(false);
+//        data.gameFrame.dispose();
     }
 
     private void shoot(Integer shotLevel, Integer shotType) {

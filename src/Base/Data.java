@@ -1,7 +1,6 @@
 package Base;
 
 import Elements.*;
-import Elements.Enemies.Enemy1;
 import Swing.GameFrame;
 import Swing.GamePanel;
 
@@ -17,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * the game. GE and LE access it and change its values.
  */
 public class Data {
+    public volatile boolean GERunning = true, LERunning = true;
+
     //ConcurrentHashSet below(Yes its a set) is very helpful!!
     public volatile Set<Shot> shots = ConcurrentHashMap.newKeySet();
     public volatile Set<EnemyShot> enemyShots = ConcurrentHashMap.newKeySet();

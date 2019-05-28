@@ -2,9 +2,7 @@ package Elements;
 
 import Elements.EnemyShots.EnemyShot1;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public abstract class Enemy implements Drawable, Movable {

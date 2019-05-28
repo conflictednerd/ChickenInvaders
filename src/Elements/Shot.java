@@ -1,9 +1,5 @@
 package Elements;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.IOException;
-
 public abstract class Shot implements Drawable, Movable {
 
     protected int x, y;

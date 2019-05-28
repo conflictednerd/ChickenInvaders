@@ -34,6 +34,7 @@ public class Game {
         data.gameFrame.pack();
     }
     public void load_player_selection(){
+        clearContentPane();
         PlayerSelectionPanel playerSelectionPanel = new PlayerSelectionPanel(this);
         playerSelectionPanel.setSize(Data.screenSize);
         data.gameFrame.contentPane.add(playerSelectionPanel);

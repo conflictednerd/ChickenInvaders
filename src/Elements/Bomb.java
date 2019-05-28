@@ -3,13 +3,13 @@ package Elements;
 import Base.Data;
 
 import javax.imageio.ImageIO;
-import javax.sql.DataSource;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Bomb implements Drawable, Movable {
+    private double speedX = 0, speedY = 0, xd, yd;
     private int x, y;
     private int explosionAnimationCounter = 0;
     private Image image;
@@ -20,6 +20,7 @@ public class Bomb implements Drawable, Movable {
 
     public Bomb(int x, int y){
         this.x = x; this.y = y;
+        this.xd = x; this.yd = y;
         try {
             image = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/icons/bomb.png"));
             for(int i = 1; i < 14; i++){
@@ -53,15 +54,40 @@ public class Bomb implements Drawable, Movable {
 
     @Override
     public void move() {
-        if(x < Data.screenSize.width/2) x+=10;
-        else if(x > Data.screenSize.width/2) x-=10;
-        if(y < Data.screenSize.height/2) y+=10;
-        else if(y > Data.screenSize.height/2) y-=10;
+        xd += speedX;
+        yd += speedY;
+        x = (int) xd;
+        y = (int) yd;
         if(Math.abs(x-Data.screenSize.width/2) < 10 && Math.abs(y-Data.screenSize.height/2) < 10) explode();
     }
 
     private void explode() {
         //TODO KILL THE CHICKENS!!!
         isExploding = true;
+    }
+
+    public void calculateDefaultSpeeds(){
+        //TODO magnitude of velocity(V) probably shouldnt be hardcoded.
+        final int V = 5;
+        int dy = (int) (Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2 - y), dx = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2 - x);
+        //To handle tan(theta = NaN)
+        if(dx == 0) {
+            speedY = V;
+            speedX = 0;
+            if(dy<0) speedY *= -1;
+            return;
+        }
+
+        double theta = Math.atan((double)(dy)/dx);
+
+        if(dx>0){
+            speedX = V*Math.cos(theta);
+            speedY = V*Math.sin(theta);
+        }
+        else{
+            speedX = -V*Math.cos(theta);
+            speedY = -V*Math.sin(theta);
+        }
+
     }
 }

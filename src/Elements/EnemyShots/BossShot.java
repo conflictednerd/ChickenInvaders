@@ -1,6 +1,5 @@
 package Elements.EnemyShots;
 
-import Elements.Enemies.Enemy1;
 import Elements.EnemyShot;
 
 import javax.imageio.ImageIO;

@@ -1,7 +1,5 @@
 package Elements;
 
-import java.awt.*;
-
 public abstract class EnemyShot implements Movable, Drawable{
     protected int centerX, centerY;
     protected int speedX, speedY;
