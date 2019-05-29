@@ -12,10 +12,13 @@ public class LevelManager {
 
     private Set<Enemy> originalEnemySet;
     private List<Wave> waveList = new ArrayList<>();
-    private static int currentLevel = -1;
+    private static int currentWave = -1;
+    private Player p;
+
 //todo it might be a good idea to also pass the dimension of panel to it but it might also cause complications.
-    public LevelManager(Integer startLevel, Set<Enemy> originalEnemySet) {
+    public LevelManager(Player p, Set<Enemy> originalEnemySet) {
 //        currentLevel = startLevel;
+        this.p = p;
         this.originalEnemySet = originalEnemySet;
         createWaves();
     }
@@ -102,18 +105,20 @@ public class LevelManager {
     }
 
     public void nextWave(Set<Enemy> enemies) {
-        currentLevel++;
+        p.subLevel++;
+        p.level = p.subLevel/5;
+        currentWave++;
         //TODO update level, sublevel for data.player.
         //todo when All waves are done,
-        if(currentLevel >= waveList.size()) return;
+        if(currentWave >= waveList.size()) return;
         //Todo havent checked it. maybe has a bug.
-        if (waveList.get(currentLevel).hasType4) {
+        if (waveList.get(currentWave).hasType4) {
             Enemy4.pivotX = Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2;
             Enemy4.pivotY = Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2;
             Enemy4.targetX = -1;
             Enemy4.targetY = -1;
         }
-        for(Enemy enemy: waveList.get(currentLevel).enemies){
+        for(Enemy enemy: waveList.get(currentWave).enemies){
             enemies.add(enemy);
         }
     }

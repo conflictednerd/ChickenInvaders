@@ -1,6 +1,7 @@
 package Base;
 
 import Elements.*;
+import Elements.Upgrades.Upgrade;
 import Swing.GameFrame;
 import Swing.GamePanel;
 
@@ -23,6 +24,7 @@ public class Data {
     public volatile Set<EnemyShot> enemyShots = ConcurrentHashMap.newKeySet();
     public volatile Set<Bomb> bombs = ConcurrentHashMap.newKeySet();
     public volatile Set<Enemy> enemies = ConcurrentHashMap.newKeySet();
+    public volatile Set<Upgrade> upgrades = ConcurrentHashMap.newKeySet();
     public Rocket rocket = new Rocket();
 
     public volatile HashSet<Integer> pressedKeys = new HashSet<>();

@@ -6,11 +6,13 @@ import Elements.Enemies.Enemy2;
 import Elements.Shots.Shot1;
 import Elements.Shots.Shot2;
 import Elements.Shots.Shot3;
+import Elements.Upgrades.*;
 import Swing.GameOverDialog;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.Random;
 
 public class LogicEngine extends Thread{
 
@@ -19,10 +21,12 @@ public class LogicEngine extends Thread{
     private boolean inTransition = false;
     private Data data;
     private SoundThread soundThread = new SoundThread();
+    private Random random = new Random();
 
     public LogicEngine(Data data){
         super();
         this.data = data;
+        Shot.maxHeat += 5*data.player.rocketLevel;
         soundThread.start();
     }
 
@@ -95,6 +99,13 @@ public class LogicEngine extends Thread{
                     }
                 }
 
+                synchronized (data.upgrades){
+                    for(Upgrade u: data.upgrades){
+                        if(u.getCenterY() > Data.screenSize.getHeight()) data.upgrades.remove(u);
+                        else u.move();
+                    }
+                }
+
                 synchronized (data.bombs) {
                     for(Bomb bomb: data.bombs){
                         if(!bomb.isActive){
@@ -105,6 +116,7 @@ public class LogicEngine extends Thread{
                                     e.health -= 50;
                                     if(e.health<=0.1){
                                         data.enemies.remove(e);
+                                        addPrize(e);
                                     }
                                 }
                             }
@@ -209,13 +221,13 @@ public class LogicEngine extends Thread{
             //todo check if overheat works.
             //fire one shot
             if(shotType == Shot1.ID){
-                data.shots.add(new Shot1(data.rocket.getX(), data.rocket.getY(), 0));
+                data.shots.add(new Shot1(data.rocket.getX(), data.rocket.getY(), 0, shotLevel));
             }
             else if(shotType == Shot2.ID){
-                data.shots.add(new Shot2(data.rocket.getX(), data.rocket.getY(), 0));
+                data.shots.add(new Shot2(data.rocket.getX(), data.rocket.getY(), 0,shotLevel));
             }
             else if(shotType == Shot3.ID){
-                data.shots.add(new Shot3(data.rocket.getX(), data.rocket.getY(), 0));
+                data.shots.add(new Shot3(data.rocket.getX(), data.rocket.getY(), 0, shotLevel));
             }
             else{
                 System.err.println("shotType not found!\nIn Logic Engine.\nCurrent shotType is " + data.player.shotType);
@@ -225,16 +237,16 @@ public class LogicEngine extends Thread{
         else if(shotLevel == 2){
             //fire two parallel shots
             if(shotType == Shot1.ID){
-                data.shots.add(new Shot1(data.rocket.getX()+10, data.rocket.getY(), 0));
-                data.shots.add(new Shot1(data.rocket.getX()-10, data.rocket.getY(), 0));
+                data.shots.add(new Shot1(data.rocket.getX()+10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot1(data.rocket.getX()-10, data.rocket.getY(), 0, shotLevel));
             }
             else if(shotType == Shot2.ID){
-                data.shots.add(new Shot2(data.rocket.getX()+10, data.rocket.getY(), 0));
-                data.shots.add(new Shot2(data.rocket.getX()-10, data.rocket.getY(), 0));
+                data.shots.add(new Shot2(data.rocket.getX()+10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot2(data.rocket.getX()-10, data.rocket.getY(), 0, shotLevel));
             }
             else if(shotType == Shot3.ID){
-                data.shots.add(new Shot3(data.rocket.getX()+10, data.rocket.getY(), 0));
-                data.shots.add(new Shot3(data.rocket.getX()-10, data.rocket.getY(), 0));
+                data.shots.add(new Shot3(data.rocket.getX()+10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot3(data.rocket.getX()-10, data.rocket.getY(), 0, shotLevel));
             }
             else{
                 System.err.println("shotType not found!\nIn Logic Engine.\nCurrent shotType is " + data.player.shotType);
@@ -243,19 +255,19 @@ public class LogicEngine extends Thread{
         else if(shotLevel == 3){
             //fire three shots
             if(shotType == Shot1.ID){
-                data.shots.add(new Shot1(data.rocket.getX(), data.rocket.getY(), 0));
-                data.shots.add(new Shot1(data.rocket.getX()-10, data.rocket.getY(), 2));
-                data.shots.add(new Shot1(data.rocket.getX()+10, data.rocket.getY(), 3));
+                data.shots.add(new Shot1(data.rocket.getX(), data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot1(data.rocket.getX()-10, data.rocket.getY(), 2, shotLevel));
+                data.shots.add(new Shot1(data.rocket.getX()+10, data.rocket.getY(), 3, shotLevel));
             }
             else if(shotType == Shot2.ID){
-                data.shots.add(new Shot2(data.rocket.getX(), data.rocket.getY(), 0));
-                data.shots.add(new Shot2(data.rocket.getX()-10, data.rocket.getY(), 2));
-                data.shots.add(new Shot2(data.rocket.getX()+10, data.rocket.getY(), 3));
+                data.shots.add(new Shot2(data.rocket.getX(), data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot2(data.rocket.getX()-10, data.rocket.getY(), 2, shotLevel));
+                data.shots.add(new Shot2(data.rocket.getX()+10, data.rocket.getY(), 3, shotLevel));
             }
             else if(shotType == Shot3.ID){
-                data.shots.add(new Shot3(data.rocket.getX(), data.rocket.getY(), 0));
-                data.shots.add(new Shot3(data.rocket.getX()-10, data.rocket.getY(), 2));
-                data.shots.add(new Shot3(data.rocket.getX()+10, data.rocket.getY(), 3));
+                data.shots.add(new Shot3(data.rocket.getX(), data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot3(data.rocket.getX()-10, data.rocket.getY(), 2, shotLevel));
+                data.shots.add(new Shot3(data.rocket.getX()+10, data.rocket.getY(), 3, shotLevel));
             }
             else{
                 System.err.println("shotType not found!\nIn Logic Engine.\nCurrent shotType is " + data.player.shotType);
@@ -264,22 +276,22 @@ public class LogicEngine extends Thread{
         else if(shotLevel>3){
             //fire four shots
             if(shotType == Shot1.ID){
-                data.shots.add(new Shot1(data.rocket.getX()+10, data.rocket.getY(), 0));
-                data.shots.add(new Shot1(data.rocket.getX()-10, data.rocket.getY(), 0));
-                data.shots.add(new Shot1(data.rocket.getX()-20, data.rocket.getY(), 1));
-                data.shots.add(new Shot1(data.rocket.getX()+20, data.rocket.getY(), 4));
+                data.shots.add(new Shot1(data.rocket.getX()+10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot1(data.rocket.getX()-10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot1(data.rocket.getX()-20, data.rocket.getY(), 1, shotLevel));
+                data.shots.add(new Shot1(data.rocket.getX()+20, data.rocket.getY(), 4, shotLevel));
             }
             else if(shotType == Shot2.ID){
-                data.shots.add(new Shot2(data.rocket.getX()+10, data.rocket.getY(), 0));
-                data.shots.add(new Shot2(data.rocket.getX()-10, data.rocket.getY(), 0));
-                data.shots.add(new Shot2(data.rocket.getX()-20, data.rocket.getY(), 1));
-                data.shots.add(new Shot2(data.rocket.getX()+20, data.rocket.getY(), 4));
+                data.shots.add(new Shot2(data.rocket.getX()+10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot2(data.rocket.getX()-10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot2(data.rocket.getX()-20, data.rocket.getY(), 1, shotLevel));
+                data.shots.add(new Shot2(data.rocket.getX()+20, data.rocket.getY(), 4, shotLevel));
             }
             else if(shotType == Shot3.ID){
-                data.shots.add(new Shot3(data.rocket.getX()+10, data.rocket.getY(), 0));
-                data.shots.add(new Shot3(data.rocket.getX()-10, data.rocket.getY(), 0));
-                data.shots.add(new Shot3(data.rocket.getX()-20, data.rocket.getY(), 1));
-                data.shots.add(new Shot3(data.rocket.getX()+20, data.rocket.getY(), 4));
+                data.shots.add(new Shot3(data.rocket.getX()+10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot3(data.rocket.getX()-10, data.rocket.getY(), 0, shotLevel));
+                data.shots.add(new Shot3(data.rocket.getX()-20, data.rocket.getY(), 1, shotLevel));
+                data.shots.add(new Shot3(data.rocket.getX()+20, data.rocket.getY(), 4, shotLevel));
             }
         }
         else{
@@ -295,8 +307,10 @@ public class LogicEngine extends Thread{
                         if(intersect(enemy, shot)){
                             enemy.health -= shot.damage;
                             data.shots.remove(shot);
-                            if(enemy.health <= 0.1)
+                            if(enemy.health <= 0.1) {
+                                addPrize(enemy);
                                 data.enemies.remove(enemy);
+                            }
                         }
                     }
                 }
@@ -316,6 +330,49 @@ public class LogicEngine extends Thread{
                 }
             }
         }
+
+        synchronized (data.upgrades){
+            if(data.rocket.isAlive()){
+                for(Upgrade u: data.upgrades){
+                    if(intersect(data.rocket, u)){
+                        u.activate(data.player);
+                        data.upgrades.remove(u);
+                        data.gamePanel.repaintStatPanel();
+                    }
+                }
+            }
+        }
+    }
+
+    private void addPrize(Enemy enemy) {
+        if(enemy instanceof Boss){
+            data.upgrades.add(new ShotPowerUp(enemy.getCenterX(), enemy.getCenterY()));
+            data.upgrades.add(new ShotPowerUp(enemy.getCenterX(), enemy.getCenterY()));
+            data.upgrades.add(new ShotPowerUp(enemy.getCenterX(), enemy.getCenterY()));
+            data.upgrades.add(new PowerUp(enemy.getCenterX(), enemy.getCenterY()));
+            data.upgrades.add(new ShotChanger(enemy.getCenterX(), enemy.getCenterY(),random.nextInt(3)+1));
+        }
+        else{
+            if(random.nextInt(100)<6)
+                data.upgrades.add(new Coin(enemy.getCenterX(), enemy.getCenterY()));
+            if(random.nextInt(100)<3)
+                data.upgrades.add(new ShotChanger(enemy.getCenterX(), enemy.getCenterY(),random.nextInt(3)+1));
+            else if(random.nextInt(97)<3)
+                data.upgrades.add(new ShotPowerUp(enemy.getCenterX(), enemy.getCenterY()));
+            else if (random.nextInt(94)<3)
+                data.upgrades.add(new PowerUp(enemy.getCenterX(), enemy.getCenterY()));
+            if(random.nextInt(200) == 0)
+                data.upgrades.add(new Heart(enemy.getCenterX(), enemy.getCenterY()));
+        }
+    }
+
+    private boolean intersect(Rocket rocket, Upgrade u) {
+        if(u.getCenterX()<rocket.getX() + rocket.getWidth()/2
+                && u.getCenterX()>rocket.getX()-rocket.getWidth()/2
+                && u.getCenterY()<rocket.getY() + rocket.getHeight()/2
+                && u.getCenterY()>rocket.getY() - rocket.getHeight()/2)
+            return true;
+        return false;
     }
 
 

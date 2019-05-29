@@ -4,15 +4,15 @@ public abstract class Shot implements Drawable, Movable {
 
     protected int x, y;
     protected int speedX = 0, speedY = -10;
-    protected int shotLevel = 0;
+    protected int shotLevel = 1;
     /**
      * If shotHeat reaches maxHeat, no shots will be fired until shotHeat reaches 0 and we're in 'CoolDown mode'.
      * While in cool down mode (or not shooting in general), shotHeat will be reduced by heatReductionRate every coolDownTimeMillis.
      */
 //    public long timeBetweenConsecutiveShots = 200;
-    protected volatile int heatIncreaseRate = 3;
+    public volatile int heatIncreaseRate = 3;
     //heatIncreaseRate can be implemented separately in each Shot class.
-    public static volatile int shotHeat = 0, maxHeat = 100, heatReductionRate = 5;
+    public static volatile double shotHeat = 0, maxHeat = 100, heatReductionRate = 5;
     public static long coolDownTimeMillis = 200;
     public int damage = 1;
 
@@ -45,7 +45,7 @@ public abstract class Shot implements Drawable, Movable {
     public Shot(int x, int y){
         this.x = x;
         this.y = y;
-        increaseHeat();
+//        increaseHeat();
     }
 
     @Override

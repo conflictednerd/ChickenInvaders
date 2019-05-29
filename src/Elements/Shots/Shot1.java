@@ -27,8 +27,18 @@ public class Shot1 extends Shot {
      * @param y
      * @param orientation 0 for S, 1 for L20, 2 for L10, 3 for R10, 4 for R20
      */
-    public Shot1(int x, int y, int orientation) {
+    public Shot1(int x, int y, int orientation, int shotLevel) {
         super(x, y);
+        this.shotLevel = shotLevel;
+        heatIncreaseRate = 4;
+        if(shotLevel>4) {
+            damage += shotLevel-4;
+            heatIncreaseRate /= 4;
+        }
+        else{
+            heatIncreaseRate /= shotLevel;
+        }
+        Shot.shotHeat+=heatIncreaseRate;
         try {
             if(s == null){
                 s = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/Shot1/S.png"));

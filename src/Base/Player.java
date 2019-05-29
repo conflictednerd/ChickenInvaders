@@ -11,10 +11,10 @@ public class Player {
             //Changes type of shots fired.
             shotType = 1   ,
             level = -1     ,
-            subLevel = 0   ,
+            subLevel = -1   ,
             score = 0      ,
+            coins = 0      ,
             numberOfDeaths = 0,
-            food = 0,
             bombs = 3,
             timePlayed = 0;
 
@@ -24,13 +24,13 @@ public class Player {
 
         life = 1;
         rocketLevel = 1;
-        shotLevel = 3;
-        shotType = 2;
+        shotLevel = 4;
+        shotType = 1;
         level = -1;
-        subLevel = 0;
+        subLevel = -1;
         score = 0;
+        coins = 0;
         numberOfDeaths = 0;
-        food = 0;
         bombs = 3;
         timePlayed = 0;
     }

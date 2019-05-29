@@ -1,7 +1,6 @@
 package Swing;
 
 import Base.Data;
-import Base.Player;
 import Swing.Template.RoundedPanel;
 
 import javax.imageio.ImageIO;
@@ -11,9 +10,9 @@ import java.io.IOException;
 
 public class StatPanel extends RoundedPanel {
     Data data;
-    Image heartIcon, foodIcon, bombIcon, shotIcon;
-    public JLabel life = null, lifeCount, food = null, foodCount, bomb = null, bombCount, shot = null, shotLevelCount;
-    public Integer lifeINT, foodINT, bombINT, shotINT;
+    Image heartIcon, coinIcon, bombIcon, shotIcon;
+    public JLabel life = null, lifeCount, coin = null, coinCount, bomb = null, bombCount, shot = null, shotLevelCount;
+    public Integer lifeINT, coinINT, bombINT, shotINT;
 
 
     public StatPanel(Data data) {
@@ -32,9 +31,9 @@ public class StatPanel extends RoundedPanel {
         lifeCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
         lifeCount.setForeground(Color.white);
 
-        foodCount = new JLabel(foodINT.toString());
-        foodCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
-        foodCount.setForeground(Color.white);
+        coinCount = new JLabel(coinINT.toString());
+        coinCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
+        coinCount.setForeground(Color.white);
 
         bombCount = new JLabel(bombINT.toString());
         bombCount.setFont(new Font(Font.DIALOG, Font.LAYOUT_LEFT_TO_RIGHT | Font.BOLD | Font.CENTER_BASELINE, 38));
@@ -43,7 +42,7 @@ public class StatPanel extends RoundedPanel {
 
     private void readData() {
         lifeINT = data.player.life;
-        foodINT = data.player.food;
+        coinINT = data.player.coins;
         bombINT = data.player.bombs;
         shotINT = data.player.shotLevel;
     }
@@ -51,8 +50,8 @@ public class StatPanel extends RoundedPanel {
     private void addLabels() {
         add(life);
         add(lifeCount);
-        add(food);
-        add(foodCount);
+        add(coin);
+        add(coinCount);
         add(bomb);
         add(bombCount);
     }
@@ -60,11 +59,11 @@ public class StatPanel extends RoundedPanel {
     private void readImages() {
         try {
             heartIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/heart.png"));
-            foodIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/food.png"));
+            coinIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/coin.png"));
             bombIcon = ImageIO.read(StatPanel.class.getResourceAsStream("../Assets/icons/bomb.png"));
             life = new JLabel(new ImageIcon(heartIcon));
             life.setForeground(Color.white);
-            food = new JLabel(new ImageIcon(foodIcon));
+            coin = new JLabel(new ImageIcon(coinIcon));
             bomb = new JLabel(new ImageIcon(bombIcon));
         } catch (IOException e) {
             e.printStackTrace();
@@ -82,11 +81,11 @@ public class StatPanel extends RoundedPanel {
     public void refresh() {
         readData();
         lifeCount.setText(lifeINT.toString());
-        foodCount.setText(foodINT.toString());
+        coinCount.setText(coinINT.toString());
         bombCount.setText(bombINT.toString());
 //        shotLevelCount.setText(shotINT.toString());
         lifeCount.repaint();
-        foodCount.repaint();
+        coinCount.repaint();
         bombCount.repaint();
 //        shotLevelCount.repaint();
     }

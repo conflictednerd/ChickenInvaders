@@ -18,7 +18,7 @@ public class Game {
 
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
-        LE.setLevelManager(new LevelManager(data.player.level, data.enemies));
+        LE.setLevelManager(new LevelManager(data.player, data.enemies));
         GE.start();
         LE.start();
         data.gamePanel.syncMouse();

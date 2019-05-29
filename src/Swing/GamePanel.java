@@ -5,6 +5,7 @@ import Elements.Bomb;
 import Elements.Enemy;
 import Elements.EnemyShot;
 import Elements.Shot;
+import Elements.Upgrades.Upgrade;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -166,6 +167,7 @@ public class GamePanel extends JPanel {
         for(Bomb bomb:data.bombs) bomb.draw((Graphics2D)g);
         for(Enemy enemy:data.enemies) enemy.draw((Graphics2D)g);
         for(EnemyShot enemyShot:data.enemyShots) enemyShot.draw((Graphics2D)g);
+        for(Upgrade upgrade:data.upgrades) upgrade.draw((Graphics2D)g);
     }
 
 
