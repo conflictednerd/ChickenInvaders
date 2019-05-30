@@ -81,6 +81,9 @@ public abstract class Enemy implements Drawable, Movable {
 
     public void setLvl(int lvl){this.lvl = lvl;}
 
+    public int getLvl() {return lvl;}
+
+
     /**
      * This function changes location of an enemy instance(centerX, centerY) one step at a time
      * so that they reach defaultX, defaultY. It's used to enter waves of enemies at the beginning of each

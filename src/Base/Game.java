@@ -3,8 +3,9 @@ package Base;
 import Swing.*;
 
 public class Game {
-    GraphicEngine GE;
-    LogicEngine LE;
+    private GraphicEngine GE;
+    private LogicEngine LE;
+    private long startTime = 0;
     public Data data = new Data();
 
     public Game(){
@@ -21,6 +22,7 @@ public class Game {
         LE.setLevelManager(new LevelManager(data.player, data.enemies));
         GE.start();
         LE.start();
+        data.startTime = System.currentTimeMillis();
         data.gamePanel.syncMouse();
     }
 

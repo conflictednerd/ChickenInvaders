@@ -104,13 +104,17 @@ public class LevelManager {
         return !done;
     }
 
-    public void nextWave(Set<Enemy> enemies) {
+    /**
+     * @param enemies
+     * @return true if all waves are done.
+     */
+    public boolean nextWave(Set<Enemy> enemies) {
         p.subLevel++;
         p.level = p.subLevel/5;
         currentWave++;
         //TODO update level, sublevel for data.player.
         //todo when All waves are done,
-        if(currentWave >= waveList.size()) return;
+        if(currentWave >= waveList.size()) return true;
         //Todo havent checked it. maybe has a bug.
         if (waveList.get(currentWave).hasType4) {
             Enemy4.pivotX = Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2;
@@ -121,5 +125,6 @@ public class LevelManager {
         for(Enemy enemy: waveList.get(currentWave).enemies){
             enemies.add(enemy);
         }
+        return false;
     }
 }

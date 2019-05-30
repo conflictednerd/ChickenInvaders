@@ -6,7 +6,10 @@ import Swing.GameFrame;
 import Swing.GamePanel;
 
 import java.awt.*;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +35,8 @@ public class Data {
     public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     public volatile boolean isPaused = false;
 
+    public long startTime = 0;
+
     public GamePanel gamePanel = new GamePanel(this);
     public GameFrame gameFrame = new GameFrame();
 
@@ -46,22 +51,21 @@ public class Data {
     }
 
     public Data(){
-        System.err.println(savePath);
+        System.out.println(savePath);
+    }
 
-//        //TEMPORARY
-//        Enemy temp = new Enemy1(0,0,0,0);
-//        temp = null;
-//        int prevCenterX = 0, prevMinX = 0, prevMaxX = Toolkit.getDefaultToolkit().getScreenSize().width, y = 100;
-//
-//        for(int j = 0; j<5; j++) {
-//            for (int i = 0; i < 10; i++) {
-//                prevCenterX += Enemy1.getWidth() + 10;
-//                enemies.add(new Enemy1(prevCenterX, y, prevMinX, prevMaxX));
-////            prevMinX += Enemy1.getWidth() + 10;
-//            }
-//            y+=Enemy1.getHeight();
-//            prevCenterX = 0;
-//        }
-
+    public void save(){
+        BufferedWriter bufferedWriter;
+        try {
+                /*
+                TODO:it might be a good idea to hash the json before writing it to the file so that no one can mess with our game!!
+                */
+            bufferedWriter = new BufferedWriter(new FileWriter(savePath, false));
+            bufferedWriter.write(SaveData.toJson(saveData));
+            bufferedWriter.close();
+            System.out.println("Game Saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

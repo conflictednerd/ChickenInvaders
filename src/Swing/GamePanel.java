@@ -148,7 +148,11 @@ public class GamePanel extends JPanel {
             if(c instanceof StatPanel){
                 StatPanel statPanel = (StatPanel)c;
                 statPanel.refresh();
-                break;
+            }
+            if(c instanceof JLabel){
+                if(((JLabel) c).getText().startsWith("Score: ")){
+                    ((JLabel)c).setText("Score: "+ data.player.score);
+                }
             }
         }
     }

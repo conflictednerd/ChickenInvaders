@@ -7,6 +7,7 @@ import java.util.List;
 
 public class SaveData {
     public List<Player> players = new ArrayList<>();
+    public List<Player> ranking = new ArrayList<>();
 
     public static String toJson(SaveData saveData) {
         Gson gson = new Gson();

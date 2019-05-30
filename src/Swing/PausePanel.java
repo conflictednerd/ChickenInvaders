@@ -54,21 +54,8 @@ public class PausePanel extends JPanel {
             }
         });
         save.addActionListener(actionEvent -> {
-            //TODO When selecting a player, use bufferedReader to read players data.
-            BufferedWriter bufferedWriter;
-            try {
-                /*
-                TODO:it might be a good idea to hash the json before writing it to the file so that no one can mess with our game!!
-                */
-                bufferedWriter = new BufferedWriter(new FileWriter(pauseDialog.data.savePath, false));
-//                bufferedWriter.write(Player.toJson(pauseDialog.data.player));
-                bufferedWriter.write(SaveData.toJson(pauseDialog.data.saveData));
-                bufferedWriter.close();
-                System.out.println("Game Saved");
-                save.setEnabled(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            this.pauseDialog.data.save();
+            save.setEnabled(false);
 
         });
 

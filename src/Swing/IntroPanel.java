@@ -1,12 +1,14 @@
 package Swing;
 
 import Base.Game;
+import Base.Player;
 import Swing.Template.RoundedBorder;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class IntroPanel extends JPanel {
 
@@ -53,6 +55,7 @@ public class IntroPanel extends JPanel {
         scores.setForeground(Color.white);
         scores.setBackground(Color.MAGENTA);
         scores.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
+        scores.addActionListener(actionEvent -> new RankingDialog((ArrayList<Player>) game.data.saveData.ranking));
         add(scores);
 
         setting = new JButton("Settings");

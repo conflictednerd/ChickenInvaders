@@ -7,10 +7,10 @@ import Elements.Shots.Shot1;
 import Elements.Shots.Shot2;
 import Elements.Shots.Shot3;
 import Elements.Upgrades.*;
-import Swing.GameOverDialog;
+import Swing.RankingDialog;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +18,7 @@ public class LogicEngine extends Thread{
 
     final int mousePressed = -23;
     private LevelManager levelManager;
-    private boolean inTransition = false;
+    private boolean inTransition = false, wavesFinished = false, finalSave = false;
     private Data data;
     private SoundThread soundThread = new SoundThread();
     private Random random = new Random();
@@ -41,13 +41,29 @@ public class LogicEngine extends Thread{
 
         while(data.LERunning) {
             if (!data.isPaused) {
-
+                //Game Over
                 if(data.player.life <= 0){
                     data.rocket.noLifeLeft = true;
 //                    data.isPaused = true;
 //                    GameOverDialog god = new GameOverDialog(data);
 //                    data.LERunning = false;
 //                    data.GERunning =false;
+                }
+                //First wave of new level
+                if(data.player.subLevel == 0 && data.player.level > 0){
+                    data.player.score += 3*data.player.coins;
+                    data.player.coins =0;
+                    data.gamePanel.repaintStatPanel();
+                }
+                //Game has been completed.
+                if(wavesFinished && !finalSave){
+                    data.player.timePlayed = Math.toIntExact((System.currentTimeMillis() - data.startTime) / 1000);
+                    data.saveData.ranking.add(data.player);
+                    data.save();
+                    finalSave = true;
+                    data.isPaused = true;
+
+                    new RankingDialog((ArrayList<Player>) data.saveData.ranking);
                 }
 
                 if(Shot.shotHeat >= Shot.maxHeat && !waitingForShotCooldown){
@@ -57,13 +73,13 @@ public class LogicEngine extends Thread{
                 }
 
 //If one wave is over, wait for 3 second, then call level manager for next wave.
-                if(data.enemies.size() == 0){
+                if(data.enemies.size() == 0 && !wavesFinished){
                     if(waitForNextWave <= 0)
                         waitForNextWave = System.currentTimeMillis();
                     else if(System.currentTimeMillis() - waitForNextWave >= 3000) {
                         waitForNextWave = -1l;
                         inTransition = true;
-                        levelManager.nextWave(data.enemies);
+                        wavesFinished = levelManager.nextWave(data.enemies);
                     }
 //                    System.err.println(data.enemies.size());
                 }
@@ -115,10 +131,12 @@ public class LogicEngine extends Thread{
                                 for(Enemy e: data.enemies){
                                     e.health -= 50;
                                     if(e.health<=0.1){
+                                        data.player.score += e.getLvl();
                                         data.enemies.remove(e);
                                         addPrize(e);
                                     }
                                 }
+                                data.gamePanel.repaintStatPanel();
                             }
                         }
                         else bomb.move();
@@ -302,14 +320,28 @@ public class LogicEngine extends Thread{
     private void collisionHandler() {
         synchronized (data.enemies){
             synchronized (data.shots){
-                for(Enemy enemy:data.enemies){
-                    for(Shot shot: data.shots){
-                        if(intersect(enemy, shot)){
+                for(Enemy enemy:data.enemies) {
+                    for (Shot shot : data.shots) {
+                        if (intersect(enemy, shot)) {
                             enemy.health -= shot.damage;
                             data.shots.remove(shot);
-                            if(enemy.health <= 0.1) {
+                            if (enemy.health <= 0.1) {
                                 addPrize(enemy);
+                                data.player.score += enemy.getLvl();
                                 data.enemies.remove(enemy);
+                                data.gamePanel.repaintStatPanel();
+                            }
+                        }
+                    }
+                    if (data.rocket.isAlive() && !data.rocket.isReviving()) {
+                        if (intersect(data.rocket, enemy)) {
+                            enemy.health -= 50;
+                            die();
+                            if (enemy.health <= 0.1) {
+                                addPrize(enemy);
+                                data.player.score += enemy.getLvl();
+                                data.enemies.remove(enemy);
+                                data.gamePanel.repaintStatPanel();
                             }
                         }
                     }
@@ -321,9 +353,7 @@ public class LogicEngine extends Thread{
             if (data.rocket.isAlive() && !data.rocket.isReviving()) {
                 for (EnemyShot enemyShot : data.enemyShots) {
                     if (intersect(data.rocket, enemyShot)) {
-                        data.rocket.explode();
-                        data.player.life--;
-                        data.gamePanel.repaintStatPanel();
+                        die();
                         data.enemyShots.remove(enemyShot);
                         break;
                     }
@@ -342,6 +372,17 @@ public class LogicEngine extends Thread{
                 }
             }
         }
+    }
+
+
+    private void die() {
+        data.rocket.explode();
+        data.player.life--;
+        data.player.coins = 0;
+        data.player.shotLevel = 1;
+        //todo add this to player class
+        Shot.maxHeat = 100;
+        data.gamePanel.repaintStatPanel();
     }
 
     private void addPrize(Enemy enemy) {
@@ -393,6 +434,15 @@ public class LogicEngine extends Thread{
                 && shot.getY()>enemy.getCenterY() - enemy.getHeight()/2){
             return true;
         }
+        return false;
+    }
+
+    private boolean intersect(Rocket rocket, Enemy enemy) {
+        if(enemy.getCenterX()<rocket.getX() + rocket.getWidth()/2
+                && enemy.getCenterX()>rocket.getX()-rocket.getWidth()/2
+                && enemy.getCenterY()<rocket.getY() + rocket.getHeight()/2
+                && enemy.getCenterY()>rocket.getY() - rocket.getHeight()/2)
+            return true;
         return false;
     }
 }

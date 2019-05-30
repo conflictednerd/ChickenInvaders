@@ -22,7 +22,7 @@ public class Player {
     public Player(String name){
         this.name = name;
 
-        life = 1;
+        life = 2;
         rocketLevel = 1;
         shotLevel = 4;
         shotType = 1;
