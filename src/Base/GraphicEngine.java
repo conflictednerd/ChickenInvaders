@@ -6,28 +6,31 @@ import java.awt.*;
 
 public class GraphicEngine extends Thread {
 
+    public static int fps = 0;
     private Data data;
     private GamePanel gamePanel;
 
     public GraphicEngine(Data data){
         super();
         this.data = data;
-        this.gamePanel = data.gamePanel;
+        this.gamePanel = data.staticData.gamePanel;
     }
 
     @Override
     public void run() {
-        super.run();
+        data.dynamicData.rocket.setOwner(data.dynamicData.player.name);
         long time = System.currentTimeMillis();
-        int fps = 0;
         gamePanel.drawStatPanel();
-        while (data.GERunning) {
-            if (!data.isPaused) {
-//            long beginTime = System.currentTimeMillis();
-                gamePanel.repaint();
+        while (data.dynamicData.GERunning) {
+            if (!data.dynamicData.isPaused) {
+                //THis might cause lower frame per second.
+                synchronized (data) {
+                    data.staticData.gamePanel.repaintStatPanel();
+//                    gamePanel.syncMouse();
+                    gamePanel.repaint();
+                }
+//                System.out.println("number of shots: " + data.dynamicData.shots.size());
                 Toolkit.getDefaultToolkit().sync();
-                //fps code
-                fps++;
                 if (System.currentTimeMillis() - time >= 1000) {
                     time = System.currentTimeMillis();
                     System.out.println("fps: " + fps);

@@ -14,7 +14,8 @@ import java.util.Random;
 public class Boss extends Enemy {
     public int width, height;
     private int minX = 50, maxX = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()-50), minY = 50, maxY = 600;
-    private java.util.List<Image> imageList = new ArrayList<>();
+    //todo !! NETWORK can be static??
+    private transient List<Image> imageList = new ArrayList<>();
     private int animationCounter = 0;
     private static Random random = new Random();
 

@@ -4,13 +4,17 @@ import Base.Player;
 import Elements.Drawable;
 import Elements.Movable;
 
-public abstract class Upgrade  implements Movable, Drawable {
+
+public abstract class Upgrade implements Movable, Drawable {
 
     protected int centerX, centerY, speedX = 0, speedY = 5;
 
     public abstract void activate(Player player);
     public abstract int getWidth();
     public abstract int getHeight();
+
+    public Upgrade(){}
+
 
     @Override
     public void move() {
@@ -25,5 +29,4 @@ public abstract class Upgrade  implements Movable, Drawable {
     public int getCenterY() {
         return centerY;
     }
-
 }

@@ -1,14 +1,17 @@
 package Elements;
 
-public abstract class EnemyShot implements Movable, Drawable{
+import java.awt.*;
+
+public class EnemyShot implements Movable, Drawable{
     protected int centerX, centerY;
     protected int speedX, speedY;
-//    protected static Image image;
 
     public EnemyShot(int centerX, int centerY){
         this.centerX = centerX;
         this.centerY = centerY;
     }
+
+    public EnemyShot(){}
 
     @Override
     public void move() {
@@ -46,5 +49,10 @@ public abstract class EnemyShot implements Movable, Drawable{
 
     public void setSpeedY(int speedY) {
         this.speedY = speedY;
+    }
+
+    @Override
+    public void draw(Graphics2D g2) {
+
     }
 }

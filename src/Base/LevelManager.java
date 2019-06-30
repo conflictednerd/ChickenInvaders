@@ -13,12 +13,11 @@ public class LevelManager {
     private Set<Enemy> originalEnemySet;
     private List<Wave> waveList = new ArrayList<>();
     private static int currentWave = -1;
-    private Player p;
+    private List<Player> players;
 
 //todo it might be a good idea to also pass the dimension of panel to it but it might also cause complications.
-    public LevelManager(Player p, Set<Enemy> originalEnemySet) {
-//        currentLevel = startLevel;
-        this.p = p;
+    public LevelManager(List<Player> players, Set<Enemy> originalEnemySet) {
+        this.players = players;
         this.originalEnemySet = originalEnemySet;
         createWaves();
     }
@@ -95,7 +94,6 @@ public class LevelManager {
         boolean done = true;
         for(Enemy enemy: enemies){
             //TODO margin of error is hardcoded!!
-            //TODO TODO !!!!!! They don't go where they are supposed to. It's probably Enemy.transition calculations that don't work   !!!!!!!!!!!!!!!!
             if(Math.abs(enemy.getCenterX()-enemy.getDefaultX())>10 || Math.abs(enemy.getCenterY()-enemy.getDefaultY())>10){
                 done = false;
                 enemy.transition();
@@ -109,12 +107,18 @@ public class LevelManager {
      * @return true if all waves are done.
      */
     public boolean nextWave(Set<Enemy> enemies) {
-        p.subLevel++;
-        p.level = p.subLevel/5;
+        System.err.println("WaveList.size() = " + waveList.size()+ " current Wave:" + currentWave);
+        for(Player p: players) {
+            p.subLevel++;
+            p.level = p.subLevel / 5;
+        }
         currentWave++;
         //TODO update level, sublevel for data.player.
         //todo when All waves are done,
-        if(currentWave >= waveList.size()) return true;
+        if(currentWave >= waveList.size()) {
+            System.err.println("DONE");
+            return true;
+        }
         //Todo havent checked it. maybe has a bug.
         if (waveList.get(currentWave).hasType4) {
             Enemy4.pivotX = Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2;

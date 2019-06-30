@@ -55,7 +55,7 @@ public class IntroPanel extends JPanel {
         scores.setForeground(Color.white);
         scores.setBackground(Color.MAGENTA);
         scores.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
-        scores.addActionListener(actionEvent -> new RankingDialog((ArrayList<Player>) game.data.saveData.ranking));
+        scores.addActionListener(actionEvent -> new RankingDialog((ArrayList<Player>) game.data.staticData.saveData.ranking));
         add(scores);
 
         setting = new JButton("Settings");

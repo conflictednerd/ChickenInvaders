@@ -5,3 +5,21 @@ Done: Adding upgrades(shot upgrades and rocket upgrades)
 Done: dying when hitting an enemy.
 Done: not dying for a couple seconds after reviving from previous death.
 Done: bomb killing all enemies and reduce health of bosses
+
+Phase 3:
+Done: break Data class to StaticData and DynamicData classes. First one contains transient fields of Data.
+todo: handle screenSize related calculations(dependent on Toolkit.getDefa..) so that it is fixed in multi-player game with players having different screensized
+    one possible fix, is to not have the game run on full screen and on a smaller window.
+
+Done: shot cool down and time between shots in multi-player.
+Done: move shootbomb mechanism from gamePanel to LE completely.(currently shoot bomb doesn't work in multi-player)
+Done: player should be dynamic and score and other info's should be updated
+todo: Enemy2s behaviour in multi-player.
+todo: add serverWaiting panel and other multi player panels.
+todo: pause menu handling
+todo: Level manager seems to not work
+
+Done: pressedKeyNamePair can be a hash map.
+
+*Done(single player Logic Engine still works with Shot fields): heat increment should be implemented in logic engine rather than in shot constructors.
+*todo: collision handler code is ugly:) use ClientsDataOnServer to better implement it.

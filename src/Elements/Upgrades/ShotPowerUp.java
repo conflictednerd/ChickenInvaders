@@ -1,15 +1,10 @@
 package Elements.Upgrades;
 
 import Base.Player;
-import Elements.Drawable;
-import Elements.Movable;
-import Elements.Shot;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ShotPowerUp extends Upgrade {
     private static Image image;

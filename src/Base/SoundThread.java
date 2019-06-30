@@ -1,6 +1,6 @@
 package Base;
 
-import Elements.Shot;
+import Elements.Shots.Shot;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -14,7 +14,7 @@ public class SoundThread extends Thread{
 
     static {
         try {
-            audioInputStream = AudioSystem.getAudioInputStream(Shot.class.getResourceAsStream("../Assets/sounds/shot/shot2.wav"));
+            audioInputStream = AudioSystem.getAudioInputStream(Shot.class.getResourceAsStream("../../Assets/sounds/shot/shot2.wav"));
             clip = AudioSystem.getClip();
             clip.open(audioInputStream);
         } catch (UnsupportedAudioFileException | LineUnavailableException ex) {

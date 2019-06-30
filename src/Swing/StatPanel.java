@@ -9,7 +9,7 @@ import java.awt.*;
 import java.io.IOException;
 
 public class StatPanel extends RoundedPanel {
-    Data data;
+    public volatile Data data;
     Image heartIcon, coinIcon, bombIcon, shotIcon;
     public JLabel life = null, lifeCount, coin = null, coinCount, bomb = null, bombCount, shot = null, shotLevelCount;
     public Integer lifeINT, coinINT, bombINT, shotINT;
@@ -41,10 +41,10 @@ public class StatPanel extends RoundedPanel {
     }
 
     private void readData() {
-        lifeINT = data.player.life;
-        coinINT = data.player.coins;
-        bombINT = data.player.bombs;
-        shotINT = data.player.shotLevel;
+        lifeINT = data.dynamicData.player.life;
+        coinINT = data.dynamicData.player.coins;
+        bombINT = data.dynamicData.player.bombs;
+        shotINT = data.dynamicData.player.shotLevel;
     }
 
     private void addLabels() {
@@ -73,7 +73,7 @@ public class StatPanel extends RoundedPanel {
 
     private void initialize() {
         setSize(500, 70);
-        setLocation(10, data.screenSize.height-getHeight()-40);
+        setLocation(10, data.staticData.screenSize.height-getHeight()-40);
         setBackground(new Color(0,191,255,70));
         setLayout(new FlowLayout(FlowLayout.LEADING, 10, 10));
     }
@@ -85,6 +85,7 @@ public class StatPanel extends RoundedPanel {
         bombCount.setText(bombINT.toString());
 //        shotLevelCount.setText(shotINT.toString());
         lifeCount.repaint();
+//        System.out.println("in refresh. life: "+lifeINT);
         coinCount.repaint();
         bombCount.repaint();
 //        shotLevelCount.repaint();

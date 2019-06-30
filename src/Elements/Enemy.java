@@ -2,7 +2,9 @@ package Elements;
 
 import Elements.EnemyShots.EnemyShot1;
 
+import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public abstract class Enemy implements Drawable, Movable {
@@ -12,9 +14,9 @@ public abstract class Enemy implements Drawable, Movable {
     protected double defaultX = 500, defaultY = 0, defaultSpeedX, defaultSpeedY;
     protected double speedX = 0, speedY = 0;
     public double health = 1;
-    //todo DELETE
-    protected EnemyShot shot;
     private Random random = new Random();
+
+    public Enemy(){}
 
     /**
      *Random stuff for any enemy comes here. E.g handling the probability of shooting.
@@ -24,9 +26,9 @@ public abstract class Enemy implements Drawable, Movable {
      * This is the default behaviour(i.e. 5% chance of shooting). For higher level enemies, the probability increases and this method should be overridden.
      * @return null if it doesn't shoot or an EnemyShot object.
      */
-    public java.util.List<EnemyShot> shoot(){
+    public List<EnemyShot> shoot(){
         // 5 percent chance of shooting each second -> 1/1000 chance of shooting every 20mS(LEs refresh rate).
-        java.util.List<EnemyShot> list = new ArrayList();
+        List<EnemyShot> list = new ArrayList();
         if (random.nextInt(1000)==0)
             list.add(new EnemyShot1(centerX, centerY));
         if(lvl>2)

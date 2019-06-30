@@ -1,8 +1,6 @@
 package Elements.Upgrades;
 
 import Base.Player;
-import Elements.Drawable;
-import Elements.Movable;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

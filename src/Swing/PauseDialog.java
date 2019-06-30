@@ -14,7 +14,7 @@ public class PauseDialog extends JDialog {
     public Data data;
 
     public PauseDialog(Data data){
-        super(data.gameFrame);
+        super(data.staticData.gameFrame);
         this.data = data;
         contentPane = (JPanel) getContentPane();
 
@@ -36,8 +36,8 @@ public class PauseDialog extends JDialog {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE){
-                    data.gamePanel.syncMouse();
-                    data.isPaused = false;
+                    data.staticData.gamePanel.syncMouse();
+                    data.dynamicData.isPaused = false;
                     dispose();
                 }
             }

@@ -17,7 +17,7 @@ public class GameOverDialog extends JDialog {
     private Data data;
 
     public GameOverDialog(Data data){
-        super(data.gameFrame);
+        super(data.staticData.gameFrame);
         this.data = data;
         contentPane = (JPanel) getContentPane();
 

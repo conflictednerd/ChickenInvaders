@@ -68,14 +68,14 @@ public class PlayerSelectionPanel extends JPanel {
 
             if(name.equals("")||name.equals(null)) name = "guest";
             try{
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(game.data.savePath));
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(game.data.staticData.savePath));
                 rawData = bufferedReader.readLine();
             } catch (FileNotFoundException e){
                 //No saves found
-                game.data.saveData = new SaveData();
-                game.data.player = new Player(name);
-                game.data.saveData.players.add(game.data.player);
-                File file = new File(game.data.savePath);
+                game.data.staticData.saveData = new SaveData();
+                game.data.dynamicData.player = new Player(name);
+                game.data.staticData.saveData.players.add(game.data.dynamicData.player);
+                File file = new File(game.data.staticData.savePath);
                 done = true;
                 try {
                     file.createNewFile();
@@ -94,8 +94,8 @@ public class PlayerSelectionPanel extends JPanel {
                         if(!(s == null) && !(s.players == null)) {
                             for (Player p : s.players) {
                                 if (name.equals(p.name)) {
-                                    game.data.player = p;
-                                    game.data.saveData = s;
+                                    game.data.dynamicData.player = p;
+                                    game.data.staticData.saveData = s;
                                     playerExists = true;
                                     break;
                                 }
@@ -103,18 +103,18 @@ public class PlayerSelectionPanel extends JPanel {
                         }
                         if (!playerExists) {
                             //new player
-                            game.data.player = new Player(name);
-                            if(s == null) game.data.saveData = new SaveData();
-                            else game.data.saveData = s;
-                            game.data.saveData.players.add(game.data.player);
+                            game.data.dynamicData.player = new Player(name);
+                            if(s == null) game.data.staticData.saveData = new SaveData();
+                            else game.data.staticData.saveData = s;
+                            game.data.staticData.saveData.players.add(game.data.dynamicData.player);
                         }
                     } catch (Exception e) {
                         //save corrupted.
                         e.printStackTrace();
-                        game.data.saveData = new SaveData();
-                        game.data.player = new Player(name);
+                        game.data.staticData.saveData = new SaveData();
+                        game.data.dynamicData.player = new Player(name);
                         //TODO It might be a good idea to NOT save guests.
-                        game.data.saveData.players.add(game.data.player);
+                        game.data.staticData.saveData.players.add(game.data.dynamicData.player);
                     }
                 }
                 game.load_intro();
@@ -133,8 +133,8 @@ public class PlayerSelectionPanel extends JPanel {
     private void initialize() {
         //TODO maybe box layout??
         setLayout(null);
-        x = (int)game.data.gameFrame.getLocationOnScreen().getX();
-        y = (int)game.data.gameFrame.getLocationOnScreen().getY();
+        x = (int)game.data.staticData.gameFrame.getLocationOnScreen().getX();
+        y = (int)game.data.staticData.gameFrame.getLocationOnScreen().getY();
     }
 
     @Override

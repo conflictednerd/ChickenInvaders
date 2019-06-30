@@ -12,15 +12,15 @@ public class Bomb implements Drawable, Movable {
     private double speedX = 0, speedY = 0, xd, yd;
     private int x, y;
     private int explosionAnimationCounter = 0;
-    private Image image;
-    private List<Image> explosions = new ArrayList<>();
+    private static transient Image image;
+    private static transient List<Image> explosions = new ArrayList<>();
+    private transient static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public String owner;
 
 
     public volatile boolean isActive, isExploding;
 
-    public Bomb(int x, int y){
-        this.x = x; this.y = y;
-        this.xd = x; this.yd = y;
+    static {
         try {
             image = ImageIO.read(Rocket.class.getResourceAsStream("../Assets/icons/bomb.png"));
             for(int i = 1; i < 14; i++){
@@ -29,6 +29,12 @@ public class Bomb implements Drawable, Movable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Bomb(int x, int y, String owner){
+        this.x = x; this.y = y;
+        this.xd = x; this.yd = y;
+        this.owner = owner;
         isActive = true;
         isExploding = false;
     }
@@ -37,13 +43,13 @@ public class Bomb implements Drawable, Movable {
     public void draw(Graphics2D g2) {
         if(isActive) {
             if (isExploding) {
-                explosionAnimationCounter++;
-                if (explosionAnimationCounter >= explosions.size() * 5 - 1) {
-                    isExploding = false;
-                    isActive = false;
-                }
-//                g2.drawImage(explosions.get(explosionAnimationCounter / 5), x - explosions.get(explosionAnimationCounter / 10).getWidth(null) / 2, y - explosions.get(explosionAnimationCounter / 10).getHeight(null) / 2, null);
-//                g2.drawImage(explosions.get(explosionAnimationCounter / 5), x - explosions.get(explosionAnimationCounter / 10).getWidth(null), y - explosions.get(explosionAnimationCounter / 10).getHeight(null), 800, 800,null);
+//                explosionAnimationCounter++;
+//                if (explosionAnimationCounter >= explosions.size() * 5 - 1) {
+//                    isExploding = false;
+//                    isActive = false;
+//                }
+
+
                 g2.drawImage(explosions.get(explosionAnimationCounter / 5), 100, 100, 1200, 1200,null);
             }
             else{
@@ -54,15 +60,23 @@ public class Bomb implements Drawable, Movable {
 
     @Override
     public void move() {
-        xd += speedX;
-        yd += speedY;
-        x = (int) xd;
-        y = (int) yd;
-        if(Math.abs(x-Data.screenSize.width/2) < 10 && Math.abs(y-Data.screenSize.height/2) < 10) explode();
+        if(!isExploding) {
+            xd += speedX;
+            yd += speedY;
+            x = (int) xd;
+            y = (int) yd;
+            if (Math.abs(x - screenSize.width / 2) < 10 && Math.abs(y - screenSize.height / 2) < 10) explode();
+        }
+        else{
+            explosionAnimationCounter++;
+            if (explosionAnimationCounter >= explosions.size() * 5 - 1) {
+                isExploding = false;
+                isActive = false;
+            }
+        }
     }
 
     private void explode() {
-        //TODO KILL THE CHICKENS!!!
         isExploding = true;
     }
 

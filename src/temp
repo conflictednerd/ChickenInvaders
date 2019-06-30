@@ -1,74 +1,41 @@
-/**
-Shot Class Before turning abstract
-*/
+Server Design:
 
-package Elements;
+Server -> listens for clients and create worker thread(A reader and a writer thread) for each of them when they are created. It also creates a ServerLogicEngine thread and starts it when signaled.
+WorkerThread -> is an abstract class that has a Data field called serverData and has two kind of classes: Sender and Receiver.
+Receiver -> A WorkerThread that listens to clients and update server data with info received from them. -> data includes -> isPaused, rocketLocation, pressedKeys, ...?
+Sender -> A WorkerThread that sends the appropriate Data object for the respective client obtained from ServerData object periodically (and if not paused?).
+ServerLogicEngine a kind of LogicEngine that works with server data and updates it periodically.
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.IOException;
+So each Server has a unique ServerData instance and passes it to SLE and WorkerThreads as they are created.
+Each Sender creates and sends a Data object and each Receiver receives a line? of data.
 
-public abstract class Shot implements Drawable, Movable {
+Client Design:
 
-    private int x, y;
+When connected to server, GE runs as it does in the single player and two threads start working alongside it(instead of LE).
+     One thread sends data to server periodically and another receives a data object from server and updates local Data instance by this data object.
 
-    //TODO It might be better for design of different shots, so that shotHeat is declared for user or rocket instead of Shot.
-    /**
-     * If shotHeat reaches maxHeat, no shots will be fired until shotHeat reaches 0 and we're in 'CoolDown mode'.
-     * While in cool down mode (or not shooting in general), shotHeat will be reduced by heatReductionRate every coolDownTimeMillis.
-     */
-    public static long coolDownTimeMillis = 200, timeBetweenConsecutiveShots = 200;
-    public static volatile int shotHeat = 0, maxHeat = 100, heatReductionRate = 5, heatIncreaseRate = 3;
+All operations on data(including reading from it in GE) Should carefully be synchronized.
 
-    public static void reduceHeat() {
-        shotHeat -= heatReductionRate;
-        if(shotHeat < 0) shotHeat = 0;
-    }
 
-    private void increaseHeat() {
-        shotHeat += heatIncreaseRate;
-    }
+So when a client hits start as client and enters ip and port,
+    1) A connection is made to the server
+    2) GE and ClientSender, ClientReceiver are created.
+    3) gamePanel is loaded.
+    4) GE and workerThreads start.
 
-    public int getX() {
-        return x;
-    }
+And when a server player hits start as server and enters port,
+    1) A Server starts listening to clients.
+    2) A client is created with ip=localhost to run the game for the server player(Except that gamePanel doesn't get loaded yet.)
+    3) A panel shows current connected clients and has a start game button.
 
-    public void setX(int x) {
-        this.x = x;
-    }
+When server player starts the game,
+    0) clientWorkerThreads and SLE are created.
+    1) gamePanel is loaded and GE starts.
+    2) clientWorkerThreads start.
+    3) ServerWorkerThreads start
+*   4) isPaused is set to false in serverData.
+    5) SLE starts.
 
-    public int getY() {
-        return y;
-    }
 
-    public void setY(int y) {
-        this.y = y;
-    }
-    int speedX = 0, speedY = -10;
-
-    private static Image image;
-
-    public Shot(int x, int y){
-        this.x = x;
-        this.y = y;
-        try {
-//            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/spaceMissiles_003.png"));
-            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/MegaLaser.png"));
-//            image = ImageIO.read(Shot.class.getResourceAsStream("../Assets/Shots/PlayProjectile.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        increaseHeat();
-    }
-
-    @Override
-    public void draw(Graphics2D g2) {
-        g2.drawImage(image, x-image.getWidth(null)/2, y-image.getHeight(null)/2, null);
-    }
-
-    @Override
-    public void move() {
-        x += speedX;
-        y += speedY;
-    }
-}
+ROCKET SHOULD BE STATIC_DATA.
+PLAYER SHOULD BE DYNAMIC_DATA.

@@ -1,9 +1,16 @@
 package Base;
 
 import Elements.*;
+import Elements.Shots.Shot;
+import Elements.Shots.Shot1;
+import Elements.Shots.Shot2;
+import Elements.Shots.Shot3;
 import Elements.Upgrades.Upgrade;
 import Swing.GameFrame;
 import Swing.GamePanel;
+import com.gilecode.yagson.YaGson;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.awt.*;
 import java.io.BufferedWriter;
@@ -19,53 +26,125 @@ import java.util.concurrent.ConcurrentHashMap;
  * Base.Data holds a list of all chickens and shots and rocket and all the other elements of
  * the game. GE and LE access it and change its values.
  */
-public class Data {
-    public volatile boolean GERunning = true, LERunning = true;
+public class Data implements Jsonable{
+    public volatile DynamicData dynamicData;
+    public StaticData staticData;
 
-    //ConcurrentHashSet below(Yes its a set) is very helpful!!
-    public volatile Set<Shot> shots = ConcurrentHashMap.newKeySet();
-    public volatile Set<EnemyShot> enemyShots = ConcurrentHashMap.newKeySet();
-    public volatile Set<Bomb> bombs = ConcurrentHashMap.newKeySet();
-    public volatile Set<Enemy> enemies = ConcurrentHashMap.newKeySet();
-    public volatile Set<Upgrade> upgrades = ConcurrentHashMap.newKeySet();
-    public Rocket rocket = new Rocket();
+    /**
+     * data that needs to be updated and received from server in multi-player.
+     */
+    public static class DynamicData implements Jsonable{
+        public volatile String name;
+        public volatile boolean GERunning, LERunning;
 
-    public volatile HashSet<Integer> pressedKeys = new HashSet<>();
+        //ConcurrentHashSet below(Yes its a set) is very helpful!!
+        public volatile Set<Shot> shots;
+        public volatile Set<EnemyShot> enemyShots;
+        public volatile Set<Bomb> bombs;
+        public volatile Set<Enemy> enemies;
+        public volatile Set<Upgrade> upgrades;
+        public Rocket rocket;
+        public Player player;
 
-    public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    public volatile boolean isPaused = false;
+        public volatile Boolean isPaused;
 
-    public long startTime = 0;
+        public DynamicData() {
+            GERunning = true;
+            LERunning = true;
 
-    public GamePanel gamePanel = new GamePanel(this);
-    public GameFrame gameFrame = new GameFrame();
+            //ConcurrentHashSet below(Yes its a set) is very helpful!!
+            shots = ConcurrentHashMap.newKeySet();
+            enemyShots = ConcurrentHashMap.newKeySet();
+            bombs = ConcurrentHashMap.newKeySet();
+            enemies = ConcurrentHashMap.newKeySet();
+            upgrades = ConcurrentHashMap.newKeySet();
+            rocket = new Rocket("DEFAULT");
 
-    File file = new File("game.data");
-    public String savePath = file.getAbsolutePath();
-    public volatile Player player = new Player("guest");
-    public SaveData saveData = new SaveData();
+            player = new Player("guest");
+            isPaused = false;
+        }
 
+        @Override
+        public String toJSON() {
+            YaGson yaGson = new YaGson();
+            return yaGson.toJson(this);
+        }
 
-    public Data(Player player){
-        this.player = player;
+        @Override
+        public DynamicData fromJSON(String jsonString) {
+            YaGson yaGson = new YaGson();
+            return yaGson.fromJson(jsonString, this.getClass());
+        }
     }
 
-    public Data(){
-        System.out.println(savePath);
+    public class StaticData{
+        public volatile HashSet<Integer> pressedKeys;
+
+        public transient Dimension screenSize;
+
+        public transient long startTime;
+
+        public transient GamePanel gamePanel;
+        public transient GameFrame gameFrame;
+
+        transient File file;
+        public transient String savePath;
+//        public transient volatile Player player;
+        public transient SaveData saveData;
+
+        public StaticData(){
+//            player = new Player("guest");
+            pressedKeys = new HashSet<>();
+
+            screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+            startTime = 0;
+
+            gamePanel = new GamePanel(Data.this);
+            gameFrame = new GameFrame();
+
+            file = new File("game.data");
+            savePath = file.getAbsolutePath();
+            saveData = new SaveData();
+            System.out.println(savePath);
+        }
+    }
+
+    public Data() {
+        staticData = new StaticData();
+        dynamicData = new DynamicData();
+        dynamicData.name = dynamicData.player.name;
+//        dynamicData.rocket.setOwner(dynamicData.name);
     }
 
     public void save(){
         BufferedWriter bufferedWriter;
         try {
-                /*
-                TODO:it might be a good idea to hash the json before writing it to the file so that no one can mess with our game!!
-                */
-            bufferedWriter = new BufferedWriter(new FileWriter(savePath, false));
-            bufferedWriter.write(SaveData.toJson(saveData));
+            bufferedWriter = new BufferedWriter(new FileWriter(staticData.savePath, false));
+            bufferedWriter.write(SaveData.toJson(staticData.saveData));
             bufferedWriter.close();
             System.out.println("Game Saved");
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+//
+//    public static String toJson(Data data) {
+////        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        Gson gson = new Gson();
+//        return gson.toJson(data);
+//    }
+
+    @Override
+    public String toJSON() {
+        YaGson yaGson = new YaGson();
+        return yaGson.toJson(this);
+    }
+
+    @Override
+    public Data fromJSON(String jsonString) {
+        YaGson yaGson = new YaGson();
+        return yaGson.fromJson(jsonString, this.getClass());
     }
 }

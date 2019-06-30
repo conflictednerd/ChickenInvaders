@@ -1,10 +1,14 @@
 package Swing;
 
 import Base.Data;
+import Base.GraphicEngine;
 import Elements.Bomb;
 import Elements.Enemy;
 import Elements.EnemyShot;
-import Elements.Shot;
+import Elements.Shots.Shot;
+import Elements.Shots.Shot1;
+import Elements.Shots.Shot2;
+import Elements.Shots.Shot3;
 import Elements.Upgrades.Upgrade;
 
 import javax.imageio.ImageIO;
@@ -21,11 +25,12 @@ TODO Adding (to the top) a label?? indicating weapon heat.
 
 public class GamePanel extends JPanel {
 
-    final int mousePressed = -23;
+    final int mousePressed = -23, bombPressed = -24;
     public Data data;
     private PauseDialog pauseDialog = null;
     private StatPanel statPanel;
     private JLabel scoreLabel = new JLabel("Score: 0");
+    private Image back = null;
 
     public GamePanel(Data data) {
         this.data  = data;
@@ -43,17 +48,17 @@ public class GamePanel extends JPanel {
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseDragged(MouseEvent mouseEvent) {
-                if(!data.isPaused) {
-                    data.rocket.setX(mouseEvent.getX());
-                    data.rocket.setY(mouseEvent.getY());
+                if(!data.dynamicData.isPaused) {
+                    data.dynamicData.rocket.setX(mouseEvent.getX());
+                    data.dynamicData.rocket.setY(mouseEvent.getY());
                 }
             }
 
             @Override
             public void mouseMoved(MouseEvent mouseEvent) {
-                if(!data.isPaused) {
-                    data.rocket.setX(mouseEvent.getX());
-                    data.rocket.setY(mouseEvent.getY());
+                if(!data.dynamicData.isPaused) {
+                    data.dynamicData.rocket.setX(mouseEvent.getX());
+                    data.dynamicData.rocket.setY(mouseEvent.getY());
                 }
             }
         });
@@ -64,11 +69,11 @@ public class GamePanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent mouseEvent) {
-                if(!data.isPaused) {
+                if(!data.dynamicData.isPaused) {
                     if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
-                        synchronized (data.pressedKeys) {
+                        synchronized (data.staticData.pressedKeys) {
                             //-23 is used to indicate mouse pressed in KeyEvent.VK....
-                            data.pressedKeys.add(mousePressed);
+                            data.staticData.pressedKeys.add(mousePressed);
                         }
                     }
                 }
@@ -76,14 +81,15 @@ public class GamePanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent mouseEvent) {
-                if(!data.isPaused) {
+                if(!data.dynamicData.isPaused) {
                     if(SwingUtilities.isLeftMouseButton(mouseEvent)) {
-                        synchronized (data.pressedKeys) {
-                            data.pressedKeys.remove(mousePressed);
+                        synchronized (data.staticData.pressedKeys) {
+                            data.staticData.pressedKeys.remove(mousePressed);
                         }
                     }
                     else if(SwingUtilities.isRightMouseButton(mouseEvent)){
                         shootBomb();
+                        data.staticData.pressedKeys.add(bombPressed);
                     }
                 }
             }
@@ -100,9 +106,9 @@ public class GamePanel extends JPanel {
 
             @Override
             public void keyPressed(KeyEvent keyEvent) {
-                if(!data.isPaused) {
-                    synchronized (data.pressedKeys) {
-                        data.pressedKeys.add(keyEvent.getKeyCode());
+                if(!data.dynamicData.isPaused) {
+                    synchronized (data.staticData.pressedKeys) {
+                        data.staticData.pressedKeys.add(keyEvent.getKeyCode());
                     }
                 }
             }
@@ -112,23 +118,32 @@ public class GamePanel extends JPanel {
                 //Code for game pause.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) esc();
                 //TODO Better to move this to logic engine.
-                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) shootBomb();
-                if(!data.isPaused) {
-                    synchronized (data.pressedKeys) {
-                        data.pressedKeys.remove(keyEvent.getKeyCode());
+                if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER){
+                    data.staticData.pressedKeys.add(bombPressed);
+                    shootBomb();
+                }
+                if(!data.dynamicData.isPaused) {
+                    synchronized (data.staticData.pressedKeys) {
+                        data.staticData.pressedKeys.remove(keyEvent.getKeyCode());
                     }
                 }
             }
         });
+
+        try {
+            back = ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/BackGrounds/0.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void shootBomb() {
-        if(data.player.bombs>0) {
-            data.player.bombs--;
-            Bomb b = new Bomb(data.rocket.getX(), data.rocket.getY());
+        if(data.dynamicData.player.bombs>0) {
+            data.dynamicData.player.bombs--;
+            Bomb b = new Bomb(data.dynamicData.rocket.getX(), data.dynamicData.rocket.getY(), data.dynamicData.player.name);
             b.calculateDefaultSpeeds();
-            data.bombs.add(b);
-            repaintStatPanel();
+            data.dynamicData.bombs.add(b);
+//            repaintStatPanel();
         }
     }
 
@@ -139,7 +154,7 @@ public class GamePanel extends JPanel {
         scoreLabel.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE|Font.BOLD, 50));
         scoreLabel.setSize(400, 50);
         scoreLabel.setForeground(Color.white);
-        scoreLabel.setLocation((int)data.screenSize.getWidth()-scoreLabel.getWidth()-200, 10);
+        scoreLabel.setLocation((int)data.staticData.screenSize.getWidth()-scoreLabel.getWidth()-200, 10);
         add(scoreLabel);
     }
 
@@ -147,11 +162,12 @@ public class GamePanel extends JPanel {
         for(Component c: getComponents()){
             if(c instanceof StatPanel){
                 StatPanel statPanel = (StatPanel)c;
+                statPanel.data = data;
                 statPanel.refresh();
             }
             if(c instanceof JLabel){
                 if(((JLabel) c).getText().startsWith("Score: ")){
-                    ((JLabel)c).setText("Score: "+ data.player.score);
+                    ((JLabel)c).setText("Score: "+ data.dynamicData.player.score);
                 }
             }
         }
@@ -160,39 +176,39 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        try {
-//            g.drawImage(ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/Optimized-Background.jpg")), 0, 0, getWidth(), getHeight(), this);
-            g.drawImage(ImageIO.read(GamePanel.class.getResourceAsStream("../Assets/BackGrounds/0.png")), 0, 0, getWidth(), getHeight(), this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        data.rocket.draw((Graphics2D)g);
-        for(Shot shot:data.shots) shot.draw((Graphics2D)g);
-        for(Bomb bomb:data.bombs) bomb.draw((Graphics2D)g);
-        for(Enemy enemy:data.enemies) enemy.draw((Graphics2D)g);
-        for(EnemyShot enemyShot:data.enemyShots) enemyShot.draw((Graphics2D)g);
-        for(Upgrade upgrade:data.upgrades) upgrade.draw((Graphics2D)g);
+        g.drawImage(back, 0, 0, getWidth(), getHeight(), this);
+        data.dynamicData.rocket.draw((Graphics2D)g);
+//        System.err.println("Number of shots = " + data.dynamicData.shots.size());
+        for(Shot shot:data.dynamicData.shots) { shot.draw((Graphics2D)g); }
+        for(Bomb bomb:data.dynamicData.bombs) bomb.draw((Graphics2D)g);
+        for(Enemy enemy:data.dynamicData.enemies) enemy.draw((Graphics2D)g);
+        for(EnemyShot enemyShot:data.dynamicData.enemyShots) enemyShot.draw((Graphics2D)g);
+        for(Upgrade upgrade:data.dynamicData.upgrades) upgrade.draw((Graphics2D)g);
+        GraphicEngine.fps++;
     }
 
 
     public void syncMouse(){
         try {
             Robot robot = new Robot();
-            robot.mouseMove(data.rocket.getX() + (int)getLocationOnScreen().getX(), data.rocket.getY() + (int)getLocationOnScreen().getY());
+            robot.mouseMove(data.dynamicData.rocket.getX() + (int)getLocationOnScreen().getX(), data.dynamicData.rocket.getY() + (int)getLocationOnScreen().getY());
         } catch (AWTException e) {
             e.printStackTrace();
         }
     }
 
     public void esc(){
-        if(data.isPaused){
+        if(data.dynamicData.isPaused){
             pauseDialog.dispose();
             syncMouse();
         }
         else{
             pauseDialog = new PauseDialog(data);
+            System.out.println(data.toJSON());
         }
-        data.isPaused = !data.isPaused;
+        synchronized (data.dynamicData.isPaused) {
+            data.dynamicData.isPaused = !data.dynamicData.isPaused;
+        }
     }
 
 }

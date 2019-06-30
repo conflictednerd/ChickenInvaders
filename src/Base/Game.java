@@ -1,62 +1,177 @@
 package Base;
 
 import Swing.*;
+import com.saeed.network.*;
+
+import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
     private GraphicEngine GE;
     private LogicEngine LE;
     private long startTime = 0;
-    public Data data = new Data();
+    public volatile Data data = new Data();
+
+    private ClientSender CS;
+    private ClientReceiver CR;
+    private Socket socket;
+    private ArrayList<Socket> clients;
+    private ArrayList<ServerReceiver> serverReceivers = new ArrayList<>();
+    private ArrayList<ServerSender> serverSenders = new ArrayList<>();
+    private ServerLogicEngine SLE;
 
     public Game(){
         load_player_selection();
     }
 
     public void play(){
-        //TODO level selection happens here.
         clearContentPane();
-        load_game(data.player.level);
+        load_game();
 
         GE = new GraphicEngine(data);
         LE = new LogicEngine(data);
-        LE.setLevelManager(new LevelManager(data.player, data.enemies));
+        List<Player> players = new ArrayList<>();
+        players.add(data.dynamicData.player);
+        LE.setLevelManager(new LevelManager(players, data.dynamicData.enemies));
         GE.start();
         LE.start();
-        data.startTime = System.currentTimeMillis();
-        data.gamePanel.syncMouse();
+        data.staticData.startTime = System.currentTimeMillis();
+        data.staticData.gamePanel.syncMouse();
+    }
+
+    public void playAsClient(String ip, int port){
+        createClient(ip, port);
+
+        clearContentPane();
+        load_game();
+
+        GE.start();
+        CS.start();
+        CR.start();
+
+        data.staticData.startTime = System.currentTimeMillis();
+        data.staticData.gamePanel.syncMouse();
+    }
+
+    private void createClient(String ip, int port) {
+        try {
+            socket = new Socket(ip, port);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            CR = new ClientReceiver(new BufferedReader(new InputStreamReader(socket.getInputStream())), data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            CS = new ClientSender(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        GE = new GraphicEngine(data);
+    }
+
+    /**
+     * This method gets called when the player requests to create a new server for a new game.
+     * @param port
+     */
+    public void playAsServer(int port){
+        clients = new ArrayList<>();
+        ServerListener serverListener = new ServerListener(port, clients);
+        serverListener.start();
+        createClient("localhost", port);
+        load_server_waiting();
+
+        //temp
+        startServerGame();
+    }
+
+    /**
+     * This method gets called when the player request to start multi-player game with current participants.
+     */
+    public void startServerGame(){
+        /**
+         * create workerThreads and server logic engine.
+         */
+        SLE = new ServerLogicEngine();
+        if(SLE.getServerData() == null){
+            System.out.println("serverData is null");
+        }
+        CS.start();
+        CR.start();
+        for(Socket s:clients){
+            try {
+                serverReceivers.add(new ServerReceiver(
+                        new BufferedReader(new InputStreamReader(s.getInputStream()))
+                        , SLE.getServerData()
+                ).getInitialPacket());
+                serverSenders.add(new ServerSender(
+                        new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))
+                        , SLE.getServerData()));
+//                serverSenders.get(serverSenders.size()-1).setClientName(serverReceivers.get(serverReceivers.size()-1).getClientName());
+                //todo WARNING might not work as planned!!
+                serverSenders.get(serverSenders.size()-1).clientName = serverReceivers.get(serverReceivers.size()-1).clientName;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        /**
+         * load gamePanel and start game for player that started the server
+         */
+        clearContentPane();
+        load_game();
+
+        GE.start();
+//        CS.start();
+//        CR.start();
+
+        data.staticData.startTime = System.currentTimeMillis();
+        data.staticData.gamePanel.syncMouse();
+        /**
+         * start server worker threads
+         */
+        for (ServerReceiver sr: serverReceivers) sr.start();
+        for (ServerSender ss: serverSenders) ss.start();
+
+        SLE.start();
+    }
+
+    private void load_server_waiting() {
+        //todo
     }
 
     public void load_intro(){
         clearContentPane();
         IntroPanel introPanel = new IntroPanel(this);
-        introPanel.setSize(Data.screenSize);
-        data.gameFrame.contentPane.add(introPanel);
+        introPanel.setSize(data.staticData.screenSize);
+        data.staticData.gameFrame.contentPane.add(introPanel);
         introPanel.repaint();
         introPanel.revalidate();
-        data.gameFrame.pack();
+        data.staticData.gameFrame.pack();
     }
     public void load_player_selection(){
         clearContentPane();
         PlayerSelectionPanel playerSelectionPanel = new PlayerSelectionPanel(this);
-        playerSelectionPanel.setSize(Data.screenSize);
-        data.gameFrame.contentPane.add(playerSelectionPanel);
+        playerSelectionPanel.setSize(data.staticData.screenSize);
+        data.staticData.gameFrame.contentPane.add(playerSelectionPanel);
         playerSelectionPanel.repaint();
         playerSelectionPanel.revalidate();
-        data.gameFrame.pack();
+        data.staticData.gameFrame.pack();
     }
-    public void load_game(int level){
-        //TODO
-
-        if(level == 0){
-            //TODO proper gamePanel set to gameFrame and handling focus and packing the frame.
-            //TODO Level loader Perhaps?? something should take charge here and send waves of enemies when needed.
-        }
-
-        data.gameFrame.contentPane.add(data.gamePanel);
-        data.gamePanel.requestFocus();
-        data.gameFrame.pack();
+    public void load_game(){
+        data.staticData.gameFrame.contentPane.add(data.staticData.gamePanel);
+        data.staticData.gamePanel.requestFocus();
+        data.staticData.gameFrame.pack();
     }
     private void clearContentPane(){
-        data.gameFrame.contentPane.removeAll();
+        data.staticData.gameFrame.contentPane.removeAll();
+    }
+
+    public LogicEngine getLogicEngine(){
+        return LE;
     }
 }
