@@ -86,16 +86,21 @@ public class Data implements Jsonable{
 
         public transient GamePanel gamePanel;
         public transient GameFrame gameFrame;
+        public volatile boolean pauseDialogOpened;
 
         transient File file;
         public transient String savePath;
 //        public transient volatile Player player;
         public transient SaveData saveData;
+        //true: wants pause, false: wants un pause
+        public volatile boolean pauseRequest;
+
 
         public StaticData(){
 //            player = new Player("guest");
             pressedKeys = new HashSet<>();
 
+            pauseDialogOpened = false;
             screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
             startTime = 0;

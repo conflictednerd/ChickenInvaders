@@ -23,6 +23,11 @@ public class GraphicEngine extends Thread {
         gamePanel.drawStatPanel();
         while (data.dynamicData.GERunning) {
             if (!data.dynamicData.isPaused) {
+//                if(data.staticData.pauseRequest)
+                if(data.staticData.pauseDialogOpened && data.staticData.pauseRequest == false) {
+                    data.staticData.gamePanel.syncMouse();
+                    data.staticData.pauseDialogOpened = false;
+                }
                 //THis might cause lower frame per second.
                 synchronized (data) {
                     data.staticData.gamePanel.repaintStatPanel();
@@ -36,14 +41,20 @@ public class GraphicEngine extends Thread {
                     System.out.println("fps: " + fps);
                     fps = 0;
                 }
-
-                try {
-                    //around 90fps
-                    GraphicEngine.sleep(10);
-//                GraphicEngine.sleep(15 - (System.currentTimeMillis()-beginTime));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            }
+            else{
+                if(!data.staticData.pauseDialogOpened){
+                    System.err.println("In graphic engine else.");
+                    data.staticData.gamePanel.esc();
+                    data.staticData.pauseDialogOpened = true;
                 }
+            }
+            try {
+                //around 90fps
+                GraphicEngine.sleep(10);
+//                GraphicEngine.sleep(15 - (System.currentTimeMillis()-beginTime));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         System.err.println("GE out!");

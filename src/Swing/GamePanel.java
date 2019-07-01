@@ -89,7 +89,6 @@ public class GamePanel extends JPanel {
                         }
                     }
                     else if(SwingUtilities.isRightMouseButton(mouseEvent)){
-                        shootBomb();
                         data.staticData.pressedKeys.add(bombPressed);
                     }
                 }
@@ -118,10 +117,8 @@ public class GamePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 //Code for game pause.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE) esc();
-                //TODO Better to move this to logic engine.
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER){
                     data.staticData.pressedKeys.add(bombPressed);
-                    shootBomb();
                 }
                 if(!data.dynamicData.isPaused) {
                     synchronized (data.staticData.pressedKeys) {
@@ -138,15 +135,6 @@ public class GamePanel extends JPanel {
         }
     }
 
-    private void shootBomb() {
-        if(data.dynamicData.player.bombs>0) {
-            data.dynamicData.player.bombs--;
-            Bomb b = new Bomb(data.dynamicData.rocket.getX(), data.dynamicData.rocket.getY(), data.dynamicData.player.name);
-            b.calculateDefaultSpeeds();
-            data.dynamicData.bombs.add(b);
-//            repaintStatPanel();
-        }
-    }
 
     public void drawStatPanel() {
         statPanel = new StatPanel(this.data);
@@ -203,17 +191,22 @@ public class GamePanel extends JPanel {
     }
 
     public void esc(){
-        if(data.dynamicData.isPaused){
+        if(data.dynamicData.isPaused && data.staticData.pauseDialogOpened){
             pauseDialog.dispose();
+            data.staticData.pauseRequest = false;
             syncMouse();
         }
         else{
+            //todo order should come from server:
             pauseDialog = new PauseDialog(data);
+            data.staticData.pauseDialogOpened = true;
+            data.staticData.pauseRequest = true;
 //            System.out.println(data.toJSON());
         }
-        synchronized (data.dynamicData.isPaused) {
-            data.dynamicData.isPaused = !data.dynamicData.isPaused;
-        }
+//        System.err.println("In esc(). data.isPaused: "+ data.dynamicData.isPaused + " data.pauseRequest: "+ data.staticData.pauseRequest + " data.pauseDialogOpende: "+ data.staticData.pauseDialogOpened);
+//        synchronized (data.dynamicData.isPaused) {
+//            data.dynamicData.isPaused = !data.dynamicData.isPaused;
+//        }
     }
 
 }

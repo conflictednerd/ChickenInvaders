@@ -1,6 +1,5 @@
 package com.saeed.network;
 
-import Base.Data;
 import Base.LevelManager;
 import Base.Player;
 import Base.SoundThread;
@@ -33,32 +32,44 @@ public class ServerLogicEngine extends Thread {
         serverData = new ServerData();
         //todo should also pass max_level
         levelManager = new LevelManager(serverData.players,serverData.enemies);
-        //TODO!! MUST FIX SHOT MAX HEAT FOR EACH PLAYER.
-//        Shot.maxHeat += 5*data.staticData.player.rocketLevel;
         soundThread.start();
     }
 
     @Override
     public void run() {
-        //TODO coolDown mechanism for multi-player is NOT set.
-
         Long waitForNextWave = -1l;
-        Long time = System.currentTimeMillis();
-
+        boolean flag = true;
         //todo while condition.
         while(true){
+
+            //this will inform others that game is paused when serverData.isPaused is sent to clients
+            //and then their requestPauses will be true until they change it.
+            flag = true;
+            for(String name: serverData.clients.keySet()){
+                if(serverData.clients.get(name).requestedPause){
+                    serverData.isPaused = true;
+                    flag = false;
+                    break;
+                }
+            }
+            //if nobody was paused
+            if(flag) serverData.isPaused = false;
+
             if(!serverData.isPaused){
 
                 //todo some code goes here from logic Engine.
 
+                /**
+                 * Check for shot over-heat among all players
+                 */
                 for(String name:serverData.clients.keySet()) {
                     if (serverData.clients.get(name).player.shotHeat >= serverData.clients.get(name).player.maxHeat && !serverData.clients.get(name).player.waitingForShotCooldown) {
-                        System.out.println("In cool Down mode for :" + name + " max heat: " + serverData.clients.get(name).player.maxHeat);
                         serverData.clients.get(name).player.waitingForShotCooldown = true;
                         serverData.clients.get(name).rocket.coolDown = true;
                         serverData.clients.get(name).player.coolDownTimer = System.currentTimeMillis();
                     }
                 }
+
                 //If one wave is over, wait for 3 second, then call level manager for next wave.
                 if(serverData.enemies.size() == 0 && !wavesFinished){
                     if(waitForNextWave <= 0)
@@ -109,6 +120,31 @@ public class ServerLogicEngine extends Thread {
                     }
                 }
 
+                synchronized (serverData.rockets) {
+                    for (Rocket r : serverData.rockets) {
+                        if (!r.noLifeLeft) {
+                            if (r.isReviving()) {
+                                //3 seconds reviving time.
+                                if (System.currentTimeMillis() > r.reviveTime + 3000) r.setReviving(false);
+                                r.nextReviveAnimation();
+                            }
+                            else if(!r.isAlive()){
+                                // 7seconds disappear time.
+                                if (System.currentTimeMillis() > r.killTime + 7000) {
+//                                    r.setMouse();
+                                    r.setAlive(true);
+                                    r.setReviving(true);
+                                    r.reviveTime = System.currentTimeMillis();
+                                }
+                            }
+                        }
+                        else {
+                            r.setAlive(false);
+                            r.setReviving(false);
+                        }
+                    }
+                }
+
 //                long timetemp = System.currentTimeMillis();
                 synchronized (serverData.bombs) {
                     for(Bomb bomb: serverData.bombs){
@@ -154,7 +190,7 @@ public class ServerLogicEngine extends Thread {
                         }
 //                        long time = System.currentTimeMillis();
                         if(data.pressedKeys.contains(bombPressed)){
-                            if(data.player.bombs>0) {
+                            if(data.player.bombs>0 && data.rocket.isAlive()) {
                                 data.player.bombs--;
                                 synchronized (serverData.bombs) {
                                     Bomb b = new Bomb(data.rocket.getX(), data.rocket.getY(), data.player.name);
@@ -219,67 +255,50 @@ public class ServerLogicEngine extends Thread {
                 }
 //                System.err.println("Time spent in SLE: " + (System.currentTimeMillis()-time)+ " mS");
 //                time = System.currentTimeMillis();
-                try {
-                    sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
             }
-
-            else{
-                //todo handling pause menu for multiple players.
+            try {
+                sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
 
     private void collisionHandler() {
+        /**
+         * enemy collisions
+         */
         synchronized (serverData.enemies) {
-            synchronized (serverData.shots) {
-                for (Shot shot : serverData.shots) {
-                    Player player = null;
-                    for (Player p : serverData.players) {
-                        if (shot.owner.equals(p.name)) {
-                            player = p;
-                            break;
-                        }
-                    }
-                    for (Enemy enemy : serverData.enemies) {
+            for (Enemy enemy : serverData.enemies) {
+                /**
+                 * enemy-shot collision
+                 */
+                synchronized (serverData.shots) {
+                    for (Shot shot : serverData.shots) {
                         if (intersect(enemy, shot)) {
                             enemy.health -= shot.damage;
-                            //todo
-                            serverData.shots.remove(shot);
                             if (enemy.health <= 0.1) {
                                 addPrize(enemy);
-                                player.score += enemy.getLvl();
+                                serverData.clients.get(shot.owner).player.score += enemy.getLvl();
                                 serverData.enemies.remove(enemy);
-//                                data.staticData.gamePanel.repaintStatPanel();
                             }
+                            serverData.shots.remove(shot);
                         }
                     }
                 }
 
-
-                for (Rocket rocket : serverData.rockets) {
-                    Player owner = null;
-                    for (Player p : serverData.players) {
-                        if (rocket.getOwner().equals(p.name)) {
-                            owner = p;
-                            break;
-                        }
-                    }
-                    for (Enemy enemy : serverData.enemies) {
-
-                        if (rocket.isAlive() && !rocket.isReviving()) {
-                            if (intersect(rocket, enemy)) {
-                                enemy.health -= 50;
-                                die(owner, rocket);
-                                if (enemy.health <= 0.1) {
-                                    addPrize(enemy);
-                                    owner.score += enemy.getLvl();
-                                    serverData.enemies.remove(enemy);
-//                                    data.staticData.gamePanel.repaintStatPanel();
-                                }
+                /**
+                 * enemy-player collision
+                 */
+                synchronized (serverData.rockets) {
+                    for (Rocket rocket : serverData.rockets) {
+                        if (rocket.isAlive() && !rocket.isReviving() && intersect(rocket, enemy)) {
+                            enemy.health -= 50;
+                            die(serverData.clients.get(rocket.getOwner()).player, rocket);
+                            if (enemy.health <= 0.1) {
+                                addPrize(enemy);
+                                serverData.clients.get(rocket.getOwner()).player.score += enemy.getLvl();
+                                serverData.enemies.remove(enemy);
                             }
                         }
                     }
@@ -287,35 +306,34 @@ public class ServerLogicEngine extends Thread {
             }
         }
 
-
+        /**
+         * rocket collisions
+         */
         for (Rocket rocket : serverData.rockets) {
-            Player owner = null;
-            for (Player p : serverData.players) {
-                if (rocket.getOwner().equals(p.name)) {
-                    owner = p;
-                    break;
-                }
-            }
-            synchronized (serverData.enemyShots) {
-                if (rocket.isAlive() && !rocket.isReviving()) {
+            Player owner = serverData.clients.get(rocket.getOwner()).player;
+            if (rocket.isAlive() && !rocket.isReviving()) {
+                /**
+                 * rocket-enemyShot collision
+                 */
+                synchronized (serverData.enemyShots) {
                     for (EnemyShot enemyShot : serverData.enemyShots) {
                         if (intersect(rocket, enemyShot)) {
-                            die(owner, rocket);
+                            die(serverData.clients.get(rocket.getOwner()).player, rocket);
                             serverData.enemyShots.remove(enemyShot);
                             break;
                         }
                     }
                 }
             }
-
-
-            synchronized (serverData.upgrades) {
-                if (rocket.isAlive()) {
+            /**
+             * rocket-upgrade collision
+             */
+            if (rocket.isAlive()) {
+                synchronized (serverData.upgrades) {
                     for (Upgrade u : serverData.upgrades) {
                         if (intersect(rocket, u)) {
-                            u.activate(owner);
+                            u.activate(serverData.clients.get(rocket.getOwner()).player);
                             serverData.upgrades.remove(u);
-//                            data.staticData.gamePanel.repaintStatPanel();
                         }
                     }
                 }
@@ -328,7 +346,6 @@ public class ServerLogicEngine extends Thread {
         player.life--;
         player.coins = 0;
         player.shotLevel = 1;
-        //todo add this to player class
         player.maxHeat = 100;
     }
 
@@ -394,9 +411,7 @@ public class ServerLogicEngine extends Thread {
     }
 
     private void shoot(Integer shotLevel, Integer shotType, Rocket rocket, Player player) {
-//        System.err.println("in shoot");
         player.shotHeat += Shot.heatIncreaseRate;
-//        System.err.println(player.shotHeat);
         if(shotLevel == 1){
             //fire one shot
             if(shotType == Shot1.ID){

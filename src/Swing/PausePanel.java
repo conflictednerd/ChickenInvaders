@@ -33,7 +33,8 @@ public class PausePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE){
                     pauseDialog.data.staticData.gamePanel.syncMouse();
-                    pauseDialog.data.dynamicData.isPaused = false;
+//                    pauseDialog.data.dynamicData.isPaused = false;
+                    pauseDialog.data.staticData.pauseRequest = false;
                     pauseDialog.dispose();
                 }
             }
@@ -48,7 +49,8 @@ public class PausePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE){
                     pauseDialog.data.staticData.gamePanel.syncMouse();
-                    pauseDialog.data.dynamicData.isPaused = false;
+//                    pauseDialog.data.dynamicData.isPaused = false;
+                    pauseDialog.data.staticData.pauseRequest = false;
                     pauseDialog.dispose();
                 }
             }
@@ -68,7 +70,7 @@ public class PausePanel extends JPanel {
             public void keyReleased(KeyEvent keyEvent) {
                 if(keyEvent.getKeyCode() == KeyEvent.VK_ESCAPE){
                     pauseDialog.data.staticData.gamePanel.syncMouse();
-                    pauseDialog.data.dynamicData.isPaused = false;
+//                    pauseDialog.data.dynamicData.isPaused = false;
                     pauseDialog.dispose();
                 }
             }
@@ -76,7 +78,8 @@ public class PausePanel extends JPanel {
 
         resume.addActionListener(actionEvent -> {
             pauseDialog.data.staticData.gamePanel.syncMouse();
-            pauseDialog.data.dynamicData.isPaused = false;
+//            pauseDialog.data.dynamicData.isPaused = false;
+            pauseDialog.data.staticData.pauseRequest = false;
             pauseDialog.dispose();
         });
 

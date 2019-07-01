@@ -45,6 +45,13 @@ public class LogicEngine extends Thread{
         Long coolDownTimer = 0l, shootingTimer = null, timeOfLastShot = 0l, waitForNextWave = -1l;
 
         while(data.dynamicData.LERunning) {
+            if(data.staticData.pauseRequest){
+                data.dynamicData.isPaused = true;
+            }
+            else{
+                data.dynamicData.isPaused = false;
+            }
+
             if (!data.dynamicData.isPaused) {
                 //Game Over
                 if(data.dynamicData.player.life <= 0){
@@ -127,11 +134,31 @@ public class LogicEngine extends Thread{
                     }
                 }
 
+                synchronized (data.dynamicData.rocket) {
+                    if (!data.dynamicData.rocket.noLifeLeft) {
+                        if (data.dynamicData.rocket.isReviving()) {
+                            //3 seconds reviving time.
+                            if (System.currentTimeMillis() > data.dynamicData.rocket.reviveTime + 3000) data.dynamicData.rocket.setReviving(false);
+                            data.dynamicData.rocket.nextReviveAnimation();
+                        } else if (!data.dynamicData.rocket.isAlive()) {
+                            // 7seconds disappear time.
+                            if (System.currentTimeMillis() > data.dynamicData.rocket.killTime + 7000) {
+                                data.dynamicData.rocket.setMouse();
+                                data.dynamicData.rocket.setAlive(true);
+                                data.dynamicData.rocket.setReviving(true);
+                                data.dynamicData.rocket.reviveTime = System.currentTimeMillis();
+                            }
+                        }
+                    } else {
+                        data.dynamicData.rocket.setAlive(false);
+                        data.dynamicData.rocket.setReviving(false);
+                    }
+                }
+
                 synchronized (data.dynamicData.bombs) {
                     for(Bomb bomb: data.dynamicData.bombs){
                         if(!bomb.isActive){
                             data.dynamicData.bombs.remove(bomb);
-//                            System.err.println("bomb exploded");
                             synchronized (data.dynamicData.enemies){
                                 for(Enemy e: data.dynamicData.enemies){
                                     e.health -= 50;
@@ -141,7 +168,6 @@ public class LogicEngine extends Thread{
                                         addPrize(e);
                                     }
                                 }
-//                                data.staticData.gamePanel.repaintStatPanel();
                             }
                         }
                         else bomb.move();
@@ -170,7 +196,7 @@ public class LogicEngine extends Thread{
                         data.staticData.gamePanel.syncMouse();
                     }
                     if(data.staticData.pressedKeys.contains(bombPressed)){
-                        if(data.dynamicData.player.bombs>0) {
+                        if(data.dynamicData.player.bombs>0 && data.dynamicData.rocket.isAlive()) {
                             data.dynamicData.player.bombs--;
                             Bomb b = new Bomb(data.dynamicData.rocket.getX(), data.dynamicData.rocket.getY(), data.dynamicData.player.name);
                             b.calculateDefaultSpeeds();

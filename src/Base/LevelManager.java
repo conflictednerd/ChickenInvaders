@@ -107,13 +107,11 @@ public class LevelManager {
      * @return true if all waves are done.
      */
     public boolean nextWave(Set<Enemy> enemies) {
-        System.err.println("WaveList.size() = " + waveList.size()+ " current Wave:" + currentWave);
         for(Player p: players) {
             p.subLevel++;
             p.level = p.subLevel / 5;
         }
         currentWave++;
-        //TODO update level, sublevel for data.player.
         //todo when All waves are done,
         if(currentWave >= waveList.size()) {
             System.err.println("DONE");
@@ -126,6 +124,7 @@ public class LevelManager {
             Enemy4.targetX = -1;
             Enemy4.targetY = -1;
         }
+        System.err.println("Current Wave: " + currentWave);
         for(Enemy enemy: waveList.get(currentWave).enemies){
             enemies.add(enemy);
         }

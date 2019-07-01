@@ -29,7 +29,7 @@ public class PowerUp extends Upgrade {
     @Override
     public void activate(Player player) {
         player.rocketLevel++;
-        Shot.maxHeat+=5;
+        player.maxHeat+=5;
     }
 
     @Override

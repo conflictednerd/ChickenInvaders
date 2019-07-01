@@ -20,7 +20,7 @@ public class ServerReceiver extends Thread {
 
     @Override
     public void run() {
-        ClientSender.ClientToServerData receivedData = new ClientSender.ClientToServerData(0,0,null);
+        ClientSender.ClientToServerData receivedData = new ClientSender.ClientToServerData(0,0,null, false);
 //        getInitialPacket();
 
         //todo while condition.
@@ -32,15 +32,9 @@ public class ServerReceiver extends Thread {
             }
             serverData.clients.get(clientName).rocket.setX(receivedData.x);
             serverData.clients.get(clientName).rocket.setY(receivedData.y);
-//            for(Rocket r:serverData.rockets){
-//                if(clientName.equals(r.getOwner())){
-//                    synchronized (r){
-//                        r.setX(receivedData.x);
-//                        r.setY(receivedData.y);
-//                    }
-//                }
-//            }
+            serverData.clients.get(clientName).requestedPause = receivedData.pauseRequest;
             // update or add pressed keys
+
             synchronized (serverData.clients) {
                 serverData.clients.get(clientName).pressedKeys = receivedData.pressedKeys;
             }

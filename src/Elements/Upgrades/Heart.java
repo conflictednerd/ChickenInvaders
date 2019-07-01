@@ -27,7 +27,6 @@ public class Heart extends Upgrade {
 
     @Override
     public void activate(Player player) {
-        //todo!! repaintStatPanel in LE when collision happens.
         player.life++;
     }
 

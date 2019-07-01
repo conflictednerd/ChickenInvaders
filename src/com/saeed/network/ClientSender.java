@@ -24,26 +24,26 @@ public class ClientSender extends Thread {
     @Override
     public void run() {
 //        sendPrimaryInfo();
-        clientToServerData = new ClientToServerData(0, 0, null);
+        clientToServerData = new ClientToServerData(0, 0, null, false);
         //todo should be while(in_online_game)
         while(true){
-            if(!data.dynamicData.isPaused){
+//            if(!data.dynamicData.isPaused){
                 //TODO? Will they be updated or should i copy the content in pressed keys every time??
                 clientToServerData.x = data.dynamicData.rocket.getX();
                 clientToServerData.y = data.dynamicData.rocket.getY();
                 clientToServerData.pressedKeys = data.staticData.pressedKeys;
+                clientToServerData.pauseRequest = data.staticData.pauseRequest;
                 send(clientToServerData.toJSON());
-                if(data.staticData.pressedKeys.contains(bombPressed)){
-                    data.staticData.pressedKeys.remove(bombPressed);
-                    System.err.println("bomb sent");
-                }
+//                if(data.staticData.pressedKeys.contains(bombPressed)){
+//                    data.staticData.pressedKeys.remove(bombPressed);
+//                    System.err.println("bomb sent");
+//                }
 
                 try {
                     sleep(20);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }
         }
     }
 
@@ -65,11 +65,13 @@ public class ClientSender extends Thread {
     public static class ClientToServerData implements Jsonable {
         public int x, y;
         public volatile HashSet<Integer> pressedKeys;
+        public volatile boolean pauseRequest;
 
-        public ClientToServerData(int x, int y, HashSet<Integer> pressedKeys){
+        public ClientToServerData(int x, int y, HashSet<Integer> pressedKeys, boolean pauseRequest){
             this.x = x;
             this.y = y;
             this.pressedKeys = pressedKeys;
+            this.pauseRequest = pauseRequest;
         }
 
         @Override
