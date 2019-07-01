@@ -3,6 +3,7 @@ package Base;
 import Swing.*;
 import com.saeed.network.*;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -82,12 +83,12 @@ public class Game {
     public void playAsServer(int port){
         clients = new ArrayList<>();
         ServerListener serverListener = new ServerListener(port, clients);
+        serverListener.setCounterLabel(load_server_waiting());
         serverListener.start();
         createClient("localhost", port);
-        load_server_waiting();
 
-        //temp
-        startServerGame();
+        //todo temp
+//        startServerGame();
     }
 
     /**
@@ -125,6 +126,10 @@ public class Game {
         clearContentPane();
         load_game();
 
+
+        for (ServerReceiver sr: serverReceivers) sr.start();
+        for (ServerSender ss: serverSenders) ss.start();
+
         GE.start();
 //        CS.start();
 //        CR.start();
@@ -134,14 +139,11 @@ public class Game {
         /**
          * start server worker threads
          */
-        for (ServerReceiver sr: serverReceivers) sr.start();
-        for (ServerSender ss: serverSenders) ss.start();
+
+//        for (ServerReceiver sr: serverReceivers) sr.start();
+//        for (ServerSender ss: serverSenders) ss.start();
 
         SLE.start();
-    }
-
-    private void load_server_waiting() {
-        //todo
     }
 
     public void load_intro(){
@@ -173,5 +175,36 @@ public class Game {
 
     public LogicEngine getLogicEngine(){
         return LE;
+    }
+
+    public void load_server_creation() {
+        clearContentPane();
+        ServerCreationPanel serverCreationPanel = new ServerCreationPanel(this);
+        serverCreationPanel.setSize(data.staticData.screenSize);
+        data.staticData.gameFrame.contentPane.add(serverCreationPanel);
+        serverCreationPanel.repaint();
+        serverCreationPanel.revalidate();
+        data.staticData.gameFrame.pack();
+    }
+
+    public JLabel load_server_waiting() {
+        clearContentPane();
+        ServerWaitingPanel serverWaitingPanel = new ServerWaitingPanel(this);
+        serverWaitingPanel.setSize(data.staticData.screenSize);
+        data.staticData.gameFrame.contentPane.add(serverWaitingPanel);
+        serverWaitingPanel.repaint();
+        serverWaitingPanel.revalidate();
+        data.staticData.gameFrame.pack();
+        return serverWaitingPanel.getCounterLabel();
+    }
+
+    public void load_client_creation() {
+        clearContentPane();
+        ClientCreationPanel clientCreationPanel = new ClientCreationPanel(this);
+        clientCreationPanel.setSize(data.staticData.screenSize);
+        data.staticData.gameFrame.contentPane.add(clientCreationPanel);
+        clientCreationPanel.repaint();
+        clientCreationPanel.revalidate();
+        data.staticData.gameFrame.pack();
     }
 }

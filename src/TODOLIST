@@ -15,11 +15,14 @@ Done: shot cool down and time between shots in multi-player.
 Done: move shootbomb mechanism from gamePanel to LE completely.(currently shoot bomb doesn't work in multi-player)
 Done: player should be dynamic and score and other info's should be updated
 todo: Enemy2s behaviour in multi-player.
-todo: add serverWaiting panel and other multi player panels.
+Done: add serverWaiting panel and other multi player panels.
 todo: pause menu handling
 todo: Level manager seems to not work
+todo: Exception handling.
+todo: client death handling.
 
 Done: pressedKeyNamePair can be a hash map.
 
 *Done(single player Logic Engine still works with Shot fields): heat increment should be implemented in logic engine rather than in shot constructors.
 *todo: collision handler code is ugly:) use ClientsDataOnServer to better implement it.
+*todo: changing enemies health in multi-player depending on number of players.

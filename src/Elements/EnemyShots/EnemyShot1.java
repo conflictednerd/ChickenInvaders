@@ -10,16 +10,18 @@ import java.io.IOException;
 public class EnemyShot1 extends EnemyShot {
     private static Image image;
 
+    static {
+        try {
+            image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/EnemyShots/EnemyShot1.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public EnemyShot1(int centerX, int centerY) {
         super(centerX, centerY);
         setSpeedX(0);
         setSpeedY(5);
-        try {
-            if(image == null)
-                image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/EnemyShots/EnemyShot1.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

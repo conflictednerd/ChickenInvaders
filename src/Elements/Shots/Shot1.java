@@ -13,6 +13,18 @@ public class Shot1 extends Shot {
     private static Image s, l20, l10, r10, r20 = null;
     private int width, height, orientation;
 
+    static{
+        try {
+            s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/S.png"));
+            l20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/L20.png"));
+            l10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/L10.png"));
+            r10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/R10.png"));
+            r20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/R20.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @param x
      * @param y
@@ -26,17 +38,16 @@ public class Shot1 extends Shot {
         if(shotLevel>4) {
             damage += shotLevel-4;
         }
-        ///todo!!!!! shot heat should increase from logic engine when creating the shot for each player for
-        //  todo simplicity in multi-player.
+        //Legacy support
         Shot.shotHeat+=heatIncreaseRate;
-        try {
-            if(s == null){
-                s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/S.png"));
-                l20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/L20.png"));
-                l10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/L10.png"));
-                r10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/R10.png"));
-                r20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/R20.png"));
-            }
+//        try {
+//            if(s == null){
+//                s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/S.png"));
+//                l20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/L20.png"));
+//                l10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/L10.png"));
+//                r10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/R10.png"));
+//                r20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/R20.png"));
+//            }
             //set the speed
             int v = -speedY;
             switch (orientation) {
@@ -70,9 +81,9 @@ public class Shot1 extends Shot {
                     speedY = (int) (-v * Math.cos(Math.toRadians(20d)));
                     break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

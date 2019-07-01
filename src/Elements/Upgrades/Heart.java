@@ -10,18 +10,19 @@ public class Heart extends Upgrade {
     private static Image image;
     private static int width, height;
 
-    public Heart(int centerX, int centerY){
-        this.centerX = centerX;
-        this.centerY = centerY;
-        try{
-            if(image == null) {
-                image = ImageIO.read(Heart.class.getResourceAsStream("../../Assets/Upgrades/Heart/heart.png"));
-                height = image.getHeight(null);
-                width = image.getWidth(null);
-            }
+    static {
+        try {
+            image = ImageIO.read(Heart.class.getResourceAsStream("../../Assets/Upgrades/Heart/heart.png"));
+            height = image.getHeight(null);
+            width = image.getWidth(null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Heart(int centerX, int centerY){
+        this.centerX = centerX;
+        this.centerY = centerY;
     }
 
     @Override

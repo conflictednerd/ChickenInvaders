@@ -15,18 +15,19 @@ public class Coin extends Upgrade {
 
     private int animationCounter = 0;
 
-    public Coin(int centerX, int centerY){
-        this.centerX = centerX;
-        this.centerY = centerY;
-        try{
-            if(image == null){
-                image = ImageIO.read(Coin.class.getResourceAsStream("../../Assets/Upgrades/Coin/1.png"));
-                height = image.getHeight(null);
-                width = image.getWidth(null);
-            }
+    static {
+        try {
+            image = ImageIO.read(Coin.class.getResourceAsStream("../../Assets/Upgrades/Coin/1.png"));
+            height = image.getHeight(null);
+            width = image.getWidth(null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Coin(int centerX, int centerY){
+        this.centerX = centerX;
+        this.centerY = centerY;
     }
 
     @Override

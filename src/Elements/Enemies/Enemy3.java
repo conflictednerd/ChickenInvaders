@@ -28,21 +28,21 @@ public class Enemy3 extends Enemy {
         return height;
     }
 
+    static {
+        try {
+            image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/4.png"));
+            width = image.getWidth(null);
+            height = image.getHeight(null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Enemy3(int pivotX, int pivotY, int radius){
         this.pivotX = pivotX;
         this.pivotY = pivotY;
         this.radius = radius;
         speedTheta = 1;
-
-        try {
-            if(image == null){
-                image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/4.png"));
-                width = image.getWidth(null);
-                height = image.getHeight(null);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

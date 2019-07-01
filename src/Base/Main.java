@@ -9,6 +9,6 @@ public class Main {
 //        }, "game Thread");
 //        t.start();
         Game game = new Game();
-        game.playAsServer(2323);
+//        game.playAsServer(2323);
     }
 }

@@ -12,17 +12,14 @@ import java.util.List;
 import java.util.Random;
 
 public class Boss extends Enemy {
-    public int width, height;
+    public static int width, height;
     private int minX = 50, maxX = (int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()-50), minY = 50, maxY = 600;
     //todo !! NETWORK can be static??
-    private transient List<Image> imageList = new ArrayList<>();
+    private static transient List<Image> imageList = new ArrayList<>();
     private int animationCounter = 0;
     private static Random random = new Random();
 
-    public Boss(){
-        speedX = 10;
-        speedY = 10;
-        health = 250;
+    static {
         try{
             for(int i = 0; i < 25; i++){
                 imageList.add(ImageIO.read(Boss.class.getResourceAsStream("../../Assets/Boss/Version1_Attack1_" + i + ".png")));
@@ -32,6 +29,12 @@ public class Boss extends Enemy {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Boss(){
+        speedX = 10;
+        speedY = 10;
+        health = 250;
     }
 
 

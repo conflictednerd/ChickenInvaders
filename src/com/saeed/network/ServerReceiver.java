@@ -30,29 +30,20 @@ public class ServerReceiver extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            for(Rocket r:serverData.rockets){
-                if(clientName.equals(r.getOwner())){
-                    synchronized (r){
-                        r.setX(receivedData.x);
-                        r.setY(receivedData.y);
-                    }
-                }
-            }
+            serverData.clients.get(clientName).rocket.setX(receivedData.x);
+            serverData.clients.get(clientName).rocket.setY(receivedData.y);
+//            for(Rocket r:serverData.rockets){
+//                if(clientName.equals(r.getOwner())){
+//                    synchronized (r){
+//                        r.setX(receivedData.x);
+//                        r.setY(receivedData.y);
+//                    }
+//                }
+//            }
             // update or add pressed keys
             synchronized (serverData.clients) {
                 serverData.clients.get(clientName).pressedKeys = receivedData.pressedKeys;
             }
-//            boolean flag = true;
-//            for(PressedKeyNamePair p:serverData.pressedKeys){
-//                if(clientName.equals(p.playerName)){
-//                    p.pressedKeys = receivedData.pressedKeys;
-//                    flag = false;
-//                    break;
-//                }
-//            }
-//            if(flag){
-//                serverData.pressedKeys.add(new PressedKeyNamePair(clientName, receivedData.pressedKeys));
-//            }
         }
     }
 
@@ -72,7 +63,11 @@ public class ServerReceiver extends Thread {
         temp.rocket = new Rocket(p.name);
         serverData.clients.put(p.name, temp);
         serverData.players.add(p);
+        System.err.println("Data received in server. player maxHeat = " + p.maxHeat);
         serverData.rockets.add(temp.rocket);
+        p.maxHeat = 100;
+        p.timeOfLastShot = 0l;
+        p.coolDownTimer = 0l;
         //todo because client name in server sender and receiver both point to one string this will probably:) work.
         this.clientName = p.name;
         System.out.println("player info received in server");

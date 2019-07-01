@@ -2,22 +2,19 @@ package Base;
 
 import Elements.*;
 import Elements.Shots.Shot;
-import Elements.Shots.Shot1;
-import Elements.Shots.Shot2;
-import Elements.Shots.Shot3;
 import Elements.Upgrades.Upgrade;
 import Swing.GameFrame;
 import Swing.GamePanel;
 import com.gilecode.yagson.YaGson;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,6 +40,7 @@ public class Data implements Jsonable{
         public volatile Set<Bomb> bombs;
         public volatile Set<Enemy> enemies;
         public volatile Set<Upgrade> upgrades;
+        public volatile List<Rocket> rockets;
         public Rocket rocket;
         public Player player;
 
@@ -58,7 +56,9 @@ public class Data implements Jsonable{
             bombs = ConcurrentHashMap.newKeySet();
             enemies = ConcurrentHashMap.newKeySet();
             upgrades = ConcurrentHashMap.newKeySet();
+            rockets = new ArrayList<>();
             rocket = new Rocket("DEFAULT");
+            rockets.add(rocket);
 
             player = new Player("guest");
             isPaused = false;

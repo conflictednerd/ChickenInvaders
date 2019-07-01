@@ -13,6 +13,18 @@ public class Shot3 extends Shot {
     private static Image s, l20, l10, r10, r20 = null;
     private int width, height, orientation;
 
+    static{
+        try {
+            s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/S.png"));
+            l20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/L20.png"));
+            l10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/L10.png"));
+            r10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/R10.png"));
+            r20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/R20.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Shot3(int x, int y, int orientation, int shotLevel, String owner) {
         super(x, y);
         this.owner = owner;
@@ -25,14 +37,16 @@ public class Shot3 extends Shot {
 //            heatIncreaseRate /= shotLevel;
 //        }
 //        Shot.shotHeat+=heatIncreaseRate;
-        try {
-            if (s == null) {
-                s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/S.png"));
-                l20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/L20.png"));
-                l10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/L10.png"));
-                r10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/R10.png"));
-                r20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/R20.png"));
-            }
+
+
+//        try {
+//            if (s == null) {
+//                s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/S.png"));
+//                l20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/L20.png"));
+//                l10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/L10.png"));
+//                r10 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/R10.png"));
+//                r20 = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot3/R20.png"));
+//            }
             //set the speed
             int v = -speedY;
             switch (orientation) {
@@ -66,9 +80,9 @@ public class Shot3 extends Shot {
                     speedY = (int) (-v * Math.cos(Math.toRadians(20d)));
                     break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

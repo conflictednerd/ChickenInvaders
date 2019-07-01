@@ -31,19 +31,19 @@ public class Enemy4 extends Enemy {
         return height;
     }
 
-    public Enemy4(int radius){
-        this.radius = radius;
-        speedTheta = 1;
-
+    static {
         try {
-            if(image == null){
-                image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/2.png"));
-                width = image.getWidth(null);
-                height = image.getHeight(null);
-            }
+            image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/2.png"));
+            width = image.getWidth(null);
+            height = image.getHeight(null);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Enemy4(int radius){
+        this.radius = radius;
+        speedTheta = 1;
     }
 
     @Override

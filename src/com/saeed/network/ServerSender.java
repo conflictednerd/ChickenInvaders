@@ -35,6 +35,7 @@ public class ServerSender extends Thread {
             dynamicData.enemies = serverData.enemies;
             dynamicData.enemyShots = serverData.enemyShots;
             dynamicData.shots = serverData.shots;
+            dynamicData.rockets = serverData.rockets;
 
             dynamicData.upgrades = serverData.upgrades;
             dynamicData.rocket = serverData.clients.get(clientName).rocket;

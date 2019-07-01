@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class IntroPanel extends JPanel {
 
     Game game;
-    JButton play, scores,setting, quit;
+    JButton play, createServer, joinServer ,scores,setting, quit;
     Image intro1, title;
     final int BUTTON_WIDTH = 700 ,BUTTON_HEIGHT = 50, BUTTON_SPACE = 20;
 
@@ -37,46 +37,45 @@ public class IntroPanel extends JPanel {
         }
 
         play = new JButton("Play!");
-        play.setBorder(new RoundedBorder(20));
-        play.setOpaque(false);
-        play.setBounds( (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/3, BUTTON_WIDTH, BUTTON_HEIGHT);
-        play.setForeground(Color.white);
-        play.setBackground(Color.MAGENTA);
-        play.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
         play.addActionListener(actionEvent -> game.play());
+        setButton(play, 0);
         add(play);
+
+        createServer = new JButton("Create Server");
+        createServer.addActionListener(actionEvent -> game.load_server_creation());
+        setButton(createServer,1);
+        add(createServer);
+
+        joinServer = new JButton("Join a Server");
+        joinServer.addActionListener(actionEvent -> game.load_client_creation());
+        setButton(joinServer,2);
+        add(joinServer);
 
 
 
         scores = new JButton("Scores");
-        scores.setBorder(new RoundedBorder(20));
-        scores.setOpaque(false);
-        scores.setBounds( (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/3 + BUTTON_HEIGHT + BUTTON_SPACE, BUTTON_WIDTH, BUTTON_HEIGHT);
-        scores.setForeground(Color.white);
-        scores.setBackground(Color.MAGENTA);
-        scores.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
+        setButton(scores, 3);
         scores.addActionListener(actionEvent -> new RankingDialog((ArrayList<Player>) game.data.staticData.saveData.ranking));
         add(scores);
 
         setting = new JButton("Settings");
-        setting.setBorder(new RoundedBorder(20));
-        setting.setOpaque(false);
-        setting.setBounds( (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/3 + 2*BUTTON_HEIGHT + 2* BUTTON_SPACE, BUTTON_WIDTH, BUTTON_HEIGHT);
-        setting.setForeground(Color.white);
-        setting.setBackground(Color.MAGENTA);
-        setting.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
+        setButton(setting, 4);
         add(setting);
 
         quit = new JButton("Quit");
-        quit.setBorder(new RoundedBorder(20));
-        quit.setOpaque(false);
-        quit.setBounds( (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/3 + 3*BUTTON_HEIGHT + 3*BUTTON_SPACE, BUTTON_WIDTH, BUTTON_HEIGHT);
-        quit.setForeground(Color.white);
-        quit.setBackground(Color.MAGENTA);
-        quit.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
+        setButton(quit, 5);
         quit.addActionListener(actionEvent -> System.exit(0));
         add(quit);
 
+    }
+
+    private void setButton(JButton button, int index) {
+        button.setBorder(new RoundedBorder(20));
+        button.setOpaque(false);
+        button.setBounds( (int)Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2, (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight()/3 + (index-1)*(BUTTON_HEIGHT+BUTTON_SPACE), BUTTON_WIDTH, BUTTON_HEIGHT);
+        button.setForeground(Color.white);
+        button.setBackground(Color.MAGENTA);
+        button.setFont(new Font(Font.DIALOG, Font.CENTER_BASELINE, 40));
     }
 
     @Override

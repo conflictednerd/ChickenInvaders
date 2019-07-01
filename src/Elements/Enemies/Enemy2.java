@@ -21,18 +21,19 @@ public class Enemy2 extends Enemy {
     //Should change their value in LE every time we want to call move() on enemies.
     public static int rocketX = 0, rocketY = 0;
 
-    public Enemy2(){
-        speedX = 10;
-        speedY = 10;
+    static {
         try {
-            if(image == null){
             image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/3.png"));
             width = image.getWidth(null);
             height = image.getHeight(null);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Enemy2(){
+        speedX = 10;
+        speedY = 10;
     }
 
 

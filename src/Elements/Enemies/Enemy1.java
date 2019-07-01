@@ -25,19 +25,19 @@ public class Enemy1 extends Enemy {
         return height;
     }
 
-    public Enemy1(){
-        minX = 0;
-        speedX = 6;
-
+    static {
         try {
-            if(image == null){
             image = ImageIO.read(Enemy1.class.getResourceAsStream("../../Assets/Enemies/128/0.png"));
             width = image.getWidth(null);
             height = image.getHeight(null);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Enemy1(){
+        minX = 0;
+        speedX = 6;
     }
 
     public Enemy1(int centerX, int centerY,int minX, int maxX){

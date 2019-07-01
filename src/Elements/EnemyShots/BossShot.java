@@ -10,6 +10,14 @@ public class BossShot extends EnemyShot {
     private static Image image = null;
     private static int V = 5;
 
+    static {
+        try {
+            image = ImageIO.read(BossShot.class.getResourceAsStream("../../Assets/BossShots/3.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @param centerX
      * @param centerY
@@ -17,13 +25,6 @@ public class BossShot extends EnemyShot {
      */
     public BossShot(int centerX, int centerY, int orientation) {
         super(centerX, centerY);
-
-        try {
-            if(image == null)
-                image = ImageIO.read(BossShot.class.getResourceAsStream("../../Assets/BossShots/3.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         switch (orientation){
             case 0:

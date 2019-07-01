@@ -5,6 +5,7 @@ import Base.GraphicEngine;
 import Elements.Bomb;
 import Elements.Enemy;
 import Elements.EnemyShot;
+import Elements.Rocket;
 import Elements.Shots.Shot;
 import Elements.Shots.Shot1;
 import Elements.Shots.Shot2;
@@ -184,6 +185,10 @@ public class GamePanel extends JPanel {
         for(Enemy enemy:data.dynamicData.enemies) enemy.draw((Graphics2D)g);
         for(EnemyShot enemyShot:data.dynamicData.enemyShots) enemyShot.draw((Graphics2D)g);
         for(Upgrade upgrade:data.dynamicData.upgrades) upgrade.draw((Graphics2D)g);
+        for(Rocket r:data.dynamicData.rockets) {
+            if(!r.getOwner().equals(data.dynamicData.rocket.getOwner()))
+                r.draw((Graphics2D)g);
+        }
         GraphicEngine.fps++;
     }
 
@@ -204,7 +209,7 @@ public class GamePanel extends JPanel {
         }
         else{
             pauseDialog = new PauseDialog(data);
-            System.out.println(data.toJSON());
+//            System.out.println(data.toJSON());
         }
         synchronized (data.dynamicData.isPaused) {
             data.dynamicData.isPaused = !data.dynamicData.isPaused;

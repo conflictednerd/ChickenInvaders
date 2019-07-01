@@ -117,6 +117,9 @@ public class PlayerSelectionPanel extends JPanel {
                         game.data.staticData.saveData.players.add(game.data.dynamicData.player);
                     }
                 }
+                if(game.data.dynamicData.player.maxHeat == 0){
+                    game.data.dynamicData.player.maxHeat = 100;
+                }
                 game.load_intro();
             }
         });

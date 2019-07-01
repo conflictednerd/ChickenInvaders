@@ -53,6 +53,7 @@ public class ServerLogicEngine extends Thread {
 
                 for(String name:serverData.clients.keySet()) {
                     if (serverData.clients.get(name).player.shotHeat >= serverData.clients.get(name).player.maxHeat && !serverData.clients.get(name).player.waitingForShotCooldown) {
+                        System.out.println("In cool Down mode for :" + name + " max heat: " + serverData.clients.get(name).player.maxHeat);
                         serverData.clients.get(name).player.waitingForShotCooldown = true;
                         serverData.clients.get(name).rocket.coolDown = true;
                         serverData.clients.get(name).player.coolDownTimer = System.currentTimeMillis();
@@ -67,7 +68,6 @@ public class ServerLogicEngine extends Thread {
                         inTransition = true;
                         wavesFinished = levelManager.nextWave(serverData.enemies);
                     }
-//                    System.err.println(serverData.enemies.size());
                 }
 
                 if(inTransition){
@@ -139,6 +139,7 @@ public class ServerLogicEngine extends Thread {
                     
                     //Code for handling keyboard input comes here.
                     synchronized (data.pressedKeys) {
+//                        System.err.println(data.pressedKeys.size());
                         if (data.pressedKeys.contains(KeyEvent.VK_DOWN) && data.rocket.getY() < serverData.screenSize.height) {
                             data.rocket.setY(data.rocket.getY() + 10);
                         }
@@ -179,6 +180,7 @@ public class ServerLogicEngine extends Thread {
 //Case1: not in cooldown mode and is shooting then shoot
                     if(!data.player.waitingForShotCooldown && (data.pressedKeys.contains(KeyEvent.VK_SPACE) || data.pressedKeys.contains(mousePressed))){
                         data.player.shootingTimer = null;
+//                        if(data.player.timeOfLastShot == null) System.err.println("timeOfLastShot is null");
                         if(System.currentTimeMillis() - data.player.timeOfLastShot >= timeBetweenConsecutiveShots && data.rocket.isAlive()){
                             shoot(data.player.shotLevel, data.player.shotType, data.rocket, data.player);
                             soundThread.addShotSound();
@@ -392,6 +394,7 @@ public class ServerLogicEngine extends Thread {
     }
 
     private void shoot(Integer shotLevel, Integer shotType, Rocket rocket, Player player) {
+//        System.err.println("in shoot");
         player.shotHeat += Shot.heatIncreaseRate;
 //        System.err.println(player.shotHeat);
         if(shotLevel == 1){
