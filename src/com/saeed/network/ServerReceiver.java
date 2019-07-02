@@ -23,12 +23,17 @@ public class ServerReceiver extends Thread {
         ClientSender.ClientToServerData receivedData = new ClientSender.ClientToServerData(0,0,null, false);
 //        getInitialPacket();
 
-        //todo while condition.
         while(true){
             try {
                 receivedData =  receivedData.fromJSON(bufferedReader.readLine());
             } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    bufferedReader.close();
+                } catch (IOException ex) {
+                    System.err.println("Error in Server Sender");
+                } finally {
+                    break;
+                }
             }
             serverData.clients.get(clientName).rocket.setX(receivedData.x);
             serverData.clients.get(clientName).rocket.setY(receivedData.y);

@@ -7,19 +7,25 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class LevelManager {
 
     private Set<Enemy> originalEnemySet;
     private List<Wave> waveList = new ArrayList<>();
     private static int currentWave = -1;
+    private final int maxLevels;
     private List<Player> players;
 
 //todo it might be a good idea to also pass the dimension of panel to it but it might also cause complications.
-    public LevelManager(List<Player> players, Set<Enemy> originalEnemySet) {
+    public LevelManager(List<Player> players, Set<Enemy> originalEnemySet, int maxLevels) {
+        this.maxLevels = maxLevels;
         this.players = players;
         this.originalEnemySet = originalEnemySet;
         createWaves();
+    }
+    public LevelManager(List<Player> players, Set<Enemy> originalEnemySet){
+        this(players, originalEnemySet, 4);
     }
 
     private void createWaves() {
@@ -113,7 +119,7 @@ public class LevelManager {
         }
         currentWave++;
         //todo when All waves are done,
-        if(currentWave >= waveList.size()) {
+        if(currentWave >= waveList.size() || (currentWave/4)>=maxLevels) {
             System.err.println("DONE");
             return true;
         }
@@ -124,7 +130,7 @@ public class LevelManager {
             Enemy4.targetX = -1;
             Enemy4.targetY = -1;
         }
-        System.err.println("Current Wave: " + currentWave);
+        System.err.println("Current Wave: " + currentWave + "maxLevels: " + maxLevels + "\t\t"+(currentWave/4));
         for(Enemy enemy: waveList.get(currentWave).enemies){
             enemies.add(enemy);
         }

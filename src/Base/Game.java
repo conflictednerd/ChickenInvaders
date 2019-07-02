@@ -10,9 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Game {
-    private GraphicEngine GE;
+    public  GraphicEngine GE;
     private LogicEngine LE;
     private long startTime = 0;
+    private int maxLevels = 1;
     public volatile Data data = new Data();
 
     private ClientSender CS;
@@ -22,6 +23,7 @@ public class Game {
     private ArrayList<ServerReceiver> serverReceivers = new ArrayList<>();
     private ArrayList<ServerSender> serverSenders = new ArrayList<>();
     private ServerLogicEngine SLE;
+    private ServerListener serverListener;
 
     public Game(){
         load_player_selection();
@@ -69,7 +71,7 @@ public class Game {
             e.printStackTrace();
         }
         try {
-            CS = new ClientSender(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), data);
+            CS = new ClientSender(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), data, this);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -80,15 +82,13 @@ public class Game {
      * This method gets called when the player requests to create a new server for a new game.
      * @param port
      */
-    public void playAsServer(int port){
+    public void playAsServer(int port, int maxPlayers, int maxLevels){
+        this.maxLevels = maxLevels;
         clients = new ArrayList<>();
-        ServerListener serverListener = new ServerListener(port, clients);
+        serverListener = new ServerListener(port, clients, maxPlayers, this);
         serverListener.setCounterLabel(load_server_waiting());
         serverListener.start();
         createClient("localhost", port);
-
-        //todo temp
-//        startServerGame();
     }
 
     /**
@@ -98,27 +98,14 @@ public class Game {
         /**
          * create workerThreads and server logic engine.
          */
-        SLE = new ServerLogicEngine();
+        SLE = new ServerLogicEngine(maxLevels);
         if(SLE.getServerData() == null){
             System.out.println("serverData is null");
         }
         CS.start();
         CR.start();
         for(Socket s:clients){
-            try {
-                serverReceivers.add(new ServerReceiver(
-                        new BufferedReader(new InputStreamReader(s.getInputStream()))
-                        , SLE.getServerData()
-                ).getInitialPacket());
-                serverSenders.add(new ServerSender(
-                        new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))
-                        , SLE.getServerData()));
-//                serverSenders.get(serverSenders.size()-1).setClientName(serverReceivers.get(serverReceivers.size()-1).getClientName());
-                //todo WARNING might not work as planned!!
-                serverSenders.get(serverSenders.size()-1).clientName = serverReceivers.get(serverReceivers.size()-1).clientName;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            createConnections(s);
         }
         /**
          * load gamePanel and start game for player that started the server
@@ -129,6 +116,7 @@ public class Game {
 
         for (ServerReceiver sr: serverReceivers) sr.start();
         for (ServerSender ss: serverSenders) ss.start();
+        serverListener.gameStarted = true;
 
         GE.start();
 //        CS.start();
@@ -206,5 +194,35 @@ public class Game {
         clientCreationPanel.repaint();
         clientCreationPanel.revalidate();
         data.staticData.gameFrame.pack();
+    }
+
+    private void createConnections(Socket s) {
+        try {
+            serverReceivers.add(new ServerReceiver(
+                    new BufferedReader(new InputStreamReader(s.getInputStream()))
+                    , SLE.getServerData()
+            ).getInitialPacket());
+            serverSenders.add(new ServerSender(
+                    new BufferedWriter(new OutputStreamWriter(s.getOutputStream()))
+                    , SLE.getServerData()));
+            serverSenders.get(serverSenders.size() - 1).clientName = serverReceivers.get(serverReceivers.size() - 1).clientName;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void activateNewClient(Socket s){
+        createConnections(s);
+        try {
+            serverReceivers.get(serverReceivers.size() - 1).start();
+        } catch (Exception e) {
+            System.err.println("Thread already started(In Game)");
+        } finally {
+            try {
+                serverSenders.get(serverSenders.size() - 1).start();
+            } catch (Exception e) {
+                System.err.println("Thread already started(In Game)");
+            }
+        }
     }
 }

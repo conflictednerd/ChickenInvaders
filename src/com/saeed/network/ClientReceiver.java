@@ -23,7 +23,17 @@ public class ClientReceiver extends Thread {
             try {
                 tmp = bufferedReader.readLine();
             } catch (IOException e) {
-                e.printStackTrace();
+                synchronized (data){
+                    data.dynamicData.GERunning = false;
+                    try {
+                        bufferedReader.close();
+                    } catch (IOException ex) {
+                        System.err.println("Error in Client Receiver");
+                    }
+                    finally {
+                        return;
+                    }
+                }
             }
 
             synchronized (data) {

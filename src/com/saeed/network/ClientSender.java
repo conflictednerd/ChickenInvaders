@@ -1,6 +1,7 @@
 package com.saeed.network;
 
 import Base.Data;
+import Base.Game;
 import Base.Jsonable;
 import com.gilecode.yagson.YaGson;
 import com.google.gson.Gson;
@@ -14,10 +15,12 @@ public class ClientSender extends Thread {
 
     private BufferedWriter bufferedWriter;
     private Data data;
+    private Game game;
     private ClientToServerData clientToServerData;
-    public ClientSender(BufferedWriter bufferedWriter, Data data){
+    public ClientSender(BufferedWriter bufferedWriter, Data data, Game game){
         this.bufferedWriter = bufferedWriter;
         this.data = data;
+        this.game = game;
         sendPrimaryInfo();
     }
 
@@ -26,35 +29,42 @@ public class ClientSender extends Thread {
 //        sendPrimaryInfo();
         clientToServerData = new ClientToServerData(0, 0, null, false);
         //todo should be while(in_online_game)
-        while(true){
-//            if(!data.dynamicData.isPaused){
-                //TODO? Will they be updated or should i copy the content in pressed keys every time??
-                clientToServerData.x = data.dynamicData.rocket.getX();
-                clientToServerData.y = data.dynamicData.rocket.getY();
-                clientToServerData.pressedKeys = data.staticData.pressedKeys;
-                clientToServerData.pauseRequest = data.staticData.pauseRequest;
-                send(clientToServerData.toJSON());
-//                if(data.staticData.pressedKeys.contains(bombPressed)){
-//                    data.staticData.pressedKeys.remove(bombPressed);
-//                    System.err.println("bomb sent");
-//                }
+        while(true) {
+            //TODO? Will they be updated or should i copy the content in pressed keys every time??
+            clientToServerData.x = data.dynamicData.rocket.getX();
+            clientToServerData.y = data.dynamicData.rocket.getY();
+            clientToServerData.pressedKeys = data.staticData.pressedKeys;
+            clientToServerData.pauseRequest = data.staticData.pauseRequest;
 
-                try {
-                    sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            if (!send(clientToServerData.toJSON())) break;
+
+            try {
+                sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        game.load_intro();
     }
 
-    private void send(String data) {
+    private boolean send(String data) {
         try {
             bufferedWriter.write(data);
             bufferedWriter.newLine();
             bufferedWriter.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            synchronized (this.data) {
+                this.data.dynamicData.GERunning = false;
+                try {
+                    bufferedWriter.close();
+                } catch (IOException ex) {
+                    System.err.println("Error in Server Sender");
+                } finally {
+                    return false;
+                }
+            }
         }
+        return true;
     }
 
     private void sendPrimaryInfo() {

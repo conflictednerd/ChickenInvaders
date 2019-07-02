@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Random;
 
 public class ServerLogicEngine extends Thread {
+    private final int maxLevels;
     private ServerData serverData;
     final int mousePressed = -23, bombPressed = -24;
     private LevelManager levelManager;
@@ -28,17 +29,18 @@ public class ServerLogicEngine extends Thread {
     private Random random = new Random();
     private ClientsDataOnServer data;
     
-    public ServerLogicEngine(){
+    public ServerLogicEngine(int maxLevels){
+        this.maxLevels = maxLevels;
         serverData = new ServerData();
         //todo should also pass max_level
-        levelManager = new LevelManager(serverData.players,serverData.enemies);
+        levelManager = new LevelManager(serverData.players,serverData.enemies, maxLevels);
         soundThread.start();
     }
 
     @Override
     public void run() {
         Long waitForNextWave = -1l;
-        boolean flag = true;
+        boolean flag;
         //todo while condition.
         while(true){
 
@@ -78,6 +80,10 @@ public class ServerLogicEngine extends Thread {
                         waitForNextWave = -1l;
                         inTransition = true;
                         wavesFinished = levelManager.nextWave(serverData.enemies);
+                        double constant = Math.sqrt(serverData.players.size());
+                        for(Enemy e: serverData.enemies){
+                            e.health*=constant;
+                        }
                     }
                 }
 
@@ -145,7 +151,6 @@ public class ServerLogicEngine extends Thread {
                     }
                 }
 
-//                long timetemp = System.currentTimeMillis();
                 synchronized (serverData.bombs) {
                     for(Bomb bomb: serverData.bombs){
                         if(!bomb.isActive){
@@ -166,7 +171,6 @@ public class ServerLogicEngine extends Thread {
                         else bomb.move();
                     }
                 }
-//                System.err.println("time in sync move: "+ (System.currentTimeMillis()-timetemp) + "mS");
 
                 collisionHandler();
 
@@ -175,7 +179,6 @@ public class ServerLogicEngine extends Thread {
                     
                     //Code for handling keyboard input comes here.
                     synchronized (data.pressedKeys) {
-//                        System.err.println(data.pressedKeys.size());
                         if (data.pressedKeys.contains(KeyEvent.VK_DOWN) && data.rocket.getY() < serverData.screenSize.height) {
                             data.rocket.setY(data.rocket.getY() + 10);
                         }
@@ -188,7 +191,6 @@ public class ServerLogicEngine extends Thread {
                         if (data.pressedKeys.contains(KeyEvent.VK_RIGHT) && data.rocket.getX() < serverData.screenSize.width) {
                             data.rocket.setX(data.rocket.getX() + 10);
                         }
-//                        long time = System.currentTimeMillis();
                         if(data.pressedKeys.contains(bombPressed)){
                             if(data.player.bombs>0 && data.rocket.isAlive()) {
                                 data.player.bombs--;
@@ -338,6 +340,18 @@ public class ServerLogicEngine extends Thread {
                     }
                 }
             }
+            /**
+             * rocket-friendly fire collision
+             */
+            synchronized (serverData.shots) {
+                for (Shot shot : serverData.shots) {
+                    if (!shot.owner.equals(rocket.getOwner()) && intersect(rocket, shot)) {
+                        die(serverData.clients.get(rocket.getOwner()).player, rocket);
+                        serverData.shots.remove(shot);
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -358,6 +372,14 @@ public class ServerLogicEngine extends Thread {
         return false;
     }
 
+    private boolean intersect(Rocket rocket, Shot shot) {
+        if(shot.getX() <rocket.getX() + rocket.getWidth()/2
+                && shot.getX()>rocket.getX()-rocket.getWidth()/2
+                && shot.getY()<rocket.getY() + rocket.getHeight()/2
+                && shot.getY()>rocket.getY() - rocket.getHeight()/2)
+            return true;
+        return false;
+    }
 
     private boolean intersect(Rocket rocket, EnemyShot shot){
         if(shot.getCenterX()<rocket.getX() + rocket.getWidth()/2

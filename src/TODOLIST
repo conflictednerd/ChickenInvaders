@@ -19,11 +19,11 @@ Done: add serverWaiting panel and other multi player panels.
 Done: pause menu handling
 Done: single player pause menu broke:(
 Done: Level manager seems to not work
-PRIORITY3:  todo: Exception handling.
+PRIORITY3: DONE(kinda:)  todo: Exception handling.
 Done: client death handling.
 
 Done: pressedKeyNamePair can be a hash map.
 
 *Done(single player Logic Engine still works with Shot fields): heat increment should be implemented in logic engine rather than in shot constructors.
 *Done: collision handler code is ugly:) use ClientsDataOnServer to better implement it.
-*todo: changing enemies health in multi-player depending on number of players.
+*Done: changing enemies health in multi-player depending on number of players.

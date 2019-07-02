@@ -51,10 +51,12 @@ public class ServerCreationPanel extends JPanel {
         create = new JButton("Start!");
         create.setPreferredSize(new Dimension(50, 100));
         create.addActionListener(actionEvent -> {
-            int port;
+            int port, maxPlayers, maxLevels;
             try {
                 port = Integer.parseInt(portField.getText());
-                game.playAsServer(port);
+                maxPlayers = Integer.parseInt(maxPlayersField.getText());
+                maxLevels = Integer.parseInt(maxLevelField.getText());
+                game.playAsServer(port, maxPlayers, maxLevels);
             }
             catch (Exception e){
                 infoLabel.setText("Oops! Try again!");
@@ -70,9 +72,9 @@ public class ServerCreationPanel extends JPanel {
         add(infoLabel);
         add(portField);
         add(infoLabel1);
-        add(maxLevelField);
-        add(infoLabel2);
         add(maxPlayersField);
+        add(infoLabel2);
+        add(maxLevelField);
         add(create);
         add(back);
     }
