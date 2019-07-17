@@ -1,11 +1,13 @@
 package Base;
 
 import Swing.*;
+import com.saeed.database.Database;
 import com.saeed.network.*;
 
 import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,8 @@ public class Game {
         data.staticData.gamePanel.syncMouse();
     }
 
-    public void playAsClient(String ip, int port){
-        createClient(ip, port);
+    public void playAsClient(String ip, int port, boolean isObserver){
+        createClient(ip, port, isObserver);
 
         clearContentPane();
         load_game();
@@ -58,7 +60,10 @@ public class Game {
         data.staticData.gamePanel.syncMouse();
     }
 
-    private void createClient(String ip, int port) {
+    private void createClient(String ip, int port, boolean isObserver) {
+        if(isObserver){
+            data.dynamicData.player.life = 0;
+        }
         try {
             socket = new Socket(ip, port);
         } catch (IOException e) {
@@ -88,7 +93,7 @@ public class Game {
         serverListener = new ServerListener(port, clients, maxPlayers, this);
         serverListener.setCounterLabel(load_server_waiting());
         serverListener.start();
-        createClient("localhost", port);
+        createClient("localhost", port, false);
     }
 
     /**
@@ -119,17 +124,12 @@ public class Game {
         serverListener.gameStarted = true;
 
         GE.start();
-//        CS.start();
-//        CR.start();
 
         data.staticData.startTime = System.currentTimeMillis();
         data.staticData.gamePanel.syncMouse();
         /**
          * start server worker threads
          */
-
-//        for (ServerReceiver sr: serverReceivers) sr.start();
-//        for (ServerSender ss: serverSenders) ss.start();
 
         SLE.start();
     }
@@ -186,9 +186,9 @@ public class Game {
         return serverWaitingPanel.getCounterLabel();
     }
 
-    public void load_client_creation() {
+    public void load_client_creation(boolean isObserver) {
         clearContentPane();
-        ClientCreationPanel clientCreationPanel = new ClientCreationPanel(this);
+        ClientCreationPanel clientCreationPanel = new ClientCreationPanel(this, isObserver);
         clientCreationPanel.setSize(data.staticData.screenSize);
         data.staticData.gameFrame.contentPane.add(clientCreationPanel);
         clientCreationPanel.repaint();

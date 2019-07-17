@@ -39,3 +39,10 @@ When server player starts the game,
 
 ROCKET SHOULD BE STATIC_DATA.
 PLAYER SHOULD BE DYNAMIC_DATA.
+
+
+
+DataBase:
+
+"USE 'databaseName';" to select the appropriate database. if throws sqlSyntaxErrorException: Unknown database '*'
+    create the database using "CREATE DATABASE 'databaseName';" and initialize rows and columns to hold data for Player Objects.

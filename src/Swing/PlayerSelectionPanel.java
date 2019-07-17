@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
+import java.sql.SQLException;
 
 public class PlayerSelectionPanel extends JPanel {
     private Game game;
@@ -64,6 +65,22 @@ public class PlayerSelectionPanel extends JPanel {
             String name = username.getText(), rawData = null;
             boolean done = false;
 
+            /**
+             * Database integration Code.
+             */
+            try {
+                game.data.staticData.database.addPlayer(new Player(name));
+                game.data.dynamicData.player = game.data.staticData.database.selectPlayer(name);
+                if(game.data.dynamicData.player == null){
+                    System.err.println("player not found in database");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            /**
+             * End of database integration code.
+             */
+
             //TODO It might be a good idea to NOT save guests.
 
             if(name.equals("")||name.equals(null)) name = "guest";
@@ -73,7 +90,7 @@ public class PlayerSelectionPanel extends JPanel {
             } catch (FileNotFoundException e){
                 //No saves found
                 game.data.staticData.saveData = new SaveData();
-                game.data.dynamicData.player = new Player(name);
+//                game.data.dynamicData.player = new Player(name);
                 game.data.staticData.saveData.players.add(game.data.dynamicData.player);
                 File file = new File(game.data.staticData.savePath);
                 done = true;
@@ -94,7 +111,7 @@ public class PlayerSelectionPanel extends JPanel {
                         if(!(s == null) && !(s.players == null)) {
                             for (Player p : s.players) {
                                 if (name.equals(p.name)) {
-                                    game.data.dynamicData.player = p;
+//                                    game.data.dynamicData.player = p;
                                     game.data.staticData.saveData = s;
                                     playerExists = true;
                                     break;
@@ -103,7 +120,7 @@ public class PlayerSelectionPanel extends JPanel {
                         }
                         if (!playerExists) {
                             //new player
-                            game.data.dynamicData.player = new Player(name);
+//                            game.data.dynamicData.player = new Player(name);
                             if(s == null) game.data.staticData.saveData = new SaveData();
                             else game.data.staticData.saveData = s;
                             game.data.staticData.saveData.players.add(game.data.dynamicData.player);
@@ -112,7 +129,7 @@ public class PlayerSelectionPanel extends JPanel {
                         //save corrupted.
                         e.printStackTrace();
                         game.data.staticData.saveData = new SaveData();
-                        game.data.dynamicData.player = new Player(name);
+//                        game.data.dynamicData.player = new Player(name);
                         //TODO It might be a good idea to NOT save guests.
                         game.data.staticData.saveData.players.add(game.data.dynamicData.player);
                     }

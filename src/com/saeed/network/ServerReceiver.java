@@ -60,6 +60,13 @@ public class ServerReceiver extends Thread {
         ClientsDataOnServer temp = new ClientsDataOnServer();
         temp.player = p;
         temp.rocket = new Rocket(p.name);
+        /**
+         * If is observer
+         */
+        if(p.life == 0){
+            temp.rocket.noLifeLeft = true;
+            temp.rocket.setAlive(false);
+        }
         serverData.clients.put(p.name, temp);
         serverData.players.add(p);
         System.err.println("Data received in server. player maxHeat = " + p.maxHeat);

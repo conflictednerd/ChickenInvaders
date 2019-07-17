@@ -1,1 +1,1 @@
-{"players":[{"name":"Enter your name here","life":2,"rocketLevel":1,"shotLevel":2,"shotType":1,"level":0,"subLevel":0,"score":7,"coins":0,"numberOfDeaths":0,"bombs":3,"timePlayed":0}],"ranking":[]}
+{"players":[{"name":"Player1","life":2,"rocketLevel":6,"shotLevel":8,"shotType":2,"level":0,"subLevel":3,"score":140,"coins":7,"numberOfDeaths":0,"bombs":2,"timePlayed":0},{"name":"Player 2","life":2,"rocketLevel":1,"shotLevel":3,"shotType":1,"level":0,"subLevel":0,"score":40,"coins":3,"numberOfDeaths":0,"bombs":3,"timePlayed":0}],"ranking":[]}

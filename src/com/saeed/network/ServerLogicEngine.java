@@ -43,7 +43,6 @@ public class ServerLogicEngine extends Thread {
         boolean flag;
         //todo while condition.
         while(true){
-
             //this will inform others that game is paused when serverData.isPaused is sent to clients
             //and then their requestPauses will be true until they change it.
             flag = true;

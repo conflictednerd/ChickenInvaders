@@ -6,6 +6,7 @@ import Elements.Upgrades.Upgrade;
 import Swing.GameFrame;
 import Swing.GamePanel;
 import com.gilecode.yagson.YaGson;
+import com.saeed.database.Database;
 
 import java.awt.*;
 import java.io.BufferedWriter;
@@ -95,9 +96,11 @@ public class Data implements Jsonable{
         //true: wants pause, false: wants un pause
         public volatile boolean pauseRequest;
 
+        /**Should close it when we are done.*/
+        public transient Database database;
+
 
         public StaticData(){
-//            player = new Player("guest");
             pressedKeys = new HashSet<>();
 
             pauseDialogOpened = false;
@@ -108,6 +111,7 @@ public class Data implements Jsonable{
             gamePanel = new GamePanel(Data.this);
             gameFrame = new GameFrame();
 
+            database = new Database();
             file = new File("game.data");
             savePath = file.getAbsolutePath();
             saveData = new SaveData();

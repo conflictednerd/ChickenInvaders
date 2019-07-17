@@ -50,6 +50,29 @@ public class Player implements Jsonable {
         maxHeat = 100;
     }
 
+    //for serialization purposes
+    public Player(){
+        life = 2;
+        rocketLevel = 1;
+        shotLevel = 2;
+        shotType = 1;
+        level = -1;
+        subLevel = -1;
+        score = 0;
+        coins = 0;
+        numberOfDeaths = 0;
+        bombs = 3;
+        timePlayed = 0;
+
+        //Other info
+        waitingForShotCooldown = false;
+        coolDownTimer = 0l;
+        shootingTimer = null;
+        timeOfLastShot = 0l;
+        shotHeat = 0;
+        maxHeat = 100;
+    }
+
     @Override
     public String toJSON() {
         YaGson yaGson = new YaGson();

@@ -21,9 +21,25 @@ Done: single player pause menu broke:(
 Done: Level manager seems to not work
 PRIORITY3: DONE(kinda:)  todo: Exception handling.
 Done: client death handling.
+Done: observer
+todo: Proper game over and game ending.
 
 Done: pressedKeyNamePair can be a hash map.
 
 *Done(single player Logic Engine still works with Shot fields): heat increment should be implemented in logic engine rather than in shot constructors.
 *Done: collision handler code is ugly:) use ClientsDataOnServer to better implement it.
 *Done: changing enemies health in multi-player depending on number of players.
+
+Phase 4:
+todo: add Database connection to single player.
+todo: saving in multiPlayer(should it be disabled?)
+todo: Loading an enemy class
+todo: menu for adding enemy class
+todo: adding new enemies of a new type using reflection and its Class to the enemy queue
+todo: adding new enemies in multiplayer.(no need to send image and stuff to clients for now)
+todo: creating new Boss class and new Enemy class to test reflection.
+
+
+
+Miscellaneous:
+todo: Saving mechanism doesn't load from where it is supposed to when a player resumes the game.

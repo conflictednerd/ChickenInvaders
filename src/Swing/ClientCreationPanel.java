@@ -10,9 +10,11 @@ public class ClientCreationPanel extends JPanel {
     private JLabel info1, info2;
     private JTextField ipField, portField;
     private JButton connect;
+    private boolean isObserver = false;
 
-    public ClientCreationPanel(Game game){
+    public ClientCreationPanel(Game game, boolean isObserver){
         this.game = game;
+        this.isObserver = isObserver;
 
         initialize();
 
@@ -43,7 +45,12 @@ public class ClientCreationPanel extends JPanel {
         connect = new JButton("Connect!");
         connect.setPreferredSize(new Dimension(50, 100));
         connect.addActionListener(actionEvent -> {
-            game.playAsClient(ipField.getText(), Integer.parseInt(portField.getText()));
+            try {
+                game.playAsClient(ipField.getText(), Integer.parseInt(portField.getText()), isObserver);
+            }
+            catch (Exception e){
+                info1.setText("Oops! Try again!");
+            }
         });
 
         add(info1);

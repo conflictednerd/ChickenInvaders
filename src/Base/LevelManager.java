@@ -28,6 +28,15 @@ public class LevelManager {
         this(players, originalEnemySet, 4);
     }
 
+    @Reflection
+    /**
+     * Adds a new wave of enemyClass type enemies to the enemy queue.
+     * Called after loading a new enemy class from logic engine.
+     */
+    public void addEnemyType(Class<Enemy> enemyClass){
+
+    }
+
     private void createWaves() {
         /**
          * Wave 0 Level 0 index 0 Type Enemy1

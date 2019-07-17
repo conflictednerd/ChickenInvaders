@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class IntroPanel extends JPanel {
 
     Game game;
-    JButton play, createServer, joinServer ,scores,setting, quit;
+    JButton play, createServer, joinServer, watch ,scores,setting, quit;
     Image intro1, title;
     final int BUTTON_WIDTH = 700 ,BUTTON_HEIGHT = 50, BUTTON_SPACE = 20;
 
@@ -47,24 +47,30 @@ public class IntroPanel extends JPanel {
         add(createServer);
 
         joinServer = new JButton("Join a Server");
-        joinServer.addActionListener(actionEvent -> game.load_client_creation());
+        joinServer.addActionListener(actionEvent -> game.load_client_creation(false));
         setButton(joinServer,2);
         add(joinServer);
 
-
+        watch = new JButton("Watch a game");
+        watch.addActionListener(actionEvent -> game.load_client_creation(true));
+        setButton(watch, 3);
+        add(watch);
 
         scores = new JButton("Scores");
-        setButton(scores, 3);
+        setButton(scores, 4);
         scores.addActionListener(actionEvent -> new RankingDialog((ArrayList<Player>) game.data.staticData.saveData.ranking));
         add(scores);
 
         setting = new JButton("Settings");
-        setButton(setting, 4);
+        setButton(setting, 5);
         add(setting);
 
         quit = new JButton("Quit");
-        setButton(quit, 5);
-        quit.addActionListener(actionEvent -> System.exit(0));
+        setButton(quit, 6);
+        quit.addActionListener(actionEvent -> {
+            game.data.staticData.database.close();
+            System.exit(0);
+        });
         add(quit);
 
     }
