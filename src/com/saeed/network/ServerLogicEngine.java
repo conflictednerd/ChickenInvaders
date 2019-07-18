@@ -32,8 +32,7 @@ public class ServerLogicEngine extends Thread {
     public ServerLogicEngine(int maxLevels){
         this.maxLevels = maxLevels;
         serverData = new ServerData();
-        //todo should also pass max_level
-        levelManager = new LevelManager(serverData.players,serverData.enemies, maxLevels);
+        levelManager = new LevelManager(serverData.players,serverData.enemies, maxLevels, 0, 0);
         soundThread.start();
     }
 

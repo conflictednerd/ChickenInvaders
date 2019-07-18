@@ -13,6 +13,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -79,6 +80,7 @@ public class Data implements Jsonable{
     }
 
     public class StaticData{
+        public transient boolean isMultiPlayer;
         public volatile HashSet<Integer> pressedKeys;
 
         public transient Dimension screenSize;
@@ -101,6 +103,7 @@ public class Data implements Jsonable{
 
 
         public StaticData(){
+            isMultiPlayer = true;
             pressedKeys = new HashSet<>();
 
             pauseDialogOpened = false;
@@ -134,6 +137,14 @@ public class Data implements Jsonable{
             bufferedWriter.close();
             System.out.println("Game Saved");
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //update players table in database.
+
+        try {
+            this.staticData.database.updatePlayers(this.dynamicData.player);
+        } catch (SQLException e) {
+            System.err.println("Error saving changes to database");
             e.printStackTrace();
         }
     }

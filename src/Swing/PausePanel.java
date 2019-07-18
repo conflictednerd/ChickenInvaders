@@ -60,6 +60,9 @@ public class PausePanel extends JPanel {
             save.setEnabled(false);
 
         });
+        if(this.pauseDialog.data.staticData.isMultiPlayer){
+            save.setEnabled(false);
+        }
 
         exit.addKeyListener(new KeyListener() {
             @Override
@@ -83,7 +86,10 @@ public class PausePanel extends JPanel {
             pauseDialog.dispose();
         });
 
-        exit.addActionListener(actionEvent -> System.exit(0));
+        exit.addActionListener(actionEvent -> {
+            pauseDialog.data.staticData.database.close();
+            System.exit(0);
+        });
 
         add(resume);
         add(save);

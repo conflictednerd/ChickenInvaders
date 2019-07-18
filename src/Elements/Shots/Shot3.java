@@ -36,7 +36,7 @@ public class Shot3 extends Shot {
 //        else{
 //            heatIncreaseRate /= shotLevel;
 //        }
-//        Shot.shotHeat+=heatIncreaseRate;
+        Shot.shotHeat += heatIncreaseRate/shotLevel;
 
 
 //        try {

@@ -43,7 +43,7 @@ public class GraphicEngine extends Thread {
                 }
             }
             else{
-                if(!data.staticData.pauseDialogOpened){
+                if(data.staticData.isMultiPlayer && !data.staticData.pauseDialogOpened){
                     System.err.println("In graphic engine else.");
                     data.staticData.gamePanel.esc();
                     data.staticData.pauseDialogOpened = true;

@@ -42,8 +42,8 @@ public class Database implements Closeable {
         sql = "INSERT INTO `" +
                 playersTable +
                 "` (`name`, `json`) VALUES ('" + player.name + "'" +
-                ", '" + player.toJSON() + "');";
-        System.out.println(sql);
+                ", '" + player.StoJson(player) + "');";
+//        System.out.println(sql);
         statement.executeUpdate(sql);
     }
 
@@ -56,7 +56,11 @@ public class Database implements Closeable {
         resultSet = statement.executeQuery(sql);
         //If player didn't exist in database return null.
         if(!resultSet.next()) return null;
-        Player p = new Player("temp").fromJSON(resultSet.getString("json"));
+        Player p = Player.SfromJson(resultSet.getString("json"));
+//        System.out.println("Data read from database: ");
+//        System.out.println(resultSet.getString("json"));
+//        System.out.println("Player created using database info:");
+//        System.out.println(Player.StoJson(p));
         p.name = name;
         p.waitingForShotCooldown = false;
         p.coolDownTimer = 0l;
@@ -117,5 +121,27 @@ public class Database implements Closeable {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updatePlayers(Player player) throws SQLException {
+        //just a safety net.
+        if(!playerIsRegistered(player)){
+            addPlayer(player);
+            return;
+        }
+        sql = "UPDATE `" + playersTable + "` " +
+                "SET `json` = '" + Player.StoJson(player) + "' " +
+                "WHERE `name` = '" + player.name + "'" +
+                ";";
+        statement.executeUpdate(sql);
+    }
+
+    public void addPlayerToRanking(Player player) throws SQLException {
+        sql = "INSERT INTO `" +
+                rankingTable +
+                "` (`name`, `json`) VALUES ('" + player.name + "'" +
+                ", '" + player.StoJson(player) + "');";
+//        System.out.println(sql);
+        statement.executeUpdate(sql);
     }
 }

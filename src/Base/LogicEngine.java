@@ -11,6 +11,7 @@ import Elements.Upgrades.*;
 import Swing.RankingDialog;
 
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -21,12 +22,14 @@ public class LogicEngine extends Thread{
     private LevelManager levelManager;
     private boolean inTransition = false, wavesFinished = false, finalSave = false;
     private Data data;
+    private Game game;
     private SoundThread soundThread = new SoundThread();
     private Random random = new Random();
 
-    public LogicEngine(Data data){
+    public LogicEngine(Data data, Game game){
         super();
         this.data = data;
+        this.game = game;
         Shot.maxHeat += 5*data.dynamicData.player.rocketLevel;
         soundThread.start();
     }
@@ -56,10 +59,9 @@ public class LogicEngine extends Thread{
                 //Game Over
                 if(data.dynamicData.player.life <= 0){
                     data.dynamicData.rocket.noLifeLeft = true;
-//                    data.dynamicData.isPaused = true;
-//                    GameOverDialog god = new GameOverDialog(data);
-//                    data.dynamicData.LERunning = false;
-//                    data.GERunning =false;
+                    //newly added code
+                    data.dynamicData.GERunning = false;
+                    data.dynamicData.LERunning = false;
                 }
                 //First wave of new level
                 if(data.dynamicData.player.subLevel == 0 && data.dynamicData.player.level > 0){
@@ -69,13 +71,22 @@ public class LogicEngine extends Thread{
                 }
                 //Game has been completed.
                 if(wavesFinished && !finalSave){
-                    data.dynamicData.player.timePlayed = Math.toIntExact((System.currentTimeMillis() - data.staticData.startTime) / 1000);
+                    data.dynamicData.player.timePlayed += Math.toIntExact((System.currentTimeMillis() - data.staticData.startTime) / 1000);
                     data.staticData.saveData.ranking.add(data.dynamicData.player);
+                    try {
+                        data.staticData.database.addPlayerToRanking(data.dynamicData.player);
+                    } catch (SQLException e) {
+                        System.err.println("Error adding record to ranking");
+                        e.printStackTrace();
+                    }
                     data.save();
                     finalSave = true;
-                    data.dynamicData.isPaused = true;
+//                    data.dynamicData.isPaused = true;
 
                     new RankingDialog((ArrayList<Player>) data.staticData.saveData.ranking);
+
+                    data.dynamicData.GERunning = false;
+                    data.dynamicData.LERunning = false;
                 }
 
                 if(Shot.shotHeat >= Shot.maxHeat && !waitingForShotCooldown){
@@ -261,12 +272,8 @@ public class LogicEngine extends Thread{
                 }
             }
         }
-//        data.gameFrame.dispatchEvent(new WindowEvent(data.gameFrame, WindowEvent.WINDOW_CLOSING));
+        game.load_player_selection();
         System.err.println("LE out!");
-        //These lines seem to work alongside setting GERunning = false;
-//        Game game = new Game();
-//        data.gameFrame.setVisible(false);
-//        data.gameFrame.dispose();
     }
 
     private void shoot(Integer shotLevel, Integer shotType) {

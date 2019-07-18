@@ -1,10 +1,19 @@
-TODO: proper game over.
+Done: proper game over.
 Done: level manager and handling waves of enemies and levels.
 Done: Adding multiple types of enemies.
 Done: Adding upgrades(shot upgrades and rocket upgrades)
 Done: dying when hitting an enemy.
 Done: not dying for a couple seconds after reviving from previous death.
 Done: bomb killing all enemies and reduce health of bosses
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+UPDATE IN PHASE 2:
+    For a proper game over, some lines of code is added to LE and Game(available in phase 4 version).
+        Essentially, we passed the Game object to Logic Engine in its constructor and in LE, when the game was about to finish
+        (right next to saving mechanism), set data.LERunning, data.GERunning = false to terminate these two threads. also,
+        when exiting run method of Logic Engine(after main while loop) add a line of code: this.game.load_player_selection();.
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 Phase 3:
 Done: break Data class to StaticData and DynamicData classes. First one contains transient fields of Data.
@@ -31,15 +40,23 @@ Done: pressedKeyNamePair can be a hash map.
 *Done: changing enemies health in multi-player depending on number of players.
 
 Phase 4:
-todo: add Database connection to single player.
-todo: saving in multiPlayer(should it be disabled?)
+Database:
+Done: add Database connection to single player.
+Done: update database when saved.
+Done: update database ranking when game is finished.
+Aborted: read ranking from db. No need to do this.
+Done: close database connection on exit.
+Done: saving in multiPlayer(should it be disabled?) Saving is deactivated in multi player.
+
+Reflection:
 todo: Loading an enemy class
 todo: menu for adding enemy class
 todo: adding new enemies of a new type using reflection and its Class to the enemy queue
 todo: adding new enemies in multiplayer.(no need to send image and stuff to clients for now)
-todo: creating new Boss class and new Enemy class to test reflection.
+todo: creating new Boss class(to test reflection).
+todo: creating new Enemy class(to test reflection).
 
 
 
 Miscellaneous:
-todo: Saving mechanism doesn't load from where it is supposed to when a player resumes the game.
+DONE(but hard-coded:)): Saving mechanism doesn't load from where it is supposed to when a player resumes the game. should only add the needed Waves when creating LevelManager and adding waves to its wave list.

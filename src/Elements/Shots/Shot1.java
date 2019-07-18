@@ -39,7 +39,7 @@ public class Shot1 extends Shot {
             damage += shotLevel-4;
         }
         //Legacy support
-        Shot.shotHeat+=heatIncreaseRate;
+        Shot.shotHeat += heatIncreaseRate/shotLevel;
 //        try {
 //            if(s == null){
 //                s = ImageIO.read(Shot.class.getResourceAsStream("../../Assets/Shots/Shot1/S.png"));

@@ -60,7 +60,10 @@ public class PlayerSelectionPanel extends JPanel {
         ok.setLocation(username.getX()+10, username.getY()+username.getHeight()+10);
         quit.setLocation(ok.getX()+ok.getWidth()+5, ok.getY());
 
-        quit.addActionListener(actionEvent -> System.exit(0));
+        quit.addActionListener(actionEvent -> {
+            game.data.staticData.database.close();
+            System.exit(0);
+        });
         ok.addActionListener(actionEvent -> {
             String name = username.getText(), rawData = null;
             boolean done = false;

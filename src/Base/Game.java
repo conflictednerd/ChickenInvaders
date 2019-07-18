@@ -36,10 +36,11 @@ public class Game {
         load_game();
 
         GE = new GraphicEngine(data);
-        LE = new LogicEngine(data);
+        LE = new LogicEngine(data, this);
         List<Player> players = new ArrayList<>();
         players.add(data.dynamicData.player);
-        LE.setLevelManager(new LevelManager(players, data.dynamicData.enemies));
+        System.err.println("LEVEL: " + data.dynamicData.player.level + "SUBLEVEL: " + data.dynamicData.player.subLevel);
+        LE.setLevelManager(new LevelManager(players, data.dynamicData.enemies, data.dynamicData.player.level, data.dynamicData.player.subLevel));
         GE.start();
         LE.start();
         data.staticData.startTime = System.currentTimeMillis();

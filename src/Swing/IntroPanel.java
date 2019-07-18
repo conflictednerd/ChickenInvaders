@@ -37,22 +37,34 @@ public class IntroPanel extends JPanel {
         }
 
         play = new JButton("Play!");
-        play.addActionListener(actionEvent -> game.play());
+        play.addActionListener(actionEvent -> {
+            game.data.staticData.isMultiPlayer = false;
+            game.play();
+        });
         setButton(play, 0);
         add(play);
 
         createServer = new JButton("Create Server");
-        createServer.addActionListener(actionEvent -> game.load_server_creation());
+        createServer.addActionListener(actionEvent -> {
+            game.data.staticData.isMultiPlayer = true;
+            game.load_server_creation();
+        });
         setButton(createServer,1);
         add(createServer);
 
         joinServer = new JButton("Join a Server");
-        joinServer.addActionListener(actionEvent -> game.load_client_creation(false));
+        joinServer.addActionListener(actionEvent -> {
+            game.data.staticData.isMultiPlayer = true;
+            game.load_client_creation(false);
+        });
         setButton(joinServer,2);
         add(joinServer);
 
         watch = new JButton("Watch a game");
-        watch.addActionListener(actionEvent -> game.load_client_creation(true));
+        watch.addActionListener(actionEvent -> {
+            game.data.staticData.isMultiPlayer = true;
+            game.load_client_creation(true);
+        });
         setButton(watch, 3);
         add(watch);
 
