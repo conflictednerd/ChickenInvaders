@@ -143,13 +143,4 @@ public class WaveFactory {
         return wave;
     }
 
-    public static Wave RandomWave(int lvl){
-        return null;
-    }
-
-    @Reflection
-    public static Wave NewTypeWave(Class<Enemy> enemyClass, int lvl){
-        return null;
-    }
-
 }

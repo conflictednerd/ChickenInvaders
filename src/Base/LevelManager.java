@@ -1,9 +1,13 @@
 package Base;
 
+import Elements.Enemies.Boss;
+import Elements.Enemies.Enemy1;
 import Elements.Enemies.Enemy4;
 import Elements.Enemy;
 
 import java.awt.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -35,8 +39,57 @@ public class LevelManager {
      * Adds a new wave of enemyClass type enemies to the enemy queue.
      * Called after loading a new enemy class from logic engine.
      */
-    public void addEnemyType(Class<Enemy> enemyClass){
+    public void addEnemyType(Class<? extends Enemy> enemyClass) {
+        final int number = 10;
+        final int lvl = 2;
+        Wave wave = new Wave();
+        try {
+            Constructor<? extends Enemy> constructor = enemyClass.getConstructor();
+            for (int j = 1; j <= number; j++) {
+                Enemy enemy = constructor.newInstance();
+                enemy.health += lvl;
+                enemy.setLvl(lvl);
+                enemy.setCenterY(0);
+                enemy.setCenterX((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth() / 2));
+                enemy.setDefaultX(10 + j * enemy.getWidth());
+                enemy.setDefaultY(10 + enemy.getHeight());
+                enemy.calculateDefaultSpeeds();
+                wave.enemies.add(enemy);
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        waveList.add(currentWave+1, wave);
+    }
 
+    @Reflection
+    public void addBossType(Class<? extends Enemy> enemyClass) {
+        final int lvl = 2;
+        try {
+            Constructor<? extends Enemy> constructor = enemyClass.getConstructor();
+            Enemy b = constructor.newInstance();
+            b.setCenterX((int) (Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2));
+            b.setCenterY(0);
+            b.setDefaultX(b.getCenterX());
+            b.setDefaultY(200);
+            b.health *= lvl;
+            b.calculateDefaultSpeeds();
+            waveList.add(currentWave+1, new Wave().of(b) );
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createWaves() {

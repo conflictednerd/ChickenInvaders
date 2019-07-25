@@ -101,6 +101,11 @@ public class Data implements Jsonable{
         /**Should close it when we are done.*/
         public transient Database database;
 
+        public transient volatile List<Class<? extends Enemy>> waitingEnemyClasses;
+        public transient volatile List<Class<? extends Enemy>> addedEnemyClasses;
+        public transient volatile List<Class<? extends Enemy>> waitingBossClasses;
+        public transient volatile List<Class<? extends Enemy>> addedBossClasses;
+
 
         public StaticData(){
             isMultiPlayer = true;
@@ -119,6 +124,11 @@ public class Data implements Jsonable{
             savePath = file.getAbsolutePath();
             saveData = new SaveData();
             System.out.println(savePath);
+
+            waitingEnemyClasses = new ArrayList<>();
+            addedEnemyClasses = new ArrayList<>();
+            waitingBossClasses = new ArrayList<>();
+            addedBossClasses = new ArrayList<>();
         }
     }
 

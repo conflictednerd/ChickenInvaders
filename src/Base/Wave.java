@@ -8,4 +8,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Wave {
     public boolean hasType4 = false;
     public volatile Set<Enemy> enemies = ConcurrentHashMap.newKeySet();
+
+    public Wave of(Enemy enemy){
+        enemies.add(enemy);
+        return this;
+    }
 }

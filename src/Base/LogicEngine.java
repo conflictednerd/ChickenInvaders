@@ -89,6 +89,18 @@ public class LogicEngine extends Thread{
                     data.dynamicData.LERunning = false;
                 }
 
+                //Notifying levelManager to add waves of new enemy and boss classes.
+                while(data.staticData.waitingEnemyClasses.size()>0){
+                    levelManager.addEnemyType(data.staticData.waitingEnemyClasses.get(0));
+                    data.staticData.addedEnemyClasses.add(data.staticData.waitingEnemyClasses.get(0));
+                    data.staticData.waitingEnemyClasses.remove(0);
+                }
+                while(data.staticData.waitingBossClasses.size()>0){
+                    levelManager.addBossType(data.staticData.waitingBossClasses.get(0));
+                    data.staticData.addedBossClasses.add(data.staticData.waitingBossClasses.get(0));
+                    data.staticData.waitingBossClasses.remove(0);
+                }
+
                 if(Shot.shotHeat >= Shot.maxHeat && !waitingForShotCooldown){
                     waitingForShotCooldown = true;
                     data.dynamicData.rocket.coolDown=true;

@@ -47,11 +47,14 @@ Done: update database ranking when game is finished.
 Aborted: read ranking from db. No need to do this.
 Done: close database connection on exit.
 Done: saving in multiPlayer(should it be disabled?) Saving is deactivated in multi player.
+todo: show error massage when couldn't establish a connection to the database.
 
 Reflection:
-todo: Loading an enemy class
-todo: menu for adding enemy class
-todo: adding new enemies of a new type using reflection and its Class to the enemy queue
+Done: Loading an enemy class
+Done: add enemy, add boss button.
+Done: menu for adding enemy class
+Done: adding new enemies of a new type using reflection and adding its Class to the enemy queue.
+Done: adding new Boss of a new type using reflection.
 todo: adding new enemies in multiplayer.(no need to send image and stuff to clients for now)
 todo: creating new Boss class(to test reflection).
 todo: creating new Enemy class(to test reflection).
